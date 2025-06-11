@@ -1,8 +1,0 @@
-[phases.setup]
-nixPkgs = ["nodejs_20", "npm"]
-
-[phases.build]
-cmds = ["npm ci --omit=dev"]
-
-[phases.start]
-cmd = "npm start"
