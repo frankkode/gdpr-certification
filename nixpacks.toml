@@ -5,7 +5,7 @@ NODE_ENV = "production"
 nixPkgs = ["nodejs_20", "npm"]
 
 [phases.build]
-cmds = ["npm ci", "npm run build"]
+cmds = ["npm ci --omit=dev"]
 
 [phases.start]
-cmd = "npx serve -s build -l $PORT"
+cmd = "npm start"
