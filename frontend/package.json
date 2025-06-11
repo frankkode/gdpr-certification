@@ -1,0 +1,72 @@
+{
+  "name": "certificate-verification-frontend",
+  "version": "4.0.0",
+  "private": true,
+  "description": "Military-grade certificate verification frontend with advanced UI",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint . --ext ts,tsx --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "type-check": "tsc --noEmit",
+    "analyze": "npm run build && npx vite-bundle-analyzer dist",
+    "security:scan": "npm audit && snyk test",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@headlessui/react": "^1.7.17",
+    "@react-spring/web": "^10.0.1",
+    "@tailwindcss/postcss": "^4.1.9",
+    "@tailwindcss/vite": "^4.1.9",
+    "axios": "^1.6.2",
+    "canvas-confetti": "^1.9.3",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "crypto-js": "^4.2.0",
+    "framer-motion": "^10.16.16",
+    "lucide-react": "^0.294.0",
+    "react": "^18.2.0",
+    "react-confetti": "^6.4.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.1",
+    "tailwind-merge": "^2.1.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/typography": "^0.5.10",
+    "@types/crypto-js": "^4.2.1",
+    "@types/node": "^20.10.4",
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@typescript-eslint/parser": "^6.14.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "@vitest/ui": "^1.0.4",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^8.55.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "eslint-plugin-security": "^1.7.1",
+    "husky": "^9.1.7",
+    "jsdom": "^23.0.1",
+    "postcss": "^8.5.4",
+    "prettier": "^3.1.1",
+    "snyk": "^1.1259.0",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.3.3",
+    "vite": "^6.3.5",
+    "vitest": "^3.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "resolutions": {
+    "brace-expansion": "4.0.1"
+  }
+}
