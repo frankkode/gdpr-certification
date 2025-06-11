@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import AnimatedBackground from './components/AnimatedBackground';
 
-// ✅ FIXED: Lazy load GDPR-compliant components
+// ✅ FIXED: Lazy  load GDPR-compliant components
 const GDPRCertificateGenerator = lazy(() => import('./components/CertificateGenerator'));
 const GDPRVerificationSystem = lazy(() => import('./components/GDPRVerificationSystem'));
 const SecurityStats = lazy(() => import('./components/SecurityStats'));
