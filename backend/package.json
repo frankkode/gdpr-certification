@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "build": "npm install --omit=dev",
+    "build": "echo 'No build step needed for Express'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
