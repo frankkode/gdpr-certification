@@ -7,7 +7,7 @@
     "node": "20.x"
   },
   "scripts": {
-    "build": "npm install --omit=dev",
+    "build": "echo 'Build complete'",
     "start": "node server.js",
     "dev": "nodemon server.js",
     "vercel-build": "npm install"
