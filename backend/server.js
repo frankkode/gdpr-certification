@@ -670,7 +670,23 @@ app.get('/verify/:certificateId', verifyLimit, async (req, res) => {
     });
   }
 });
-
+// Add this root route to your server.js
+app.get('/', (req, res) => {
+  res.json({
+    message: '🏆 Professional Certificate System API',
+    status: 'GDPR-compliant and operational',
+    version: '4.0.0',
+    endpoints: {
+      'POST /generate': 'Generate GDPR-compliant certificate',
+      'POST /verify/pdf': 'GDPR-compliant PDF verification', 
+      'GET /verify/:certificateId': 'ID verification',
+      'GET /stats': 'System statistics (no personal data)',
+      'GET /health': 'Health check'
+    },
+    documentation: 'https://your-docs-url.com',
+    frontend: 'https://gdpr-certification-cl7s.vercel.app'
+  });
+});
 // ✅ FIXED: GDPR-compliant statistics with PostgreSQL (no personal data)
 app.get('/stats', async (req, res) => {
   try {
