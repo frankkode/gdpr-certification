@@ -27,7 +27,7 @@ app.use(helmet());
 app.use(cors({
   origin: process.env.ALLOWED_ORIGINS?.split(',') || [
     'http://localhost:3000',
-    'https://gdpr-certification-cl7s.vercel.app'
+    'https://gdpr-certification-cl7s.vercel.app','https://gdpr-certification.vercel.app'
   ],
   credentials: true
 }));
