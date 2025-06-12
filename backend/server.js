@@ -1,4 +1,4 @@
-// 🏆 GDPR-Compliant Certificate Verification System - Fixed Version
+// 🏆 GDPR-Compliant Certificate Verification System - PostgreSQL Version
 const express = require('express');
 const cors = require('cors');
 const crypto = require('crypto');
@@ -198,7 +198,7 @@ async function generateGDPRCompliantPDF(certificateData) {
       doc.rect(60, verifyY, width - 120, 80).fill('#f8fafc').stroke(colors.navy, 1);
 
       doc.fontSize(12).font('Helvetica-Bold').fillColor(colors.navy)
-         .text('   GDPR-COMPLIANT VERIFICATION', 70, verifyY + 10);
+         .text('🔐 GDPR-COMPLIANT VERIFICATION', 70, verifyY + 10);
 
       const verifyDetails = [
         `Certificate ID: ${certificateData.certificateId}`,
@@ -302,7 +302,7 @@ const certificateValidation = [
     .withMessage('Invalid exam name format')
 ];
 
-// ✅ FIXED: GDPR-COMPLIANT CERTIFICATE GENERATION
+// ✅ FIXED: GDPR-COMPLIANT CERTIFICATE GENERATION WITH POSTGRESQL
 app.post('/generate', generateLimit, certificateValidation, async (req, res) => {
   try {
     console.log('🎨 GDPR-compliant certificate generation request:', req.body);
@@ -355,23 +355,29 @@ app.post('/generate', generateLimit, certificateValidation, async (req, res) => 
     console.log('🎨 Generating GDPR-compliant PDF...');
     const pdfBuffer = await generateGDPRCompliantPDF(certificateData);
     
-    // ✅ FIXED: Store ONLY hash in database (NO PERSONAL DATA)
+    // ✅ FIXED: Store ONLY hash in PostgreSQL database (NO PERSONAL DATA)
     const courseCode = exam.substring(0, 20).replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
     
-    db.run(`INSERT INTO certificate_hashes (
-      certificate_hash, certificate_id, course_code, issue_date, 
-      serial_number, verification_code, digital_signature, 
-      status, security_level, request_id, created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
-    [
-      hash, certificateId, courseCode, certificateData.issueDate.split('T')[0],
-      serialNumber, verificationCode, digitalSignature,
-      'ACTIVE', 'GDPR_COMPLIANT', requestId, new Date().toISOString()
-    ], function(err) {
-      if (err) {
-        console.error('Database error:', err);
-        return res.status(500).json({ error: 'Database error', details: err.message });
-      }
+    try {
+      await db.query(`
+        INSERT INTO certificate_hashes (
+          certificate_hash, certificate_id, course_code, issue_date, 
+          serial_number, verification_code, digital_signature, 
+          status, security_level, request_id, created_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      `, [
+        hash, 
+        certificateId, 
+        courseCode, 
+        certificateData.issueDate.split('T')[0],
+        serialNumber, 
+        verificationCode, 
+        digitalSignature,
+        'ACTIVE', 
+        'GDPR_COMPLIANT', 
+        requestId, 
+        new Date().toISOString()
+      ]);
       
       console.log(`✅ GDPR-compliant certificate stored: ${certificateId}`);
       console.log(`🔒 GDPR Compliance: ZERO personal data retained in database`);
@@ -379,7 +385,7 @@ app.post('/generate', generateLimit, certificateValidation, async (req, res) => 
       stats.certificatesGenerated++;
       
       // ✅ Log GDPR-compliant event (no personal data)
-      dbUtils.logEvent('CERTIFICATE_GENERATED', 
+      await dbUtils.logEvent('CERTIFICATE_GENERATED', 
         `Certificate ${certificateId} generated with GDPR compliance`, 
         null, {}, 'INFO');
       
@@ -394,7 +400,14 @@ app.post('/generate', generateLimit, certificateValidation, async (req, res) => 
       // ✅ AUTOMATIC DATA DELETION SIMULATION
       // In reality, no personal data was stored to delete!
       console.log('🗑️  GDPR AUTO-DELETION: Personal data never stored - compliance achieved by design!');
-    });
+      
+    } catch (dbError) {
+      console.error('Database error:', dbError);
+      return res.status(500).json({ 
+        error: 'Database error', 
+        details: dbError.message 
+      });
+    }
     
   } catch (error) {
     console.error('Certificate generation error:', error);
@@ -405,7 +418,7 @@ app.post('/generate', generateLimit, certificateValidation, async (req, res) => 
   }
 });
 
-// ✅ FIXED: GDPR-COMPLIANT PDF VERIFICATION
+// ✅ FIXED: GDPR-COMPLIANT PDF VERIFICATION WITH POSTGRESQL
 app.post('/verify/pdf', verifyLimit, upload.single('certificate'), async (req, res) => {
   try {
     if (!req.file) {
@@ -513,24 +526,31 @@ app.post('/verify/pdf', verifyLimit, upload.single('certificate'), async (req, r
       });
     }
     
-    // ✅ FIXED: Database verification using ONLY hash (no personal data access)
-    db.get('SELECT * FROM certificate_hashes WHERE certificate_hash = ? AND status = ?', 
-      [extractedData.hash, 'ACTIVE'], (err, row) => {
-      if (err || !row) {
+    // ✅ FIXED: PostgreSQL database verification using ONLY hash (no personal data access)
+    try {
+      const result = await db.query(
+        'SELECT * FROM certificate_hashes WHERE certificate_hash = $1 AND status = $2', 
+        [extractedData.hash, 'ACTIVE']
+      );
+      
+      if (!result.rows || result.rows.length === 0) {
         return res.json({
           valid: false,
           message: 'Certificate not found in database or has been revoked',
-          debugInfo: { dbError: err?.message, certificateId: extractedData.certificateId },
+          debugInfo: { certificateId: extractedData.certificateId },
           verificationId
         });
       }
       
+      const row = result.rows[0];
       console.log('✅ Found in database');
       console.log('✅ DB hash matches:', row.certificate_hash === extractedData.hash);
       
       // ✅ SUCCESS - Update verification count (anonymous metric)
-      db.run('UPDATE certificate_hashes SET verification_count = verification_count + 1, last_verified = CURRENT_TIMESTAMP WHERE certificate_hash = ?', 
-        [extractedData.hash]);
+      await db.query(
+        'UPDATE certificate_hashes SET verification_count = verification_count + 1, last_verified = CURRENT_TIMESTAMP WHERE certificate_hash = $1', 
+        [extractedData.hash]
+      );
       
       stats.successfulVerifications++;
       
@@ -557,10 +577,19 @@ app.post('/verify/pdf', verifyLimit, upload.single('certificate'), async (req, r
       });
       
       // ✅ Log verification (no personal data)
-      dbUtils.logEvent('CERTIFICATE_VERIFIED', 
+      await dbUtils.logEvent('CERTIFICATE_VERIFIED', 
         `Certificate ${row.certificate_id} verified successfully with GDPR compliance`, 
         null, {}, 'INFO');
-    });
+      
+    } catch (dbError) {
+      console.error('Database verification error:', dbError);
+      return res.json({
+        valid: false,
+        message: 'Database verification failed',
+        debugInfo: { dbError: dbError.message },
+        verificationId
+      });
+    }
     
   } catch (error) {
     console.error('🚨 Fatal error:', error);
@@ -572,18 +601,22 @@ app.post('/verify/pdf', verifyLimit, upload.single('certificate'), async (req, r
   }
 });
 
-// Certificate ID verification (no personal data access)
-app.get('/verify/:certificateId', verifyLimit, (req, res) => {
+// ✅ FIXED: Certificate ID verification with PostgreSQL (no personal data access)
+app.get('/verify/:certificateId', verifyLimit, async (req, res) => {
   const { certificateId } = req.params;
   const verificationId = uuidv4();
   
   stats.verificationsPerformed++;
   console.log('🔍 Certificate ID verification:', certificateId);
 
-  // ✅ FIXED: Query ONLY hash table (no personal data)
-  db.get('SELECT * FROM certificate_hashes WHERE certificate_id = ? AND status = ?', 
-    [certificateId, 'ACTIVE'], (err, row) => {
-    if (err || !row) {
+  try {
+    // ✅ FIXED: PostgreSQL query ONLY hash table (no personal data)
+    const result = await db.query(
+      'SELECT * FROM certificate_hashes WHERE certificate_id = $1 AND status = $2', 
+      [certificateId, 'ACTIVE']
+    );
+    
+    if (!result.rows || result.rows.length === 0) {
       console.log('❌ Certificate ID verification failed');
       return res.json({
         valid: false,
@@ -593,6 +626,7 @@ app.get('/verify/:certificateId', verifyLimit, (req, res) => {
       });
     }
 
+    const row = result.rows[0];
     stats.successfulVerifications++;
     console.log('✅ Certificate ID verified successfully');
     
@@ -619,59 +653,86 @@ app.get('/verify/:certificateId', verifyLimit, (req, res) => {
     });
     
     // Update verification count
-    db.run('UPDATE certificate_hashes SET verification_count = verification_count + 1, last_verified = CURRENT_TIMESTAMP WHERE certificate_id = ?', 
-      [certificateId]);
-  });
+    await db.query(
+      'UPDATE certificate_hashes SET verification_count = verification_count + 1, last_verified = CURRENT_TIMESTAMP WHERE certificate_id = $1', 
+      [certificateId]
+    );
+    
+  } catch (error) {
+    console.error('Database error:', error);
+    res.status(500).json({
+      error: 'Verification failed',
+      details: error.message,
+      verificationId
+    });
+  }
 });
 
-// ✅ FIXED: GDPR-compliant statistics (no personal data)
-app.get('/stats', (req, res) => {
-  const uptimeHours = (Date.now() - stats.startTime) / (1000 * 60 * 60);
-  const successRate = stats.verificationsPerformed > 0 
-    ? (stats.successfulVerifications / stats.verificationsPerformed * 100).toFixed(2)
-    : 100;
+// ✅ FIXED: GDPR-compliant statistics with PostgreSQL (no personal data)
+app.get('/stats', async (req, res) => {
+  try {
+    const uptimeHours = (Date.now() - stats.startTime) / (1000 * 60 * 60);
+    const successRate = stats.verificationsPerformed > 0 
+      ? (stats.successfulVerifications / stats.verificationsPerformed * 100).toFixed(2)
+      : 100;
 
-  res.json({
-    statistics: {
-      certificatesGenerated: stats.certificatesGenerated,
-      verificationsPerformed: stats.verificationsPerformed,
-      successfulVerifications: stats.successfulVerifications,
-      tamperDetected: stats.tamperDetected,
-      successRate: `${successRate}%`,
-      uptimeHours: uptimeHours.toFixed(2),
-      hashCollisionProbability: "1 in 2^512",
-      gdprCompliance: {
-        status: 'FULLY_COMPLIANT',
-        personalDataStored: false,
-        automaticDeletion: 'NOT_NEEDED_NO_DATA_STORED',
-        dataMinimization: 'IMPLEMENTED_HASH_ONLY',
-        rightToErasure: 'NOT_APPLICABLE_NO_PERSONAL_DATA'
+    res.json({
+      statistics: {
+        certificatesGenerated: stats.certificatesGenerated,
+        verificationsPerformed: stats.verificationsPerformed,
+        successfulVerifications: stats.successfulVerifications,
+        tamperDetected: stats.tamperDetected,
+        successRate: `${successRate}%`,
+        uptimeHours: uptimeHours.toFixed(2),
+        hashCollisionProbability: "1 in 2^512",
+        gdprCompliance: {
+          status: 'FULLY_COMPLIANT',
+          personalDataStored: false,
+          automaticDeletion: 'NOT_NEEDED_NO_DATA_STORED',
+          dataMinimization: 'IMPLEMENTED_HASH_ONLY',
+          rightToErasure: 'NOT_APPLICABLE_NO_PERSONAL_DATA'
+        }
       }
-    }
-  });
+    });
+  } catch (error) {
+    console.error('Stats error:', error);
+    res.status(500).json({ error: 'Failed to get statistics' });
+  }
 });
 
-// ✅ FIXED: GDPR-compliant health check
-app.get('/health', (req, res) => {
-  res.json({
-    status: 'OK',
-    version: '4.0.0-GDPR-COMPLIANT',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    features: [
-      'GDPR Article 5 Compliant (Data Minimization)',
-      'GDPR Article 17 Compliant (Right to Erasure Not Needed)', 
-      'Privacy by Design Architecture',
-      'SHA-512 Cryptographic Verification',
-      'Zero Personal Data Storage'
-    ],
-    gdprCompliance: {
-      dataMinimization: 'IMPLEMENTED',
-      rightToErasure: 'NOT_NEEDED',
-      privacyByDesign: 'CORE_ARCHITECTURE',
-      personalDataRetention: 'ZERO'
-    }
-  });
+// ✅ FIXED: GDPR-compliant health check with PostgreSQL
+app.get('/health', async (req, res) => {
+  try {
+    const healthData = await dbUtils.healthCheck();
+    
+    res.json({
+      status: 'OK',
+      version: '1.0.0-GDPR-COMPLIANT-POSTGRESQL',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      database: healthData,
+      features: [
+        'GDPR Article 5 Compliant (Data Minimization)',
+        'GDPR Article 17 Compliant (Right to Erasure Not Needed)', 
+        'Privacy by Design Architecture',
+        'SHA-512 Cryptographic Verification',
+        'Zero Personal Data Storage',
+        'PostgreSQL on Railway'
+      ],
+      gdprCompliance: {
+        dataMinimization: 'IMPLEMENTED',
+        rightToErasure: 'NOT_NEEDED',
+        privacyByDesign: 'CORE_ARCHITECTURE',
+        personalDataRetention: 'ZERO'
+      }
+    });
+  } catch (error) {
+    console.error('Health check error:', error);
+    res.status(500).json({
+      status: 'ERROR',
+      error: error.message
+    });
+  }
 });
 
 // Error handling
@@ -699,8 +760,9 @@ app.use((req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🔒 GDPR-Compliant Certificate System v4.0 running on port ${PORT}`);
+  console.log(`🔒 GDPR-Compliant Certificate System v4.0 (PostgreSQL) running on port ${PORT}`);
   console.log(`✅ Features: Privacy by Design, Zero Personal Data Storage, Auto-Compliance`);
+  console.log(`🗄️ Database: PostgreSQL on Railway`);
   console.log(`🔗 Available at: http://localhost:${PORT}`);
 });
 

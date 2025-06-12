@@ -1,71 +1,58 @@
-// 🗄️ GDPR-Compliant Database Configuration - FIXED VERSION
+// 🗄️ GDPR-Compliant PostgreSQL Database Configuration
 // ✅ This database schema stores ONLY cryptographic hashes - ZERO personal data
 
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
-const fs = require('fs');
+const { Pool } = require('pg');
 const crypto = require('crypto');
 
-// Ensure data directory exists
-const dbDir = path.join(__dirname, 'data');
-if (!fs.existsSync(dbDir)) {
-  fs.mkdirSync(dbDir, { recursive: true });
-  console.log('✅ Created database directory');
-}
-
-const dbPath = path.join(dbDir, 'gdpr_compliant_certificates.db');
-
-// Database connection
-const db = new sqlite3.Database(dbPath, (err) => {
-  if (err) {
-    console.error('❌ Database connection error:', err.message);
-    process.exit(1);
-  } else {
-    console.log(`✅ Connected to GDPR-compliant database: ${dbPath}`);
-  }
+// PostgreSQL connection pool
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
 });
 
-// Enable optimizations
-db.serialize(() => {
-  db.run("PRAGMA foreign_keys = ON;");
-  db.run("PRAGMA journal_mode = WAL;");
-  db.run("PRAGMA synchronous = NORMAL;");
-  db.run("PRAGMA cache_size = 10000;");
-  db.run("PRAGMA temp_store = MEMORY;");
-  console.log('✅ Database optimizations applied');
+// Test connection
+pool.on('connect', () => {
+  console.log('✅ Connected to PostgreSQL database on Railway');
 });
 
-// ✅ FIXED: GDPR-COMPLIANT DATABASE SCHEMA
+pool.on('error', (err) => {
+  console.error('❌ PostgreSQL connection error:', err);
+});
+
+// ✅ FIXED: GDPR-COMPLIANT DATABASE SCHEMA FOR POSTGRESQL
 // ❌ REMOVED: student_name, course_name, certificate_data (personal data)
 // ✅ KEEPS: Only cryptographic hashes and minimal metadata
 
 const createCertificateHashesTable = `
   CREATE TABLE IF NOT EXISTS certificate_hashes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     
     -- 🔐 CRYPTOGRAPHIC DATA (NOT PERSONAL DATA)
     certificate_hash CHAR(128) UNIQUE NOT NULL,      -- SHA-512 hash (128 hex chars)
-    certificate_id TEXT UNIQUE NOT NULL,             -- Generated certificate ID
+    certificate_id VARCHAR(255) UNIQUE NOT NULL,     -- Generated certificate ID
     
     -- 📊 MINIMAL NON-PERSONAL METADATA
     course_code VARCHAR(20) NOT NULL,                -- Generic course identifier (no personal info)
     issue_date DATE NOT NULL,                        -- Certificate issue date
     
     -- 🔒 SECURITY & VERIFICATION DATA (NO PERSONAL INFO)
-    serial_number TEXT NOT NULL,                     -- Unique serial number
-    verification_code TEXT NOT NULL,                 -- Verification code
+    serial_number VARCHAR(255) NOT NULL,             -- Unique serial number
+    verification_code VARCHAR(255) NOT NULL,         -- Verification code
     digital_signature TEXT NOT NULL,                 -- Digital signature
-    status TEXT DEFAULT 'ACTIVE',                    -- Certificate status
-    security_level TEXT DEFAULT 'GDPR_COMPLIANT',   -- Security level
-    request_id TEXT NOT NULL,                        -- Request tracking ID
+    status VARCHAR(50) DEFAULT 'ACTIVE',             -- Certificate status
+    security_level VARCHAR(50) DEFAULT 'GDPR_COMPLIANT', -- Security level
+    request_id VARCHAR(255) NOT NULL,                -- Request tracking ID
     
     -- 📈 ANONYMOUS USAGE STATISTICS
     verification_count INTEGER DEFAULT 0,           -- How many times verified
     last_verified TIMESTAMP NULL,                   -- Last verification time
     
     -- 🕒 SYSTEM TIMESTAMPS
-    created_at TEXT NOT NULL,
-    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
     -- 🔒 DATA INTEGRITY CONSTRAINTS
     CONSTRAINT valid_hash CHECK(LENGTH(certificate_hash) = 128),  -- SHA-512 = 128 hex chars
@@ -79,15 +66,15 @@ const createCertificateHashesTable = `
 // ✅ GDPR-COMPLIANT AUDIT LOG (NO PERSONAL DATA)
 const createAuditLogTable = `
   CREATE TABLE IF NOT EXISTS audit_log (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    event_type TEXT NOT NULL,                        -- Type of event
+    id SERIAL PRIMARY KEY,
+    event_type VARCHAR(100) NOT NULL,                -- Type of event
     event_description TEXT NOT NULL,                 -- Description (no personal data)
-    certificate_id TEXT NULL,                        -- Certificate ID (not personal data)
+    certificate_id VARCHAR(255) NULL,                -- Certificate ID (not personal data)
     ip_hash CHAR(64) NULL,                          -- Hashed IP (not personal data under GDPR)
     user_agent_hash CHAR(64) NULL,                  -- Hashed user agent
-    timestamp TEXT NOT NULL,
-    severity TEXT DEFAULT 'INFO',                    -- INFO, WARNING, ERROR, CRITICAL
-    additional_data TEXT DEFAULT '{}',               -- JSON data (no personal info)
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    severity VARCHAR(20) DEFAULT 'INFO',            -- INFO, WARNING, ERROR, CRITICAL
+    additional_data JSONB DEFAULT '{}',             -- JSON data (no personal info)
     
     CONSTRAINT valid_event_type CHECK(event_type IN (
       'CERTIFICATE_GENERATED', 
@@ -105,14 +92,14 @@ const createAuditLogTable = `
 // ✅ GDPR-COMPLIANT VERIFICATION ATTEMPTS LOG
 const createVerificationAttemptsTable = `
   CREATE TABLE IF NOT EXISTS verification_attempts (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    verification_id TEXT UNIQUE NOT NULL,           -- Unique verification ID
-    certificate_id TEXT,                            -- Certificate ID being verified
-    verification_method TEXT NOT NULL,              -- Method used
-    verification_result TEXT NOT NULL,              -- Result
+    id SERIAL PRIMARY KEY,
+    verification_id VARCHAR(255) UNIQUE NOT NULL,   -- Unique verification ID
+    certificate_id VARCHAR(255),                    -- Certificate ID being verified
+    verification_method VARCHAR(100) NOT NULL,      -- Method used
+    verification_result VARCHAR(50) NOT NULL,       -- Result
     ip_hash CHAR(64),                               -- Hashed IP
     user_agent_hash CHAR(64),                       -- Hashed user agent
-    timestamp TEXT NOT NULL,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     processing_time_ms INTEGER,                     -- Performance metric
     
     CONSTRAINT valid_method CHECK(verification_method IN (
@@ -127,7 +114,7 @@ const createVerificationAttemptsTable = `
 
 // 🚀 PERFORMANCE INDEXES (optimized for hash lookups)
 const createIndexes = [
-  // ✅ PRIMARY VERIFICATION INDEX
+  // ✅ PRIMARY VERIFICATION INDEXES
   "CREATE UNIQUE INDEX IF NOT EXISTS idx_certificate_hash ON certificate_hashes(certificate_hash);",
   "CREATE UNIQUE INDEX IF NOT EXISTS idx_certificate_id ON certificate_hashes(certificate_id);",
   "CREATE UNIQUE INDEX IF NOT EXISTS idx_serial_number ON certificate_hashes(serial_number);",
@@ -154,52 +141,44 @@ const createIndexes = [
 ];
 
 // ✅ DATABASE INITIALIZATION
-db.serialize(() => {
-  // Create main hash table (NO PERSONAL DATA)
-  db.run(createCertificateHashesTable, (err) => {
-    if (err) {
-      console.error('❌ Error creating certificate_hashes table:', err.message);
-      process.exit(1);
-    } else {
-      console.log('✅ GDPR-compliant certificate_hashes table ready (ZERO personal data)');
-    }
-  });
-  
-  // Create audit log table
-  db.run(createAuditLogTable, (err) => {
-    if (err) {
-      console.error('❌ Error creating audit_log table:', err.message);
-      process.exit(1);
-    } else {
-      console.log('✅ GDPR-compliant audit_log table ready');
-    }
-  });
-  
-  // Create verification attempts table
-  db.run(createVerificationAttemptsTable, (err) => {
-    if (err) {
-      console.error('❌ Error creating verification_attempts table:', err.message);
-      process.exit(1);
-    } else {
-      console.log('✅ GDPR-compliant verification_attempts table ready');
-    }
-  });
-  
-  // Create all indexes
-  let indexCount = 0;
-  createIndexes.forEach((indexSQL, i) => {
-    db.run(indexSQL, (err) => {
-      if (err) {
-        console.error(`❌ Error creating index ${i + 1}:`, err.message);
-      } else {
-        indexCount++;
-        if (indexCount === createIndexes.length) {
-          console.log(`✅ All ${indexCount} GDPR-compliant indexes created successfully`);
-        }
+async function initializeDatabase() {
+  try {
+    console.log('🔄 Initializing GDPR-compliant PostgreSQL database...');
+    
+    // Create main hash table (NO PERSONAL DATA)
+    await pool.query(createCertificateHashesTable);
+    console.log('✅ GDPR-compliant certificate_hashes table ready (ZERO personal data)');
+    
+    // Create audit log table
+    await pool.query(createAuditLogTable);
+    console.log('✅ GDPR-compliant audit_log table ready');
+    
+    // Create verification attempts table
+    await pool.query(createVerificationAttemptsTable);
+    console.log('✅ GDPR-compliant verification_attempts table ready');
+    
+    // Create all indexes
+    for (let i = 0; i < createIndexes.length; i++) {
+      try {
+        await pool.query(createIndexes[i]);
+      } catch (indexError) {
+        console.warn(`⚠️ Index ${i + 1} might already exist:`, indexError.message);
       }
-    });
-  });
-});
+    }
+    console.log(`✅ All ${createIndexes.length} GDPR-compliant indexes processed`);
+    
+    console.log('🗄️ GDPR-Compliant PostgreSQL Database initialized successfully');
+    console.log('📊 Enhanced features: Zero Personal Data, Hash-Only Storage, Auto-Compliance');
+    console.log('✅ GDPR Articles 5 & 17 Compliant by Design');
+    
+  } catch (error) {
+    console.error('❌ Database initialization failed:', error);
+    throw error;
+  }
+}
+
+// Initialize database on startup
+initializeDatabase().catch(console.error);
 
 // ✅ GDPR-COMPLIANT DATABASE UTILITY FUNCTIONS
 const dbUtils = {
@@ -208,19 +187,17 @@ const dbUtils = {
    * 📝 Log security events (NO PERSONAL DATA)
    * IP addresses and user agents are hashed to prevent personal data storage
    */
-  logEvent: (eventType, description, certificateId = null, additionalData = {}, severity = 'INFO', ipAddress = null, userAgent = null) => {
-    const stmt = db.prepare(`
-      INSERT INTO audit_log 
-      (event_type, event_description, certificate_id, ip_hash, user_agent_hash, timestamp, severity, additional_data)
-      VALUES (?, ?, ?, ?, ?, datetime('now'), ?, ?)
-    `);
-    
+  logEvent: async (eventType, description, certificateId = null, additionalData = {}, severity = 'INFO', ipAddress = null, userAgent = null) => {
     try {
       // ✅ Hash IP and user agent to prevent personal data storage
       const ipHash = ipAddress ? crypto.createHash('sha256').update(ipAddress).digest('hex') : null;
       const userAgentHash = userAgent ? crypto.createHash('sha256').update(userAgent).digest('hex') : null;
       
-      stmt.run([
+      await pool.query(`
+        INSERT INTO audit_log 
+        (event_type, event_description, certificate_id, ip_hash, user_agent_hash, severity, additional_data)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+      `, [
         eventType,
         description,
         certificateId,
@@ -235,27 +212,23 @@ const dbUtils = {
       }
     } catch (error) {
       console.error('Error logging event:', error);
-    } finally {
-      stmt.finalize();
     }
   },
   
   /**
    * 📊 Log verification attempts (GDPR COMPLIANT)
    */
-  logVerificationAttempt: (verificationId, certificateId, method, result, processingTime, ipAddress = null, userAgent = null) => {
-    const stmt = db.prepare(`
-      INSERT INTO verification_attempts 
-      (verification_id, certificate_id, verification_method, verification_result, 
-       timestamp, processing_time_ms, ip_hash, user_agent_hash)
-      VALUES (?, ?, ?, ?, datetime('now'), ?, ?, ?)
-    `);
-    
+  logVerificationAttempt: async (verificationId, certificateId, method, result, processingTime, ipAddress = null, userAgent = null) => {
     try {
       const ipHash = ipAddress ? crypto.createHash('sha256').update(ipAddress).digest('hex') : null;
       const userAgentHash = userAgent ? crypto.createHash('sha256').update(userAgent).digest('hex') : null;
       
-      stmt.run([
+      await pool.query(`
+        INSERT INTO verification_attempts 
+        (verification_id, certificate_id, verification_method, verification_result, 
+         processing_time_ms, ip_hash, user_agent_hash)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+      `, [
         verificationId,
         certificateId,
         method,
@@ -266,178 +239,160 @@ const dbUtils = {
       ]);
     } catch (error) {
       console.error('Error logging verification attempt:', error);
-    } finally {
-      stmt.finalize();
     }
   },
   
   /**
    * 📈 Get verification statistics (ANONYMOUS DATA ONLY)
    */
-  getVerificationStats: (callback) => {
-    const query = `
-      SELECT 
-        COUNT(*) as total_certificates,
-        SUM(verification_count) as total_verifications,
-        AVG(verification_count) as avg_verifications_per_cert,
-        COUNT(CASE WHEN verification_count > 0 THEN 1 END) as verified_certificates,
-        COUNT(CASE WHEN status = 'ACTIVE' THEN 1 END) as active_certificates,
-        COUNT(CASE WHEN security_level = 'GDPR_COMPLIANT' THEN 1 END) as gdpr_compliant_certificates
-      FROM certificate_hashes 
-      WHERE created_at >= datetime('now', '-24 hours')
-    `;
-    
-    db.get(query, (err, result) => {
-      if (err) {
-        callback(err, null);
-      } else {
-        callback(null, {
-          ...result,
-          success_rate: result.total_verifications > 0 ? 
-            ((result.total_verifications / result.total_certificates) * 100).toFixed(2) : '100.00',
-          gdpr_compliance_rate: result.total_certificates > 0 ?
-            ((result.gdpr_compliant_certificates / result.total_certificates) * 100).toFixed(2) : '100.00'
-        });
-      }
-    });
+  getVerificationStats: async () => {
+    try {
+      const query = `
+        SELECT 
+          COUNT(*) as total_certificates,
+          SUM(verification_count) as total_verifications,
+          AVG(verification_count) as avg_verifications_per_cert,
+          COUNT(CASE WHEN verification_count > 0 THEN 1 END) as verified_certificates,
+          COUNT(CASE WHEN status = 'ACTIVE' THEN 1 END) as active_certificates,
+          COUNT(CASE WHEN security_level = 'GDPR_COMPLIANT' THEN 1 END) as gdpr_compliant_certificates
+        FROM certificate_hashes 
+        WHERE created_at >= NOW() - INTERVAL '24 hours'
+      `;
+      
+      const result = await pool.query(query);
+      const stats = result.rows[0];
+      
+      return {
+        ...stats,
+        success_rate: stats.total_verifications > 0 ? 
+          ((stats.total_verifications / stats.total_certificates) * 100).toFixed(2) : '100.00',
+        gdpr_compliance_rate: stats.total_certificates > 0 ?
+          ((stats.gdpr_compliant_certificates / stats.total_certificates) * 100).toFixed(2) : '100.00'
+      };
+    } catch (error) {
+      console.error('Error getting verification stats:', error);
+      throw error;
+    }
   },
   
   /**
    * 🔒 Get course statistics (ANONYMOUS DATA)
    */
-  getCourseStats: (callback) => {
-    const query = `
-      SELECT 
-        course_code,
-        COUNT(*) as certificate_count,
-        SUM(verification_count) as total_verifications,
-        AVG(verification_count) as avg_verifications,
-        MAX(created_at) as latest_certificate
-      FROM certificate_hashes 
-      GROUP BY course_code
-      ORDER BY certificate_count DESC
-    `;
-    
-    db.all(query, callback);
+  getCourseStats: async () => {
+    try {
+      const query = `
+        SELECT 
+          course_code,
+          COUNT(*) as certificate_count,
+          SUM(verification_count) as total_verifications,
+          AVG(verification_count) as avg_verifications,
+          MAX(created_at) as latest_certificate
+        FROM certificate_hashes 
+        GROUP BY course_code
+        ORDER BY certificate_count DESC
+      `;
+      
+      const result = await pool.query(query);
+      return result.rows;
+    } catch (error) {
+      console.error('Error getting course stats:', error);
+      throw error;
+    }
   },
   
   /**
    * 🔐 Get security events summary (NO PERSONAL DATA)
    */
-  getSecurityEventsSummary: (callback) => {
-    const query = `
-      SELECT 
-        event_type,
-        severity,
-        COUNT(*) as count,
-        MAX(timestamp) as last_occurrence
-      FROM audit_log 
-      WHERE timestamp >= datetime('now', '-7 days')
-      GROUP BY event_type, severity
-      ORDER BY severity DESC, count DESC
-    `;
-    
-    db.all(query, callback);
+  getSecurityEventsSummary: async () => {
+    try {
+      const query = `
+        SELECT 
+          event_type,
+          severity,
+          COUNT(*) as count,
+          MAX(timestamp) as last_occurrence
+        FROM audit_log 
+        WHERE timestamp >= NOW() - INTERVAL '7 days'
+        GROUP BY event_type, severity
+        ORDER BY severity DESC, count DESC
+      `;
+      
+      const result = await pool.query(query);
+      return result.rows;
+    } catch (error) {
+      console.error('Error getting security events summary:', error);
+      throw error;
+    }
   },
   
   /**
    * 🏥 Health check with GDPR compliance verification
    */
-  healthCheck: (callback) => {
-    const startTime = Date.now();
-    
-    // Test database responsiveness
-    db.get('SELECT COUNT(*) as certificateCount FROM certificate_hashes', (err, certResult) => {
-      if (err) {
-        return callback(err, null);
-      }
+  healthCheck: async () => {
+    try {
+      const startTime = Date.now();
       
-      db.get('SELECT COUNT(*) as auditCount FROM audit_log WHERE timestamp >= datetime("now", "-24 hours")', (auditErr, auditResult) => {
-        if (auditErr) {
-          return callback(auditErr, null);
+      // Test database responsiveness
+      const certResult = await pool.query('SELECT COUNT(*) as certificateCount FROM certificate_hashes');
+      const auditResult = await pool.query('SELECT COUNT(*) as auditCount FROM audit_log WHERE timestamp >= NOW() - INTERVAL \'24 hours\'');
+      
+      const responseTime = Date.now() - startTime;
+      
+      return {
+        status: 'healthy',
+        certificateHashCount: parseInt(certResult.rows[0].certificatecount),
+        auditEventsLast24h: parseInt(auditResult.rows[0].auditcount),
+        responseTimeMs: responseTime,
+        timestamp: new Date().toISOString(),
+        database: 'PostgreSQL on Railway',
+        gdprCompliance: {
+          personalDataStored: false,
+          dataMinimization: 'IMPLEMENTED',
+          rightToErasure: 'NOT_APPLICABLE_NO_PERSONAL_DATA',
+          privacyByDesign: 'CORE_ARCHITECTURE'
         }
-        
-        const responseTime = Date.now() - startTime;
-        
-        // Get database file size
-        let dbSize = 0;
-        try {
-          const stats = fs.statSync(dbPath);
-          dbSize = stats.size;
-        } catch (sizeErr) {
-          console.warn('Could not get database size:', sizeErr.message);
-        }
-        
-        callback(null, {
-          status: 'healthy',
-          certificateHashCount: certResult.certificateCount,
-          auditEventsLast24h: auditResult.auditCount,
-          responseTimeMs: responseTime,
-          databaseSizeBytes: dbSize,
-          databaseSizeMB: (dbSize / 1024 / 1024).toFixed(2),
-          timestamp: new Date().toISOString(),
-          databasePath: dbPath,
-          gdprCompliance: {
-            personalDataStored: false,
-            dataMinimization: 'IMPLEMENTED',
-            rightToErasure: 'NOT_APPLICABLE_NO_PERSONAL_DATA',
-            privacyByDesign: 'CORE_ARCHITECTURE'
-          }
-        });
-      });
-    });
-  },
-  
-  /**
-   * 🧹 Database maintenance (GDPR compliant)
-   */
-  vacuum: (callback) => {
-    console.log('🧹 Starting GDPR-compliant database maintenance (VACUUM)...');
-    db.run('VACUUM', (err) => {
-      if (err) {
-        console.error('❌ Database VACUUM failed:', err);
-        callback(err);
-      } else {
-        console.log('✅ GDPR-compliant database VACUUM completed');
-        callback(null);
-      }
-    });
+      };
+    } catch (error) {
+      console.error('Error in health check:', error);
+      throw error;
+    }
   },
   
   /**
    * 🗑️ Clean old audit logs (GDPR data retention)
    * Keep only last 90 days for security analysis
    */
-  cleanOldAuditLogs: (callback) => {
-    const query = `DELETE FROM audit_log WHERE timestamp < datetime('now', '-90 days')`;
-    db.run(query, function(err) {
-      if (err) {
-        console.error('❌ Error cleaning old audit logs:', err);
-        callback(err);
-      } else {
-        console.log(`✅ Cleaned ${this.changes} old audit log entries (GDPR compliance)`);
-        callback(null, this.changes);
-      }
-    });
+  cleanOldAuditLogs: async () => {
+    try {
+      const query = `DELETE FROM audit_log WHERE timestamp < NOW() - INTERVAL '90 days'`;
+      const result = await pool.query(query);
+      console.log(`✅ Cleaned ${result.rowCount} old audit log entries (GDPR compliance)`);
+      return result.rowCount;
+    } catch (error) {
+      console.error('❌ Error cleaning old audit logs:', error);
+      throw error;
+    }
   },
   
   /**
    * 📋 GDPR compliance verification
    */
-  verifyGDPRCompliance: (callback) => {
-    // Check that no personal data columns exist
-    db.all("PRAGMA table_info(certificate_hashes)", (err, columns) => {
-      if (err) {
-        return callback(err, null);
-      }
+  verifyGDPRCompliance: async () => {
+    try {
+      // Check table schema to ensure no personal data columns exist
+      const query = `
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'certificate_hashes' 
+        AND column_name IN ('student_name', 'course_name', 'certificate_data', 'personal_data')
+      `;
       
-      const personalDataColumns = columns.filter(col => 
-        ['student_name', 'course_name', 'certificate_data', 'personal_data'].includes(col.name)
-      );
+      const result = await pool.query(query);
+      const personalDataColumns = result.rows.map(row => row.column_name);
       
       const compliance = {
         personalDataColumnsFound: personalDataColumns.length,
-        personalDataColumns: personalDataColumns.map(col => col.name),
+        personalDataColumns: personalDataColumns,
         gdprCompliant: personalDataColumns.length === 0,
         dataMinimization: 'IMPLEMENTED',
         rightToErasure: 'NOT_APPLICABLE',
@@ -450,93 +405,74 @@ const dbUtils = {
         console.error('❌ GDPR Compliance FAILED: Personal data columns detected:', personalDataColumns);
       }
       
-      callback(null, compliance);
-    });
+      return compliance;
+    } catch (error) {
+      console.error('Error verifying GDPR compliance:', error);
+      throw error;
+    }
   },
   
   /**
    * 🔍 Get certificate by ID (HASH ONLY - NO PERSONAL DATA)
    */
-  getCertificateById: (certificateId, callback) => {
-    const query = `
-      SELECT 
-        certificate_hash,
-        certificate_id,
-        course_code,
-        issue_date,
-        serial_number,
-        status,
-        security_level,
-        verification_count,
-        last_verified,
-        datetime(created_at) as formatted_created_at
-      FROM certificate_hashes 
-      WHERE certificate_id = ? AND status = 'ACTIVE'
-    `;
-    
-    db.get(query, [certificateId], callback);
+  getCertificateById: async (certificateId) => {
+    try {
+      const query = `
+        SELECT 
+          certificate_hash,
+          certificate_id,
+          course_code,
+          issue_date,
+          serial_number,
+          status,
+          security_level,
+          verification_count,
+          last_verified,
+          created_at
+        FROM certificate_hashes 
+        WHERE certificate_id = $1 AND status = 'ACTIVE'
+      `;
+      
+      const result = await pool.query(query, [certificateId]);
+      return result.rows[0] || null;
+    } catch (error) {
+      console.error('Error getting certificate by ID:', error);
+      throw error;
+    }
   }
 };
 
-// ✅ Graceful shutdown with cleanup
-const gracefulShutdown = () => {
-  console.log('🔄 Shutting down GDPR-compliant database...');
-  
-  db.close((err) => {
-    if (err) {
-      console.error('❌ Error closing database:', err.message);
-      process.exit(1);
-    } else {
-      console.log('✅ GDPR-compliant database connection closed gracefully');
-      process.exit(0);
-    }
-  });
-};
-
-// Enhanced error handling
-db.on('error', (err) => {
-  console.error('🚨 Database error:', err);
-  dbUtils.logEvent('SYSTEM_ERROR', `Database error: ${err.message}`, null, { error: err.message }, 'ERROR');
-});
-
-// Register shutdown handlers
-process.on('SIGINT', gracefulShutdown);
-process.on('SIGTERM', gracefulShutdown);
-process.on('uncaughtException', (err) => {
-  console.error('🚨 Uncaught Exception:', err);
-  dbUtils.logEvent('SYSTEM_ERROR', `Uncaught exception: ${err.message}`, null, { 
-    error: err.message, 
-    stack: err.stack 
-  }, 'CRITICAL');
-  gracefulShutdown();
-});
-
 // ✅ Periodic GDPR compliance verification and maintenance
 if (process.env.NODE_ENV !== 'test') {
-  setInterval(() => {
-    // Clean old audit logs for GDPR compliance
-    dbUtils.cleanOldAuditLogs((err) => {
-      if (!err) {
-        console.log('🧹 Periodic GDPR maintenance: Old audit logs cleaned');
-      }
-    });
-    
-    // Verify GDPR compliance
-    dbUtils.verifyGDPRCompliance((err, compliance) => {
-      if (!err && compliance.gdprCompliant) {
+  setInterval(async () => {
+    try {
+      // Clean old audit logs for GDPR compliance
+      await dbUtils.cleanOldAuditLogs();
+      console.log('🧹 Periodic GDPR maintenance: Old audit logs cleaned');
+      
+      // Verify GDPR compliance
+      const compliance = await dbUtils.verifyGDPRCompliance();
+      if (compliance.gdprCompliant) {
         console.log('✅ Periodic GDPR compliance check: PASSED');
-      } else if (!err) {
+      } else {
         console.error('❌ Periodic GDPR compliance check: FAILED', compliance);
       }
-    });
+    } catch (error) {
+      console.error('Error in periodic maintenance:', error);
+    }
   }, 24 * 60 * 60 * 1000); // 24 hours
 }
 
-console.log('🗄️ GDPR-Compliant Database initialized successfully');
-console.log('📊 Enhanced features: Zero Personal Data, Hash-Only Storage, Auto-Compliance');
-console.log('✅ GDPR Articles 5 & 17 Compliant by Design');
+// Graceful shutdown
+process.on('SIGINT', () => {
+  console.log('🔄 Shutting down GDPR-compliant PostgreSQL connection...');
+  pool.end(() => {
+    console.log('✅ PostgreSQL connection pool closed');
+    process.exit(0);
+  });
+});
 
 module.exports = {
-  db,
+  db: pool,
   dbUtils
 };
