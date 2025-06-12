@@ -25,7 +25,10 @@ const PORT = process.env.PORT || 5000;
 // Security middleware
 app.use(helmet());
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'],
+  origin: process.env.ALLOWED_ORIGINS?.split(',') || [
+    'http://localhost:3000',
+    'https://gdpr-certification-cl7s-k8clxlhhz-frankkodes-projects.vercel.app'
+  ],
   credentials: true
 }));
 
