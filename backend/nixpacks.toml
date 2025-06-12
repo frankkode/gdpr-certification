@@ -1,8 +1,0 @@
-[phases.setup]
-nixPkgs = ["nodejs_20"]
-
-[build]
-cmd = "npm install"
-
-[start]
-cmd = "node server.js"
