@@ -1,27 +1,12 @@
 {
   "version": 2,
-  "functions": {
-    "server.js": {
-      "runtime": "nodejs20.x"
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
     }
-  },
+  ],
   "routes": [
-    {
-      "src": "/health",
-      "dest": "/server.js"
-    },
-    {
-      "src": "/stats", 
-      "dest": "/server.js"
-    },
-    {
-      "src": "/generate",
-      "dest": "/server.js"
-    },
-    {
-      "src": "/verify/(.*)",
-      "dest": "/server.js"
-    },
     {
       "src": "/(.*)",
       "dest": "/server.js"
