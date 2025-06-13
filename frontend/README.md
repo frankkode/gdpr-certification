@@ -280,7 +280,7 @@ DROP TABLE certificates;  -- Original table with personal data
 4. **HTTPS Only**: Ensure encrypted transmission in production
 5. **No Logs**: Personal data not logged anywhere
 
-## 🌐 Production Deployment
+## 🌐 Production Deployment.
 
 ### Environment Variables
 

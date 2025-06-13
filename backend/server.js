@@ -225,7 +225,7 @@ async function generateGDPRCompliantPDF(certificateData) {
         doc.fontSize(8).font('Helvetica').fillColor(colors.gray).text(detail, x, y);
       });
 
-      // QR Code generations.
+      // QR Code generations
       try {
         // Decide which URL to use based on environment variables
         const frontendUrl = process.env.FRONTEND_URL || 'https://gdpr-certification-cl7s.vercel.app/';
