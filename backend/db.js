@@ -9,8 +9,8 @@ function getPool() {
   if (!pool) {
     // ✅ Check for Railway environment variables
     const connectionString = process.env.DATABASE_URL || 
-                           process.env.POSTGRES_URL || 
-                           process.env.RAILWAY_DATABASE_URL;
+                          process.env.POSTGRES_URL || 
+                          process.env.RAILWAY_DATABASE_URL;
     
     if (!connectionString) {
       console.error('❌ No database connection string found!');
@@ -85,7 +85,7 @@ async function query(text, params = []) {
   }
 }
 
-// ✅ FIXED: Ensure tables exist before operations
+// ✅ FIXED: Ensure tables exist before operations.
 async function ensureTablesExist() {
   try {
     console.log('🔄 Ensuring database tables exist...');

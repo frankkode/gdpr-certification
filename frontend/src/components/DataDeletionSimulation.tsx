@@ -6,7 +6,21 @@ import {
   Clock, FileText, Key, Database, Trophy, Zap
 } from 'lucide-react';
 import CryptoJS from 'crypto-js';
-import DataDeletionSimulation from './DataDeletionSimulation';
+interface DataDeletionSimulationProps {
+  isVisible: boolean;
+  onComplete: () => void;
+  certificateData: GeneratedCertificate;
+}
+
+const DataDeletionSimulation: React.FC<DataDeletionSimulationProps> = ({
+  isVisible,
+  onComplete,
+  certificateData
+}) => {
+  // Your component implementation here
+  return null; // Replace with your actual component JSX
+};
+
 import confetti from 'canvas-confetti';
 
 interface CertificateGeneratorProps {
