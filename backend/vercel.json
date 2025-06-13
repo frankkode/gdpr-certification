@@ -21,7 +21,21 @@
   },
   "functions": {
     "server.js": {
-      "maxDuration": 30
+      "maxDuration": 30,
+      "memory": 1024
     }
-  }
+  },
+  "regions": ["iad1"],
+  "_comment": "Optimizations for Railway PostgreSQL connection stability",
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Connection",
+          "value": "keep-alive"
+        }
+      ]
+    }
+  ]
 }
