@@ -23,11 +23,11 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Security middleware
-app.use(helmet());
 app.use(cors({
   origin: process.env.ALLOWED_ORIGINS?.split(',') || [
-    'https://gdpr-certification-cl7s.vercel.app', 
-    'http://localhost:3000'
+    'https://gdpr-certification-cl7s.vercel.app',
+    'https://gdpr-certification-cl7s-k8clxlhhz-frankkodes-projects.vercel.app',  // Add this
+    'http://localhost:3000', 'http://localhost:5000'
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],

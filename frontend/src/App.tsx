@@ -14,7 +14,7 @@ const SecurityDashboard = lazy(() => import('./components/SecurityDashboard'));
 
 // API Configuration
 const API_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://gdpr-certification.vercel.app/'  // or Railway URL
+  ? 'https://gdpr-certification.vercel.app/'  // or vcl
   : 'http://localhost:5000';
 const STATS_REFRESH_INTERVAL = 30000; // 30 seconds
 
