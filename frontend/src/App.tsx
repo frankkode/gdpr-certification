@@ -324,80 +324,108 @@ const App: React.FC = () => {
         {/* Main Content */}
         <div className="relative z-10">
           {/* ✅ UPDATED: Header with GDPR compliance indicators */}
-          <header className="border-b border-white/10 bg-black/20 backdrop-blur-md">
-            <div className="container mx-auto px-4 py-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <Shield className="h-8 w-8 text-green-400" />
-                  <div>
-                    <h1 className="text-2xl font-bold text-white">GDPR-Compliant Certificate System</h1>
-                    <p className="text-green-200 text-sm flex items-center space-x-2">
-                      <UserCheck className="h-4 w-4" />
-                      <span>Privacy by Design • Zero Data Retention • Cryptographically Secured</span>
-                    </p>
-                  </div>
-                </div>
-                
-                {/* ✅ UPDATED: Connection Status & GDPR Compliance */}
-                <div className="flex items-center space-x-4">
-                  {/* GDPR Compliance Badge */}
-                  <div className="flex items-center space-x-2 px-3 py-1 rounded-full bg-green-500/20 border border-green-400/30 text-green-300">
-                    <Shield className="h-4 w-4" />
-                    <span className="text-sm font-medium">
-                      {stats.gdprCompliance.personalDataStored ? '⚠️ Non-Compliant' : '✅ GDPR Compliant'}
-                    </span>
-                  </div>
+          {/* ✅ FIXED: Responsive Header */}
+<header className="border-b border-white/10 bg-black/20 backdrop-blur-md">
+  <div className="container mx-auto px-4 py-4">
+    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+      {/* Title Section - Responsive */}
+      <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+        <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-blue-400 mx-auto sm:mx-0" />
+        <div className="text-center sm:text-left">
+          <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-white leading-tight">
+            GDPR-Compliant Certificate System
+          </h1>
+          <p className="text-xs sm:text-sm text-blue-200">
+            Privacy by Design • Zero Data Retention • Cryptographically Secured
+          </p>
+        </div>
+      </div>
+      
+      {/* Status Section - Responsive */}
+      <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
+        {/* GDPR Compliance Badge */}
+        <div className="flex items-center space-x-2 px-3 py-1 bg-green-500/20 border border-green-400/30 rounded-full">
+          <Shield className="h-3 w-3 text-green-400" />
+          <span className="text-xs font-medium text-green-300">GDPR Compliant</span>
+        </div>
 
-                  {/* Connection Status */}
-                  <div className={`flex items-center space-x-2 px-3 py-1 rounded-full border ${
-                    connectionStatus === 'connected' ? 'bg-green-500/20 border-green-400/30 text-green-300' :
-                    connectionStatus === 'reconnecting' ? 'bg-yellow-500/20 border-yellow-400/30 text-yellow-300' :
-                    'bg-red-500/20 border-red-400/30 text-red-300'
-                  }`}>
-                    {connectionStatus === 'connected' ? <Wifi className="h-4 w-4" /> : <WifiOff className="h-4 w-4" />}
-                    <span className="text-sm font-medium capitalize">{connectionStatus}</span>
-                  </div>
+        {/* Connection Status */}
+        <div className={`flex items-center space-x-2 px-3 py-2 rounded-full border ${
+          connectionStatus === 'connected' ? 'bg-green-500/20 border-green-400/30 text-green-300' :
+          connectionStatus === 'reconnecting' ? 'bg-yellow-500/20 border-yellow-400/30 text-yellow-300' :
+          'bg-red-500/20 border-red-400/30 text-red-300'
+        }`}>
+          {connectionStatus === 'connected' ? <Wifi className="h-3 w-3 sm:h-4 sm:w-4" /> : <WifiOff className="h-3 w-3 sm:h-4 sm:w-4" />}
+          <span className="text-xs sm:text-sm font-medium capitalize">{connectionStatus}</span>
+        </div>
 
-                  {/* Refresh Button */}
-                  <button
-                    onClick={() => fetchStats(true)}
-                    disabled={isLoading}
-                    className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                    title="Refresh Data"
-                  >
-                    <RefreshCw className={`h-5 w-5 text-gray-400 ${isLoading ? 'animate-spin' : ''}`} />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </header>
+        {/* Refresh Button */}
+        <motion.button
+          onClick={() => fetchStats(true)}
+          disabled={isLoading}
+          className="flex items-center space-x-2 px-3 py-2 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/30 rounded-lg text-blue-300 transition-colors"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <RefreshCw className={`h-3 w-3 sm:h-4 sm:w-4 ${isLoading ? 'animate-spin' : ''}`} />
+          <span className="text-xs sm:text-sm font-medium hidden sm:inline">Refresh</span>
+        </motion.button>
+      </div>
+    </div>
+  </div>
+</header>
 
           {/* ✅ UPDATED: Navigation with GDPR badges */}
-          <nav className="border-b border-white/10 bg-black/10 backdrop-blur-md">
-            <div className="container mx-auto px-4">
-              <div className="flex space-x-1">
-                {tabs.map(({ id, label, icon: Icon, badge }) => (
-                  <button
-                    key={id}
-                    onClick={() => setActiveTab(id)}
-                    className={`flex items-center space-x-2 px-6 py-4 text-sm font-medium transition-all relative ${
-                      activeTab === id
-                        ? 'bg-green-500/20 text-green-300 border-b-2 border-green-400'
-                        : 'text-gray-400 hover:text-gray-300 hover:bg-white/5'
-                    }`}
-                  >
-                    <Icon className="h-4 w-4" />
-                    <span>{label}</span>
-                    {badge && (
-                      <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs px-1.5 py-0.5 rounded-full">
-                        {badge}
-                      </span>
-                    )}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </nav>
+          {/* ✅ FIXED: Responsive Navigation */}
+<nav className="border-b border-white/10 bg-black/10 backdrop-blur-md">
+  <div className="container mx-auto px-4">
+    {/* Desktop Navigation */}
+    <div className="hidden md:flex space-x-1">
+      {tabs.map(({ id, label, icon: Icon }) => (
+        <button
+          key={id}
+          onClick={() => setActiveTab(id)}
+          className={`flex items-center space-x-2 px-4 lg:px-6 py-4 text-sm font-medium transition-all ${
+            activeTab === id
+              ? 'bg-blue-500/20 text-blue-300 border-b-2 border-blue-400'
+              : 'text-gray-400 hover:text-gray-300 hover:bg-white/5'
+          }`}
+        >
+          <Icon className="h-4 w-4" />
+          <span className="hidden lg:inline">{label}</span>
+          <span className="lg:hidden">{label.split(' ')[0]}</span>
+        </button>
+      ))}
+    </div>
+
+    {/* Mobile Navigation - Grid Layout */}
+    <div className="md:hidden grid grid-cols-2 gap-1 py-2">
+      {tabs.map(({ id, label, icon: Icon }) => (
+        <button
+          key={id}
+          onClick={() => setActiveTab(id)}
+          className={`flex flex-col items-center space-y-1 px-3 py-3 text-xs font-medium rounded-lg transition-all ${
+            activeTab === id
+              ? 'bg-blue-500/20 text-blue-300 border border-blue-400/30'
+              : 'text-gray-400 hover:text-gray-300 hover:bg-white/5'
+          }`}
+        >
+          <Icon className="h-5 w-5" />
+          <span className="text-center leading-tight">
+            {label.includes(' ') ? (
+              <>
+                {label.split(' ')[0]}<br />
+                {label.split(' ').slice(1).join(' ')}
+              </>
+            ) : (
+              label
+            )}
+          </span>
+        </button>
+      ))}
+    </div>
+  </div>
+</nav>
 
           {/* Main Content Area */}
           <main className="container mx-auto px-4 py-8">

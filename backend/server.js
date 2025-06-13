@@ -227,19 +227,23 @@ async function generateGDPRCompliantPDF(certificateData) {
 
       // QR Code generation.
       try {
-        const qrData = JSON.stringify({
-          id: certificateData.certificateId,
-          hash: certificateData.hash.substring(0, 32),
-          verify: 'gdpr-compliant-verification'
-        });
-
-        const qrCodeDataURL = await QRCode.toDataURL(qrData, {
+        // Option 1: Frontend verification URL (recommended if you want a nice page)
+        const frontendUrl = process.env.FRONTEND_URL || 'https://your-frontend-app.vercel.app';
+        const qrVerificationUrl = `${frontendUrl}/verify/${certificateData.certificateId}`;
+        
+        // Option 2: Direct backend verification URL (works immediately)
+        // const backendUrl = process.env.BACKEND_URL || 'https://your-backend-app.vercel.app';
+        // const qrVerificationUrl = `${backendUrl}/verify/${certificateData.certificateId}`;
+      
+        console.log('🔍 Generating QR code with URL:', qrVerificationUrl);
+      
+        const qrCodeDataURL = await QRCode.toDataURL(qrVerificationUrl, {
           width: 120,
           margin: 1,
           color: { dark: colors.navy, light: colors.white },
           errorCorrectionLevel: 'M'
         });
-
+      
         const qrBuffer = Buffer.from(qrCodeDataURL.split(',')[1], 'base64');
         
         const qrX = width - 140;
@@ -248,7 +252,9 @@ async function generateGDPRCompliantPDF(certificateData) {
         doc.rect(qrX - 5, qrY - 5, 90, 90).fill(colors.white).stroke(colors.gold, 1);
         doc.image(qrBuffer, qrX, qrY, { width: 80, height: 80 });
         doc.fontSize(8).fillColor(colors.navy).text('Scan to Verify', qrX - 5, qrY + 85, { width: 90, align: 'center' });
-
+      
+        console.log('✅ QR code generated successfully with verification URL');
+      
       } catch (qrError) {
         console.warn('QR code generation failed, continuing without QR:', qrError.message);
       }
