@@ -156,7 +156,7 @@ async function ensureTablesExist() {
     `);
     console.log('✅ GDPR-compliant audit_log table verified/created');
     
-    // ✅ Create verification_attempts table
+    // ✅ Create verification_attempts table.
     await query(`
       CREATE TABLE IF NOT EXISTS verification_attempts (
         id SERIAL PRIMARY KEY,
