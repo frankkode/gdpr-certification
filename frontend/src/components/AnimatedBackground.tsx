@@ -1,4 +1,4 @@
-// 🌌 Military-Grade Animated Background Component
+// 🖥️ Modern Cyber Background Component
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 
@@ -10,34 +10,37 @@ interface Particle {
   vy: number;
   size: number;
   opacity: number;
-  hue: number;
-  type: 'hash' | 'encrypt' | 'signature' | 'key';
-  lifespan: number;
-  maxLifespan: number;
-}
-
-interface CryptoSymbol {
-  id: number;
-  x: number;
-  y: number;
-  symbol: string;
-  opacity: number;
-  scale: number;
-  rotation: number;
   color: string;
+  lifespan: number;
 }
 
-const AnimatedBackground: React.FC = () => {
+interface ScanLine {
+  id: number;
+  y: number;
+  speed: number;
+  height: number;
+  opacity: number;
+}
+
+const CyberBackground: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();
   const particlesRef = useRef<Particle[]>([]);
-  const symbolsRef = useRef<CryptoSymbol[]>([]);
+  const scanLinesRef = useRef<ScanLine[]>([]);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isReducedMotion, setIsReducedMotion] = useState(false);
 
-  // Cryptographic symbols for visual effect
-  const cryptoSymbols = ['⚡', '🔐', '🛡️', '🔑', '⚿', '◊', '◈', '※', '⌬', '⌭'];
-  
+  // Check for reduced motion preference
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setIsReducedMotion(mediaQuery.matches);
+    
+    const handler = (e: MediaQueryListEvent) => setIsReducedMotion(e.matches);
+    mediaQuery.addEventListener('change', handler);
+    
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, []);
+
   // Initialize canvas dimensions
   useEffect(() => {
     const updateDimensions = () => {
@@ -55,98 +58,75 @@ const AnimatedBackground: React.FC = () => {
 
   // Particle system configuration
   const particleConfig = useMemo(() => ({
-    maxParticles: 150,
-    spawnRate: 0.8,
-    baseSpeed: 0.5,
-    maxSpeed: 2,
-    sizeRange: [1, 4],
-    opacityRange: [0.1, 0.6],
-    lifespanRange: [3000, 8000],
-    mouseInfluenceRadius: 100,
-    mouseRepelStrength: 2
-  }), []);
+    maxParticles: isReducedMotion ? 20 : 60,
+    spawnRate: isReducedMotion ? 0.1 : 0.3,
+    baseSpeed: 0.2,
+    sizeRange: [1, 2],
+    opacityRange: [0.05, 0.2],
+    lifespanRange: [4000, 10000],
+    colors: [
+      'rgba(59, 130, 246, 0.7)',   // blue-500
+      'rgba(16, 185, 129, 0.7)',   // emerald-500
+      'rgba(139, 92, 246, 0.7)',   // violet-500
+      'rgba(6, 182, 212, 0.7)',    // cyan-500
+    ]
+  }), [isReducedMotion]);
+
+  // Scan line configuration
+  const scanConfig = useMemo(() => ({
+    count: isReducedMotion ? 2 : 5,
+    speedRange: [0.3, 0.7],
+    heightRange: [1, 3],
+    opacityRange: [0.03, 0.08],
+    colors: [
+      'rgba(59, 130, 246, 0.5)',   // blue
+      'rgba(16, 185, 129, 0.5)',    // emerald
+    ]
+  }), [isReducedMotion]);
 
   // Create a new particle
-  const createParticle = (x?: number, y?: number): Particle => {
-    const types: Particle['type'][] = ['hash', 'encrypt', 'signature', 'key'];
-    const type = types[Math.floor(Math.random() * types.length)];
-    
-    const lifespan = Math.random() * (particleConfig.lifespanRange[1] - particleConfig.lifespanRange[0]) + particleConfig.lifespanRange[0];
-    
+  const createParticle = (): Particle => {
     return {
       id: Math.random(),
-      x: x ?? Math.random() * dimensions.width,
-      y: y ?? Math.random() * dimensions.height,
+      x: Math.random() * dimensions.width,
+      y: Math.random() * dimensions.height,
       vx: (Math.random() - 0.5) * particleConfig.baseSpeed,
       vy: (Math.random() - 0.5) * particleConfig.baseSpeed,
       size: Math.random() * (particleConfig.sizeRange[1] - particleConfig.sizeRange[0]) + particleConfig.sizeRange[0],
       opacity: Math.random() * (particleConfig.opacityRange[1] - particleConfig.opacityRange[0]) + particleConfig.opacityRange[0],
-      hue: getTypeHue(type),
-      type,
-      lifespan,
-      maxLifespan: lifespan
+      color: particleConfig.colors[Math.floor(Math.random() * particleConfig.colors.length)],
+      lifespan: Math.random() * (particleConfig.lifespanRange[1] - particleConfig.lifespanRange[0]) + particleConfig.lifespanRange[0],
     };
   };
 
-  // Get hue based on particle type
-  const getTypeHue = (type: Particle['type']): number => {
-    switch (type) {
-      case 'hash': return 240; // Blue
-      case 'encrypt': return 120; // Green
-      case 'signature': return 300; // Purple
-      case 'key': return 60; // Yellow
-      default: return 200;
+  // Create scan lines
+  const createScanLines = () => {
+    const lines: ScanLine[] = [];
+    for (let i = 0; i < scanConfig.count; i++) {
+      lines.push({
+        id: Math.random(),
+        y: Math.random() * dimensions.height,
+        speed: Math.random() * (scanConfig.speedRange[1] - scanConfig.speedRange[0]) + scanConfig.speedRange[0],
+        height: Math.random() * (scanConfig.heightRange[1] - scanConfig.heightRange[0]) + scanConfig.heightRange[0],
+        opacity: Math.random() * (scanConfig.opacityRange[1] - scanConfig.opacityRange[0]) + scanConfig.opacityRange[0],
+      });
     }
-  };
-
-  // Create a new crypto symbol
-  const createCryptoSymbol = (): CryptoSymbol => {
-    const colors = ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ef4444', '#06b6d4'];
-    
-    return {
-      id: Math.random(),
-      x: Math.random() * dimensions.width,
-      y: dimensions.height + 50,
-      symbol: cryptoSymbols[Math.floor(Math.random() * cryptoSymbols.length)],
-      opacity: Math.random() * 0.3 + 0.1,
-      scale: Math.random() * 0.5 + 0.5,
-      rotation: Math.random() * 360,
-      color: colors[Math.floor(Math.random() * colors.length)]
-    };
+    return lines;
   };
 
   // Update particle physics
   const updateParticle = (particle: Particle, deltaTime: number): Particle => {
-    // Apply mouse repulsion
-    const dx = particle.x - mousePos.x;
-    const dy = particle.y - mousePos.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    
-    if (distance < particleConfig.mouseInfluenceRadius) {
-      const force = (particleConfig.mouseInfluenceRadius - distance) / particleConfig.mouseInfluenceRadius;
-      const angle = Math.atan2(dy, dx);
-      particle.vx += Math.cos(angle) * force * particleConfig.mouseRepelStrength * deltaTime;
-      particle.vy += Math.sin(angle) * force * particleConfig.mouseRepelStrength * deltaTime;
-    }
-
     // Apply velocity with damping
-    particle.vx *= 0.99;
-    particle.vy *= 0.99;
+    particle.vx *= 0.998;
+    particle.vy *= 0.998;
     
-    // Limit velocity
-    const speed = Math.sqrt(particle.vx * particle.vx + particle.vy * particle.vy);
-    if (speed > particleConfig.maxSpeed) {
-      particle.vx = (particle.vx / speed) * particleConfig.maxSpeed;
-      particle.vy = (particle.vy / speed) * particleConfig.maxSpeed;
-    }
-
     // Update position
     particle.x += particle.vx;
     particle.y += particle.vy;
 
     // Update lifespan and opacity
     particle.lifespan -= deltaTime;
-    particle.opacity = (particle.lifespan / particle.maxLifespan) * particleConfig.opacityRange[1];
+    particle.opacity = (particle.lifespan / 10000) * particleConfig.opacityRange[1];
 
     // Wrap around screen edges
     if (particle.x < 0) particle.x = dimensions.width;
@@ -157,129 +137,67 @@ const AnimatedBackground: React.FC = () => {
     return particle;
   };
 
-  // Update crypto symbol
-  const updateCryptoSymbol = (symbol: CryptoSymbol, deltaTime: number): CryptoSymbol => {
-    symbol.y -= 0.5 * deltaTime;
-    symbol.rotation += 0.5 * deltaTime;
-    symbol.opacity *= 0.999;
-    
-    return symbol;
+  // Update scan lines
+  const updateScanLine = (line: ScanLine, deltaTime: number): ScanLine => {
+    line.y += line.speed * deltaTime;
+    if (line.y > dimensions.height + line.height) {
+      line.y = -line.height;
+      line.opacity = Math.random() * (scanConfig.opacityRange[1] - scanConfig.opacityRange[0]) + scanConfig.opacityRange[0];
+    }
+    return line;
   };
 
-  // Draw particle with type-specific effects
+  // Draw particle
   const drawParticle = (ctx: CanvasRenderingContext2D, particle: Particle) => {
     ctx.save();
+    ctx.globalAlpha = particle.opacity;
+    ctx.fillStyle = particle.color;
     
-    // Create gradient based on particle type
-    const gradient = ctx.createRadialGradient(
-      particle.x, particle.y, 0,
-      particle.x, particle.y, particle.size * 2
-    );
-    
-    const baseColor = `hsl(${particle.hue}, 70%, 60%)`;
-    const centerColor = `hsla(${particle.hue}, 70%, 80%, ${particle.opacity})`;
-    const edgeColor = `hsla(${particle.hue}, 70%, 60%, 0)`;
-    
-    gradient.addColorStop(0, centerColor);
-    gradient.addColorStop(1, edgeColor);
-    
-    ctx.fillStyle = gradient;
-    
-    // Draw different shapes based on type
-    switch (particle.type) {
-      case 'hash':
-        // Hexagon for hash
-        ctx.beginPath();
-        for (let i = 0; i < 6; i++) {
-          const angle = (i * Math.PI) / 3;
-          const x = particle.x + Math.cos(angle) * particle.size;
-          const y = particle.y + Math.sin(angle) * particle.size;
-          if (i === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        }
-        ctx.closePath();
-        ctx.fill();
-        break;
-        
-      case 'encrypt':
-        // Square for encryption
-        ctx.fillRect(
-          particle.x - particle.size,
-          particle.y - particle.size,
-          particle.size * 2,
-          particle.size * 2
-        );
-        break;
-        
-      case 'signature':
-        // Triangle for signature
-        ctx.beginPath();
-        ctx.moveTo(particle.x, particle.y - particle.size);
-        ctx.lineTo(particle.x - particle.size, particle.y + particle.size);
-        ctx.lineTo(particle.x + particle.size, particle.y + particle.size);
-        ctx.closePath();
-        ctx.fill();
-        break;
-        
-      case 'key':
-        // Diamond for key
-        ctx.beginPath();
-        ctx.moveTo(particle.x, particle.y - particle.size);
-        ctx.lineTo(particle.x + particle.size, particle.y);
-        ctx.lineTo(particle.x, particle.y + particle.size);
-        ctx.lineTo(particle.x - particle.size, particle.y);
-        ctx.closePath();
-        ctx.fill();
-        break;
-    }
+    // Draw simple circle
+    ctx.beginPath();
+    ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+    ctx.fill();
     
     ctx.restore();
   };
 
-  // Draw crypto symbol
-  const drawCryptoSymbol = (ctx: CanvasRenderingContext2D, symbol: CryptoSymbol) => {
+  // Draw scan line
+  const drawScanLine = (ctx: CanvasRenderingContext2D, line: ScanLine) => {
+    const gradient = ctx.createLinearGradient(0, line.y, 0, line.y + line.height);
+    gradient.addColorStop(0, 'transparent');
+    gradient.addColorStop(0.5, scanConfig.colors[Math.floor(Math.random() * scanConfig.colors.length)]);
+    gradient.addColorStop(1, 'transparent');
+    
     ctx.save();
-    ctx.globalAlpha = symbol.opacity;
-    ctx.fillStyle = symbol.color;
-    ctx.font = `${20 * symbol.scale}px monospace`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    
-    ctx.translate(symbol.x, symbol.y);
-    ctx.rotate((symbol.rotation * Math.PI) / 180);
-    ctx.fillText(symbol.symbol, 0, 0);
-    
+    ctx.globalAlpha = line.opacity;
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, line.y, dimensions.width, line.height);
     ctx.restore();
   };
 
   // Draw connections between nearby particles
   const drawConnections = (ctx: CanvasRenderingContext2D, particles: Particle[]) => {
-    const connectionDistance = 80;
-    const maxConnections = 3;
+    const connectionDistance = 100;
     
     particles.forEach((particle, i) => {
-      let connections = 0;
-      
-      for (let j = i + 1; j < particles.length && connections < maxConnections; j++) {
+      for (let j = i + 1; j < particles.length; j++) {
         const other = particles[j];
         const dx = particle.x - other.x;
         const dy = particle.y - other.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
         
         if (distance < connectionDistance) {
-          const opacity = (1 - distance / connectionDistance) * 0.2;
+          const opacity = (1 - distance / connectionDistance) * 0.05;
           
           ctx.save();
           ctx.globalAlpha = opacity * Math.min(particle.opacity, other.opacity);
-          ctx.strokeStyle = `hsl(${(particle.hue + other.hue) / 2}, 50%, 60%)`;
-          ctx.lineWidth = 1;
+          ctx.strokeStyle = particle.color;
+          ctx.lineWidth = 0.3;
           ctx.beginPath();
           ctx.moveTo(particle.x, particle.y);
           ctx.lineTo(other.x, other.y);
           ctx.stroke();
           ctx.restore();
-          
-          connections++;
         }
       }
     });
@@ -287,7 +205,7 @@ const AnimatedBackground: React.FC = () => {
 
   // Main animation loop
   useEffect(() => {
-    if (!dimensions.width || !dimensions.height) return;
+    if (!dimensions.width || !dimensions.height || isReducedMotion) return;
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -298,14 +216,19 @@ const AnimatedBackground: React.FC = () => {
     canvas.width = dimensions.width;
     canvas.height = dimensions.height;
 
+    // Initialize scan lines
+    if (scanLinesRef.current.length === 0) {
+      scanLinesRef.current = createScanLines();
+    }
+
     let lastTime = 0;
 
     const animate = (currentTime: number) => {
-      const deltaTime = currentTime - lastTime;
+      const deltaTime = Math.min(currentTime - lastTime, 32); // Cap at 32ms to prevent jumps
       lastTime = currentTime;
 
-      // Clear canvas with trail effect
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.05)'; // slate-900 with low opacity
+      // Clear canvas with subtle fade
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.08)'; // slate-900
       ctx.fillRect(0, 0, dimensions.width, dimensions.height);
 
       // Spawn new particles
@@ -313,27 +236,20 @@ const AnimatedBackground: React.FC = () => {
         particlesRef.current.push(createParticle());
       }
 
-      // Spawn new symbols occasionally
-      if (Math.random() < 0.01 && symbolsRef.current.length < 10) {
-        symbolsRef.current.push(createCryptoSymbol());
-      }
-
       // Update and filter particles
       particlesRef.current = particlesRef.current
         .map(particle => updateParticle(particle, deltaTime))
         .filter(particle => particle.lifespan > 0);
 
-      // Update and filter symbols
-      symbolsRef.current = symbolsRef.current
-        .map(symbol => updateCryptoSymbol(symbol, deltaTime))
-        .filter(symbol => symbol.y > -100 && symbol.opacity > 0.01);
+      // Update scan lines
+      scanLinesRef.current = scanLinesRef.current.map(line => updateScanLine(line, deltaTime));
 
       // Draw connections first (background layer)
       drawConnections(ctx, particlesRef.current);
 
-      // Draw symbols
-      symbolsRef.current.forEach(symbol => {
-        drawCryptoSymbol(ctx, symbol);
+      // Draw scan lines
+      scanLinesRef.current.forEach(line => {
+        drawScanLine(ctx, line);
       });
 
       // Draw particles (foreground layer)
@@ -351,99 +267,52 @@ const AnimatedBackground: React.FC = () => {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [dimensions, mousePos, particleConfig, cryptoSymbols]);
+  }, [dimensions, particleConfig, scanConfig, isReducedMotion]);
+
+  // Static fallback for reduced motion preference
+  if (isReducedMotion) {
+    return (
+      <div className="fixed inset-0 pointer-events-none z-0 bg-slate-900">
+        {/* Very subtle static elements */}
+        <div 
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)
+            `,
+            backgroundSize: '80px 80px'
+          }}
+        />
+        
+        {/* Static gradient orbs */}
+        <div 
+          className="absolute w-96 h-96 bg-gradient-to-r from-blue-500/5 to-cyan-500/5 rounded-full blur-3xl"
+          style={{ top: '10%', left: '5%' }}
+        />
+      </div>
+    );
+  }
 
   return (
     <>
       <canvas
         ref={canvasRef}
         className="fixed inset-0 pointer-events-none z-0"
-        style={{ background: 'transparent' }}
+        style={{ background: 'rgb(15, 23, 42)' }} // slate-900
       />
       
-      {/* Additional CSS-based animated elements */}
+      {/* Additional CSS-based elements */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        {/* Floating gradient orbs */}
-        <motion.div
-          className="absolute w-96 h-96 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-full blur-3xl"
-          animate={{
-            x: [0, 100, 0],
-            y: [0, 50, 0],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          style={{ top: '10%', left: '5%' }}
-        />
-        
-        <motion.div
-          className="absolute w-80 h-80 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-3xl"
-          animate={{
-            x: [0, -80, 0],
-            y: [0, 80, 0],
-            scale: [1, 0.8, 1],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          style={{ top: '60%', right: '10%' }}
-        />
-        
-        <motion.div
-          className="absolute w-72 h-72 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-full blur-3xl"
-          animate={{
-            x: [0, 60, 0],
-            y: [0, -60, 0],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{
-            duration: 30,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          style={{ bottom: '15%', left: '30%' }}
-        />
-
-        {/* Matrix-style binary rain (sparse) */}
-        <div className="absolute inset-0 overflow-hidden opacity-5">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute text-green-400 font-mono text-xs"
-              style={{ left: `${12.5 * i}%` }}
-              animate={{
-                y: [-100, window.innerHeight + 100],
-              }}
-              transition={{
-                duration: Math.random() * 10 + 15,
-                repeat: Infinity,
-                ease: "linear",
-                delay: Math.random() * 5,
-              }}
-            >
-              {Array.from({ length: 20 }).map((_, j) => (
-                <div key={j} className="mb-4">
-                  {Math.random() > 0.5 ? '1' : '0'}
-                </div>
-              ))}
-            </motion.div>
-          ))}
-        </div>
-
         {/* Subtle grid pattern */}
         <div 
           className="absolute inset-0 opacity-[0.02]"
           style={{
             backgroundImage: `
-              linear-gradient(rgba(15, 66, 148, 0.1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(12, 55, 124, 0.1) 1px, transparent 1px)
+              linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)
             `,
-            backgroundSize: '50px 50px'
+            backgroundSize: '80px 80px'
           }}
         />
       </div>
@@ -451,4 +320,4 @@ const AnimatedBackground: React.FC = () => {
   );
 };
 
-export default AnimatedBackground;
+export default CyberBackground;
