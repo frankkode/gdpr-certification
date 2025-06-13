@@ -199,7 +199,7 @@ async function generateGDPRCompliantPDF(certificateData) {
            year: 'numeric', month: 'long', day: 'numeric'
          })}`, 0, 390, { align: 'center' });
 
-      // ✅ FIXED: GDPR-Compliant verification section
+      // ✅ FIXED: GDPR-Compliant verification section responsive to certificate
       const verifyY = 430;
       
       doc.rect(60, verifyY, width - 120, 80).fill('#f8fafc').stroke(colors.navy, 1);

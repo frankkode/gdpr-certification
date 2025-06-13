@@ -493,7 +493,7 @@ Personal Data Retained: ${personalDataRetained}
             )}
           </div>
 
-          {/* Generate Button */}
+          {/* Generate Button responsive */}
           <motion.button
             onClick={handleGenerate}
             disabled={!isFormValid}
@@ -518,7 +518,7 @@ Personal Data Retained: ${personalDataRetained}
             )}
           </motion.button>
 
-          {/* Progress Indicator */}
+          {/* Progress Indicator if deleted */}
           {isGenerating && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
