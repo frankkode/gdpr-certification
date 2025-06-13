@@ -766,19 +766,7 @@ app.use((error, req, res, next) => {
   });
 });
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({
-    error: 'Route not found',
-    availableEndpoints: [
-      'POST /generate - Generate GDPR-compliant certificate',
-      'POST /verify/pdf - GDPR-compliant PDF verification',
-      'GET /verify/:certificateId - ID verification',
-      'GET /stats - System statistics (no personal data)',
-      'GET /health - Health check'
-    ]
-  });
-});
+
 
 // Start server
 app.listen(PORT, () => {
