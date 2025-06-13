@@ -1,4 +1,4 @@
-// 🏆 GDPR-Compliant Certificate Verification System - PostgreSQL Version
+// 🏆 GDPR-Compliant Certificate Verification System - PostgreSQL Version - FIXED
 const express = require('express');
 const cors = require('cors');
 const crypto = require('crypto');
@@ -17,17 +17,19 @@ const path = require('path');
 // Load environment variables
 dotenv.config();
 
-const { db, dbUtils } = require('./db');
+const { db, dbUtils, ensureTablesExist, testConnection } = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Security middleware
+// ✅ FIXED: Enhanced CORS for Vercel deployment
+app.use(helmet());
 app.use(cors({
   origin: process.env.ALLOWED_ORIGINS?.split(',') || [
     'https://gdpr-certification-cl7s.vercel.app',
-    'https://gdpr-certification-cl7s-k8clxlhhz-frankkodes-projects.vercel.app',  // Add this
-    'http://localhost:3000', 'http://localhost:5000'
+    'https://gdpr-certification-cl7s-k8clxlhhz-frankkodes-projects.vercel.app',
+    'http://localhost:3000', 
+    'http://localhost:5000'
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -203,7 +205,7 @@ async function generateGDPRCompliantPDF(certificateData) {
       doc.rect(60, verifyY, width - 120, 80).fill('#f8fafc').stroke(colors.navy, 1);
 
       doc.fontSize(12).font('Helvetica-Bold').fillColor(colors.navy)
-         .text('   GDPR-COMPLIANT VERIFICATION', 70, verifyY + 10);
+         .text('🔐 GDPR-COMPLIANT VERIFICATION', 70, verifyY + 10);
 
       const verifyDetails = [
         `Certificate ID: ${certificateData.certificateId}`,
@@ -255,6 +257,8 @@ async function generateGDPRCompliantPDF(certificateData) {
       doc.fontSize(14).font('Helvetica-Bold').fillColor(colors.navy)
          .text('GDPR-COMPLIANT CERTIFICATE AUTHORITY', 0, height - 60, { align: 'center' });
 
+      doc.fontSize(10).font('Helvetica').fillColor(colors.gray)
+         .text('Cryptographically Protected & Privacy Compliant', 0, height - 40, { align: 'center' });
 
       // ✅ CRITICAL: Embed verification metadata WITHOUT personal data exposure
       const verificationData = {
@@ -321,6 +325,20 @@ app.post('/generate', generateLimit, certificateValidation, async (req, res) => 
     const { user, exam } = req.body;
     const requestId = uuidv4();
     
+    // ✅ CRITICAL: Ensure database tables exist before operations
+    try {
+      console.log('🔄 Ensuring database tables exist...');
+      await ensureTablesExist();
+      console.log('✅ Database tables verified');
+    } catch (dbSetupError) {
+      console.error('❌ Database setup failed:', dbSetupError);
+      return res.status(500).json({ 
+        error: 'Database setup failed', 
+        details: dbSetupError.message,
+        code: 'DB_SETUP_ERROR'
+      });
+    }
+    
     // Step 1: Create canonical JSON with personal data
     const canonicalJSON = createCanonicalJSON(user, exam);
     
@@ -359,20 +377,26 @@ app.post('/generate', generateLimit, certificateValidation, async (req, res) => 
     const pdfBuffer = await generateGDPRCompliantPDF(certificateData);
     
     // ✅ FIXED: Store ONLY hash in PostgreSQL database (NO PERSONAL DATA)
-    const courseCode = exam.substring(0, 20).replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+    const courseCode = exam.substring(0, 20).replace(/[^a-zA-Z0-9]/g, '').toUpperCase() || 'UNKNOWN';
     
     try {
-      await db.query(`
+      console.log('💾 Storing certificate hash in database...');
+      console.log('🔧 Certificate ID:', certificateId);
+      console.log('🔧 Hash length:', hash.length);
+      console.log('🔧 Course code:', courseCode);
+      
+      const insertResult = await db.query(`
         INSERT INTO certificate_hashes (
           certificate_hash, certificate_id, course_code, issue_date, 
           serial_number, verification_code, digital_signature, 
           status, security_level, request_id, created_at
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        RETURNING id
       `, [
         hash, 
         certificateId, 
         courseCode, 
-        certificateData.issueDate.split('T')[0],
+        certificateData.issueDate.split('T')[0],  // Convert to DATE format
         serialNumber, 
         verificationCode, 
         digitalSignature,
@@ -383,6 +407,7 @@ app.post('/generate', generateLimit, certificateValidation, async (req, res) => 
       ]);
       
       console.log(`✅ GDPR-compliant certificate stored: ${certificateId}`);
+      console.log(`🆔 Database record ID: ${insertResult.rows[0].id}`);
       console.log(`🔒 GDPR Compliance: ZERO personal data retained in database`);
       
       stats.certificatesGenerated++;
@@ -390,7 +415,7 @@ app.post('/generate', generateLimit, certificateValidation, async (req, res) => 
       // ✅ Log GDPR-compliant event (no personal data)
       await dbUtils.logEvent('CERTIFICATE_GENERATED', 
         `Certificate ${certificateId} generated with GDPR compliance`, 
-        null, {}, 'INFO');
+        certificateId, { courseCode }, 'INFO');
       
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Disposition', `attachment; filename="gdpr_certificate_${certificateId}.pdf"`);
@@ -401,22 +426,31 @@ app.post('/generate', generateLimit, certificateValidation, async (req, res) => 
       res.send(pdfBuffer);
       
       // ✅ AUTOMATIC DATA DELETION SIMULATION
-      // In reality, no personal data was stored to delete!
       console.log('🗑️  GDPR AUTO-DELETION: Personal data never stored - compliance achieved by design!');
       
     } catch (dbError) {
-      console.error('Database error:', dbError);
+      console.error('❌ Database insertion error:', dbError);
+      console.error('🔧 Error details:', {
+        message: dbError.message,
+        code: dbError.code,
+        detail: dbError.detail,
+        hint: dbError.hint
+      });
+      
       return res.status(500).json({ 
-        error: 'Database error', 
-        details: dbError.message 
+        error: 'Database error during certificate storage', 
+        details: dbError.message,
+        code: dbError.code || 'DB_INSERT_ERROR',
+        certificateId: certificateId  // Return the ID even if storage failed
       });
     }
     
   } catch (error) {
-    console.error('Certificate generation error:', error);
+    console.error('❌ Certificate generation error:', error);
     res.status(500).json({ 
       error: 'Certificate generation failed',
-      details: error.message
+      details: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 });
@@ -582,7 +616,7 @@ app.post('/verify/pdf', verifyLimit, upload.single('certificate'), async (req, r
       // ✅ Log verification (no personal data)
       await dbUtils.logEvent('CERTIFICATE_VERIFIED', 
         `Certificate ${row.certificate_id} verified successfully with GDPR compliance`, 
-        null, {}, 'INFO');
+        row.certificate_id, {}, 'INFO');
       
     } catch (dbError) {
       console.error('Database verification error:', dbError);
@@ -670,7 +704,8 @@ app.get('/verify/:certificateId', verifyLimit, async (req, res) => {
     });
   }
 });
-// Add this root route to your server.js
+
+// ✅ Root route
 app.get('/', (req, res) => {
   res.json({
     message: '🏆 Professional Certificate System API',
@@ -687,6 +722,7 @@ app.get('/', (req, res) => {
     frontend: 'https://gdpr-certification-cl7s.vercel.app'
   });
 });
+
 // ✅ FIXED: GDPR-compliant statistics with PostgreSQL (no personal data)
 app.get('/stats', async (req, res) => {
   try {
@@ -754,6 +790,104 @@ app.get('/health', async (req, res) => {
   }
 });
 
+// 🧪 DEBUG ENDPOINTS (Remove after testing)
+app.get('/debug/db-test', async (req, res) => {
+  try {
+    console.log('🧪 Testing database connection...');
+    
+    // Test 1: Check environment variables
+    const envCheck = {
+      hasDatabaseUrl: !!process.env.DATABASE_URL,
+      databaseUrlFormat: process.env.DATABASE_URL?.startsWith('postgresql://') || process.env.DATABASE_URL?.startsWith('postgres://'),
+      nodeEnv: process.env.NODE_ENV
+    };
+    
+    // Test 2: Test connection
+    const connectionTest = await testConnection();
+    
+    // Test 3: Test table creation
+    const tablesTest = await ensureTablesExist();
+    
+    // Test 4: Test simple query
+    const queryResult = await db.query('SELECT NOW() as current_time');
+    
+    res.json({
+      success: true,
+      environmentVariables: envCheck,
+      connectionTest,
+      tablesCreated: tablesTest,
+      currentTime: queryResult.rows[0].current_time,
+      message: '✅ All database tests passed!'
+    });
+    
+  } catch (error) {
+    console.error('❌ Database test failed:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      code: error.code,
+      detail: error.detail,
+      hint: error.hint
+    });
+  }
+});
+
+app.post('/debug/cert-test', async (req, res) => {
+  try {
+    const { user = 'Test User', exam = 'Test Course' } = req.body;
+    
+    // Test hash generation
+    const canonicalJSON = createCanonicalJSON(user, exam);
+    const hash = generateSecureHash(canonicalJSON, 'sha512');
+    const certificateId = generateCertificateId(hash, Date.now());
+    
+    console.log('🧪 Testing certificate data creation...');
+    console.log('Hash length:', hash.length);
+    console.log('Certificate ID:', certificateId);
+    
+    // Test database insertion
+    await ensureTablesExist();
+    
+    const result = await db.query(`
+      INSERT INTO certificate_hashes (
+        certificate_hash, certificate_id, course_code, issue_date, 
+        serial_number, verification_code, digital_signature, 
+        status, security_level, request_id, created_at
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      RETURNING id
+    `, [
+      hash,
+      certificateId,
+      'TEST',
+      new Date().toISOString().split('T')[0],
+      'TEST123',
+      'VERIFY123',
+      'test-signature',
+      'ACTIVE',
+      'GDPR_COMPLIANT',
+      'test-request-123',
+      new Date().toISOString()
+    ]);
+    
+    res.json({
+      success: true,
+      certificateId,
+      hash: hash.substring(0, 16) + '...',
+      databaseId: result.rows[0].id,
+      message: '✅ Certificate test successful!'
+    });
+    
+  } catch (error) {
+    console.error('❌ Certificate test failed:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      code: error.code,
+      detail: error.detail
+    });
+  }
+});
+
 // Error handling
 app.use((error, req, res, next) => {
   console.error('Unhandled error:', error);
@@ -763,7 +897,21 @@ app.use((error, req, res, next) => {
   });
 });
 
-
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    error: 'Route not found',
+    availableEndpoints: [
+      'POST /generate - Generate GDPR-compliant certificate',
+      'POST /verify/pdf - GDPR-compliant PDF verification',
+      'GET /verify/:certificateId - ID verification',
+      'GET /stats - System statistics',
+      'GET /health - Health check',
+      'GET /debug/db-test - Database test (temporary)',
+      'POST /debug/cert-test - Certificate test (temporary)'
+    ]
+  });
+});
 
 // Start server
 app.listen(PORT, () => {
