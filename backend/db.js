@@ -16,7 +16,7 @@ function createPool() {
   console.log('🔄 Creating PostgreSQL connection pool for Vercel...');
   
   globalPool = new Pool({
-    connectionString: process.env.DATABASE_URL,
+    connectionString: process.env.POSTGRES_URL,
     ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
     
     // ✅ VERCEL SERVERLESS OPTIMIZATIONS
