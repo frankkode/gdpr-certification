@@ -203,7 +203,7 @@ async function generateGDPRCompliantPDF(certificateData) {
       doc.rect(60, verifyY, width - 120, 80).fill('#f8fafc').stroke(colors.navy, 1);
 
       doc.fontSize(12).font('Helvetica-Bold').fillColor(colors.navy)
-         .text(' GDPR-COMPLIANT VERIFICATION', 70, verifyY + 10);
+         .text('   GDPR-COMPLIANT VERIFICATION', 70, verifyY + 10);
 
       const verifyDetails = [
         `Certificate ID: ${certificateData.certificateId}`,
@@ -255,8 +255,6 @@ async function generateGDPRCompliantPDF(certificateData) {
       doc.fontSize(14).font('Helvetica-Bold').fillColor(colors.navy)
          .text('GDPR-COMPLIANT CERTIFICATE AUTHORITY', 0, height - 60, { align: 'center' });
 
-      doc.fontSize(10).font('Helvetica').fillColor(colors.gray)
-         .text('Privacy by Design • Personal Data Auto-Deleted • Cryptographically Verified', 0, height - 40, { align: 'center' });
 
       // ✅ CRITICAL: Embed verification metadata WITHOUT personal data exposure
       const verificationData = {

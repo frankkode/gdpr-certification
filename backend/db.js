@@ -1,26 +1,108 @@
-// 🗄️ GDPR-Compliant PostgreSQL Database Configuration
-// ✅ This database schema stores ONLY cryptographic hashes - ZERO personal data
 
+// ✅ FIXED: Database connection with correct environment variable
 const { Pool } = require('pg');
 const crypto = require('crypto');
 
-// PostgreSQL connection pool
+// ✅ FIXED: Use DATABASE_URL (standard convention) and add fallbacks
 const pool = new Pool({
-  connectionString: process.env.POSTGRES_URL,
+  connectionString: process.env.DATABASE_URL || process.env.POSTGRES_URL,  // ✅ Try both
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
   max: 20,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
+  connectionTimeoutMillis: 5000,  // ✅ Increased timeout for Vercel
+  acquireTimeoutMillis: 5000,     // ✅ Added acquire timeout
 });
 
-// Test connection
-pool.on('connect', () => {
+// ✅ Enhanced connection testing with better error handling
+pool.on('connect', (client) => {
   console.log('✅ Connected to PostgreSQL database on Railway');
+  console.log('🔗 Database host:', client.host);
+  console.log('🔗 Database name:', client.database);
 });
 
-pool.on('error', (err) => {
+pool.on('error', (err, client) => {
   console.error('❌ PostgreSQL connection error:', err);
+  console.error('🔧 Connection string used:', process.env.DATABASE_URL ? 'DATABASE_URL found' : 'DATABASE_URL missing');
+  console.error('🔧 Fallback POSTGRES_URL:', process.env.POSTGRES_URL ? 'POSTGRES_URL found' : 'POSTGRES_URL missing');
 });
+
+pool.on('acquire', () => {
+  console.log('🔗 Database connection acquired from pool');
+});
+
+pool.on('release', () => {
+  console.log('🔓 Database connection released to pool');
+});
+
+// ✅ Test connection on startup
+async function testConnection() {
+  try {
+    console.log('🧪 Testing database connection...');
+    const client = await pool.connect();
+    const result = await client.query('SELECT NOW() as current_time, version() as pg_version');
+    console.log('✅ Database connection test successful!');
+    console.log('⏰ Current time:', result.rows[0].current_time);
+    console.log('🗄️ PostgreSQL version:', result.rows[0].pg_version);
+    client.release();
+    return true;
+  } catch (error) {
+    console.error('❌ Database connection test failed:', error);
+    console.error('🔧 Environment variables check:');
+    console.error('   - NODE_ENV:', process.env.NODE_ENV);
+    console.error('   - DATABASE_URL present:', !!process.env.DATABASE_URL);
+    console.error('   - POSTGRES_URL present:', !!process.env.POSTGRES_URL);
+    return false;
+  }
+}
+
+// ✅ Enhanced database initialization with better error handling
+async function initializeDatabase() {
+  try {
+    console.log('🔄 Initializing GDPR-compliant PostgreSQL database...');
+    
+    // Test connection first
+    const connectionOk = await testConnection();
+    if (!connectionOk) {
+      throw new Error('Database connection failed - check your Railway PostgreSQL URL');
+    }
+    
+    // Create main hash table (NO PERSONAL DATA)
+    await pool.query(createCertificateHashesTable);
+    console.log('✅ GDPR-compliant certificate_hashes table ready (ZERO personal data)');
+    
+    // Create audit log table
+    await pool.query(createAuditLogTable);
+    console.log('✅ GDPR-compliant audit_log table ready');
+    
+    // Create verification attempts table
+    await pool.query(createVerificationAttemptsTable);
+    console.log('✅ GDPR-compliant verification_attempts table ready');
+    
+    // Create all indexes with error handling
+    let indexSuccessCount = 0;
+    for (let i = 0; i < createIndexes.length; i++) {
+      try {
+        await pool.query(createIndexes[i]);
+        indexSuccessCount++;
+      } catch (indexError) {
+        console.warn(`⚠️ Index ${i + 1} might already exist:`, indexError.message);
+      }
+    }
+    console.log(`✅ ${indexSuccessCount}/${createIndexes.length} GDPR-compliant indexes processed`);
+    
+    console.log('🗄️ GDPR-Compliant PostgreSQL Database initialized successfully');
+    console.log('📊 Enhanced features: Zero Personal Data, Hash-Only Storage, Auto-Compliance');
+    console.log('✅ GDPR Articles 5 & 17 Compliant by Design');
+    
+  } catch (error) {
+    console.error('❌ Database initialization failed:', error);
+    console.error('🔧 This is likely due to:');
+    console.error('   1. Missing or incorrect DATABASE_URL environment variable');
+    console.error('   2. Railway PostgreSQL not accessible from Vercel');
+    console.error('   3. Database permissions issues');
+    throw error;
+  }
+}
 
 // ✅ FIXED: GDPR-COMPLIANT DATABASE SCHEMA FOR POSTGRESQL
 // ❌ REMOVED: student_name, course_name, certificate_data (personal data)
