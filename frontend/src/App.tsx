@@ -13,10 +13,11 @@ const SecurityStats = lazy(() => import('./components/SecurityStats'));
 const SecurityDashboard = lazy(() => import('./components/SecurityDashboard'));
 
 // API Configuration
-const API_URL = 'https://gdpr-certification.vercel.app';
+const API_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://gdpr-certification.vercel.app/'  // or Railway URL
+  : 'http://localhost:5000';
 const STATS_REFRESH_INTERVAL = 30000; // 30 seconds
-// Optional: Add logging
-console.log('🚀 Certificate System API:', API_URL);
+
 // ✅ FIXED: GDPR-compliant stats interface (no personal data)
 interface Stats {
   certificatesGenerated: number;

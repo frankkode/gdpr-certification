@@ -26,8 +26,7 @@ const PORT = process.env.PORT || 5000;
 app.use(helmet());
 app.use(cors({
   origin: process.env.ALLOWED_ORIGINS?.split(',') || [
-    'https://gdpr-certification-cl7s.vercel.app',
-    'https://gdpr-certification-cl7s-k8clxlhhz-frankkodes-projects.vercel.app', 
+    'https://gdpr-certification-cl7s.vercel.app', 
     'http://localhost:3000'
   ],
   credentials: true,
