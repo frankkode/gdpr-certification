@@ -83,7 +83,7 @@ const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
         const newData = [...prev, Math.random() * 100];
         return newData.slice(-20); // Keep last 20 data points
       });
-    }, 2000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, []);
@@ -222,9 +222,9 @@ const SecurityDashboard: React.FC<SecurityDashboardProps> = ({
           {isExpanded && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
+              animate={{ height: 'auto', opacity: 0.5 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.6 }}
             >
               <div className="px-6 pb-6">{children}</div>
             </motion.div>

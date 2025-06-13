@@ -53,16 +53,6 @@ const AnimatedBackground: React.FC = () => {
     return () => window.removeEventListener('resize', updateDimensions);
   }, []);
 
-  // Mouse tracking for interactive effects
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
   // Particle system configuration
   const particleConfig = useMemo(() => ({
     maxParticles: 150,
@@ -450,8 +440,8 @@ const AnimatedBackground: React.FC = () => {
           className="absolute inset-0 opacity-[0.02]"
           style={{
             backgroundImage: `
-              linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)
+              linear-gradient(rgba(15, 66, 148, 0.1) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(12, 55, 124, 0.1) 1px, transparent 1px)
             `,
             backgroundSize: '50px 50px'
           }}
