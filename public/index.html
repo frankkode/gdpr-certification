@@ -1,1 +1,36 @@
-<!DOCTYPE html><html><head><title>API Backend</title></head><body><h1>GDPR Certificate API</h1><p>This is a backend API. Visit <a href="/health">/health</a> for status.</p></body></html>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GDPR Certificate API</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; text-align: center; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .endpoints { text-align: left; background: #f5f5f5; padding: 20px; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔒 GDPR-Compliant Certificate API</h1>
+        <p>Backend API for cryptographically secured certificate verification</p>
+        
+        <div class="endpoints">
+            <h3>Available Endpoints:</h3>
+            <ul>
+                <li><strong>GET /</strong> - API Information</li>
+                <li><strong>GET /health</strong> - Health Check</li>
+                <li><strong>GET /stats</strong> - System Statistics</li>
+                <li><strong>POST /generate</strong> - Generate Certificate</li>
+                <li><strong>POST /verify/pdf</strong> - Verify PDF Certificate</li>
+                <li><strong>GET /verify/:id</strong> - Verify by Certificate ID</li>
+            </ul>
+        </div>
+        
+        <p>
+            <a href="/health" style="background: #0070f3; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                Check API Health
+            </a>
+        </p>
+    </div>
+</body>
+</html>
