@@ -225,7 +225,7 @@ async function generateGDPRCompliantPDF(certificateData) {
         doc.fontSize(8).font('Helvetica').fillColor(colors.gray).text(detail, x, y);
       });
 
-      // QR Code generation
+      // QR Code generation.
       try {
         const qrData = JSON.stringify({
           id: certificateData.certificateId,
