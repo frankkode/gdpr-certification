@@ -227,13 +227,12 @@ async function generateGDPRCompliantPDF(certificateData) {
 
       // QR Code generations.
       try {
-        // Option 1: Frontend verification URL (recommended if you want a nice page)
-        const frontendUrl = process.env.FRONTEND_URL || 'https://your-frontend-app.vercel.app';
-        const qrVerificationUrl = `${frontendUrl}/verify/${certificateData.certificateId}`;
-        
-        // Option 2: Direct backend verification URL (works immediately)
-        // const backendUrl = process.env.BACKEND_URL || 'https://your-backend-app.vercel.app';
-        // const qrVerificationUrl = `${backendUrl}/verify/${certificateData.certificateId}`;
+        // Decide which URL to use based on environment variables
+        const frontendUrl = process.env.FRONTEND_URL || 'https://gdpr-certification-cl7s.vercel.app/';
+        const backendUrl = process.env.BACKEND_URL || 'https://gdpr-certification.vercel.app';
+        const qrVerificationUrl = process.env.USE_FRONTEND_URL 
+          ? `${frontendUrl}/verify/${certificateData.certificateId}`
+          : `${backendUrl}/verify/${certificateData.certificateId}`;
       
         console.log('🔍 Generating QR code with URL:', qrVerificationUrl);
       
