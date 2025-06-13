@@ -26,12 +26,13 @@ const PORT = process.env.PORT || 5000;
 app.use(helmet());
 app.use(cors({
   origin: process.env.ALLOWED_ORIGINS?.split(',') || [
-    'https://gdpr-certification-cl7s-k8clxlhhz-frankkodes-projects.vercel.app',
-    'https://gdpr-certification-cl7s.vercel.app', // Shorter Vercel URL
-    'http://localhost:3000', // For development
-    'https://localhost:3000'
+    'https://gdpr-certification-cl7s.vercel.app',
+    'https://gdpr-certification-cl7s-k8clxlhhz-frankkodes-projects.vercel.app', 
+    'http://localhost:3000'
   ],
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Rate limiting
