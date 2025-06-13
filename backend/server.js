@@ -205,7 +205,7 @@ async function generateGDPRCompliantPDF(certificateData) {
       doc.rect(60, verifyY, width - 120, 80).fill('#f8fafc').stroke(colors.navy, 1);
 
       doc.fontSize(12).font('Helvetica-Bold').fillColor(colors.navy)
-         .text('  GDPR-COMPLIANT VERIFICATION', 70, verifyY + 10);
+         .text('   GDPR-COMPLIANT VERIFICATION', 70, verifyY + 10);
 
       const verifyDetails = [
         `Certificate ID: ${certificateData.certificateId}`,
