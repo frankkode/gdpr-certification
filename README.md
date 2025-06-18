@@ -1107,7 +1107,7 @@ When reporting issues, **do not include**:
 1. **📖 Documentation**: Check this README first
 2. **🐛 GitHub Issues**: Report bugs and feature requests  
 3. **💬 Discussions**: Community Q&A and ideas
-4. **📧 Email Support**: contact@yourdomain.com
+4. **📧 Email Support**: masabo.frank@iu-study.org
 
 ### Community Resources
 
