@@ -187,32 +187,32 @@ gdpr-certificate-system/
 ### 🎯 Main Dashboard
 *[Screenshot: Dashboard showing GDPR compliance status, connection status, and navigation]*
 
-![Dashboard Screenshot](https://imgur.com/GwJqarn)
+![Dashboard Screenshot](https://i.imgur.com/GwJqarn.png)
 
 ### 📜 Certificate Generation
 *[Screenshot: Certificate generation form with real-time hash visualization]*
 
-![Certificate Generation](https://imgur.com/cLgTBI1)
+![Certificate Generation](https://i.imgur.com/cLgTBI1.png)
 
 ### 🗑️ GDPR Data Deletion Animation
 *[Screenshot: Automatic data deletion process in action]*
 
-![Data Deletion Animation](https://imgur.com/qJqy97t)
+![Data Deletion Animation](https://i.imgur.com/qJqy97t.png)
 
 ### 🔍 Certificate Verification
 *[Screenshot: Dual verification system - PDF upload and ID lookup]*
 
-![Verification System](https://imgur.com/pFwthLk)
+![Verification System](https://i.imgur.com/pFwthLk.png)
 
 ### 📊 Security Analytics
 *[Screenshot: Security dashboard with anonymous statistics]*
 
-![Security Dashboard](https://imgur.com/05nu2IR)
+![Security Dashboard](https://i.imgur.com/05nu2IR.png)
 
 ### 📱 Mobile Responsive Design
 *[Screenshot: Mobile navigation and responsive layout]*
 
-![Mobile Design](https://imgur.com/DiSJ3oQ)
+![Mobile Design](https://i.imgur.com/DiSJ3oQ.png)
 
 ---
 
@@ -231,7 +231,7 @@ This system is **fully compliant** with the General Data Protection Regulation (
 
 *[Screenshot: GDPR compliance verification showing zero personal data storage]*
 
-![GDPR Compliance Check](https://imgur.com/wMQUBRx)
+![GDPR Compliance Check](https://i.imgur.com/wMQUBRx.png)
 
 ---
 
@@ -281,7 +281,7 @@ vercel --prod
 
 *[Screenshot: Vercel deployment dashboard showing successful deployment]*
 
-![Vercel Deployment](https://imgur.com/NITcaV9)
+![Vercel Deployment](https://i.imgur.com/NITcaV9.png)
 
 ---
 
@@ -291,7 +291,7 @@ vercel --prod
 
 *[Screenshot/Diagram: System architecture showing frontend, backend, and database layers]*
 
-![System Architecture](https://imgur.com/ZDB2emB)
+![System Architecture](https://i.imgur.com/ZDB2emB.png)
 
 ### GDPR Data Flow
 
@@ -307,7 +307,7 @@ graph TD
 
 *[Screenshot: Data flow demonstration showing personal data deletion]*
 
-![GDPR Data Flow](https://imgur.com/qJqy97t)
+![GDPR Data Flow](https://i.imgur.com/qJqy97t.png)
 
 ---
 
@@ -349,7 +349,7 @@ The system automatically creates tables on first run. No manual database setup r
 
 *[Screenshot: Database schema showing hash-only tables]*
 
-![Database Schema](https://imgur.com/R15sD3P)
+![Database Schema](https://i.imgur.com/R15sD3P.png)
 
 #### 4. Start Backend Server
 
@@ -425,7 +425,7 @@ npm start
 
 *[Screenshot: Local development setup showing both frontend and backend running]*
 
-![Local Development](https://imgur.com/JQHsN2n)
+![Local Development](https://i.imgur.com/JQHsN2n.png)
 
 ---
 
@@ -441,7 +441,7 @@ npm start
 
 *[Screenshot: Railway dashboard showing PostgreSQL service and DATABASE_URL]*
 
-![Railway Setup](https://imgur.com/yD8FwUW)
+![Railway Setup](https://i.imgur.com/yD8FwUW.png)
 
 #### Step 2: Deploy Backend to Vercel
 
@@ -472,11 +472,11 @@ vercel --prod
 
 ### backend
 
-![Vercel Environment Variables](https://imgur.com/8UKo7Hn)
+![Vercel Environment Variables](https://i.imgur.com/8UKo7Hn.png)
 
 ### Frontend
 
-![Vercel Environment Variables](https://imgur.com/XI2PAK7)
+![Vercel Environment Variables](https://i.imgur.com/XI2PAK7.png)
 
 
 #### Step 3: Deploy Frontend to Vercel
@@ -511,7 +511,7 @@ curl https://your-backend.vercel.app/health
 
 *[Screenshot: Successful production deployment showing health check]*
 
-![Production Health Check](https://imgur.com/B9ne5Xu)
+![Production Health Check](https://i.imgur.com/B9ne5Xu.png)
 
 ---
 
@@ -574,7 +574,7 @@ Content-Type: application/json
 
 *[Screenshot: API testing showing certificate generation request/response]*
 
-![API Certificate Generation](https://imgur.com/dW4yml3)
+![API Certificate Generation](https://i.imgur.com/dW4yml3.png)
 
 #### 🔍 Verify PDF Certificate
 
@@ -650,7 +650,7 @@ GET /stats
 
 *[Screenshot: API testing tool showing all endpoints working]*
 
-![API Testing](https://imgur.com/RVSF82R)
+![API Testing](https://i.imgur.com/RVSF82R.png)
 
 ---
 
@@ -687,11 +687,11 @@ CREATE TABLE certificate_hashes (
 
 ### Before
 
-![Database Comparison](https://imgur.com/Zn7nsDY)
+![Database Comparison](https://i.imgur.com/Zn7nsDY.png)
 
 ### After
 
-![Database Comparison](https://imgur.com/wMQUBRx)
+![Database Comparison](https://i.imgur.com/wMQUBRx.png)
 
 #### 2. Right to Erasure (Article 17)
 
@@ -709,7 +709,7 @@ CREATE TABLE certificate_hashes (
 
 *[Screenshot: Data deletion animation showing automatic erasure]*
 
-![Automatic Deletion](https://imgur.com/qJqy97t)
+![Automatic Deletion](https://i.imgur.com/qJqy97t.png)
 
 #### 3. Privacy by Design (Article 25)
 
@@ -721,7 +721,7 @@ CREATE TABLE certificate_hashes (
 
 *[Screenshot: System architecture highlighting privacy-by-design features]*
 
-![Privacy by Design](https://imgur.com/Z4kHz95)
+![Privacy by Design](https://i.imgur.com/Z4kHz95.png)
 
 ### GDPR Risk Assessment
 
@@ -763,7 +763,7 @@ CREATE TABLE certificate_hashes (
 
 *[Screenshot: Testing checklist being performed]*
 
-![Testing Checklist](https://imgur.com/JQHsN2n)
+![Testing Checklist](https://i.imgur.com/JQHsN2n.png)
 
 #### Automated Testing
 
@@ -796,7 +796,7 @@ Expected performance metrics:
 
 *[Screenshot: Performance monitoring dashboard]*
 
-![Performance Metrics](https://imgur.com/B9ne5Xu)
+![Performance Metrics](https://i.imgur.com/B9ne5Xu.png)
 
 ---
 
@@ -820,7 +820,7 @@ Expected performance metrics:
 
 *[Screenshot: Mobile device testing showing responsive design]*
 
-![Mobile Responsive](https://imgur.com/DiSJ3oQ)
+![Mobile Responsive](https://i.imgur.com/DiSJ3oQ.png)
 
 ### Mobile Testing Checklist
 
@@ -859,7 +859,7 @@ Error: ENOTFOUND postgres.railway.internal
 
 *[Screenshot: Railway database URL configuration]*
 
-![Railway Database Fix](https://imgur.com/yD8FwUW)
+![Railway Database Fix](https://i.imgur.com/yD8FwUW.png)
 
 **🚨 "Build Failed - No Output Directory"**
 ```bash
@@ -873,7 +873,7 @@ Error: No Output Directory named "public" found
 
 *[Screenshot: Vercel build settings configuration]*
 
-![Vercel Build Settings](https://imgur.com/uIxEi7J)
+![Vercel Build Settings](https://i.imgur.com/uIxEi7J.png)
 
 **🚨 "Certificate generation timeout"**
 
@@ -955,7 +955,7 @@ if (DEBUG_MODE) {
 
 *[Screenshot: Debug mode showing detailed logging]*
 
-![Debug Mode](https://imgur.com/Zn7nsDY)
+![Debug Mode](https://i.imgur.com/Zn7nsDY.png)
 
 ---
 
@@ -989,7 +989,7 @@ AND column_name IN ('student_name', 'course_name', 'certificate_data');
 
 *[Screenshot: Analytics dashboard showing system metrics]*
 
-![Analytics Dashboard](https://imgur.com/r36CG5B)
+![Analytics Dashboard](https://i.imgur.com/r36CG5B.png)
 
 #### Key Metrics to Monitor
 
@@ -1030,7 +1030,7 @@ Languages to consider:
 - French (RGPD)
 - Spanish (RGPD)
 
-#### 2. Advanced Certificate Templates
+#### 2. Advanced Certificate Templates (future work)
 
 Custom certificate designs for different industries:
 
@@ -1038,10 +1038,6 @@ Custom certificate designs for different industries:
 - Financial services
 - Educational institutions
 - Professional associations
-
-*[Screenshot: Multiple certificate template options]*
-
-![Certificate Templates](./screenshots/certificate-templates.png)
 
 #### 3. API Rate Limiting Dashboard
 
@@ -1066,7 +1062,7 @@ Anonymous analytics while maintaining GDPR compliance:
 
 *[Screenshot: Anonymous analytics dashboard]*
 
-![Anonymous Analytics](https://imgur.com/uIxEi7J)
+![Anonymous Analytics](https://i.imgur.com/uIxEi7J.png)
 
 ---
 
