@@ -293,6 +293,11 @@ vercel --prod
 
 ![System Architecture](https://i.imgur.com/ZDB2emB.png)
 
+*[Screenshot/Diagram: System architecture layers]*
+
+![System Architecture](https://i.imgur.com/1iMk7bh.png)
+
+
 ### GDPR Data Flow
 
 ```mermaid
