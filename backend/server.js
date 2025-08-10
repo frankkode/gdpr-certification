@@ -2616,13 +2616,8 @@ app.get('/auth/social/:provider', (req, res) => {
     // For now, we'll include it in the state parameter and validate it in callback
     const authUrl = generateAuthUrl(provider, state, mode);
 
-    res.json({
-      success: true,
-      authUrl,
-      state,
-      provider,
-      mode
-    });
+    // For popup flow, redirect directly to the OAuth provider
+    res.redirect(authUrl);
 
   } catch (error) {
     console.error('Social auth initiation error:', error);
