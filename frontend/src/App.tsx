@@ -18,7 +18,11 @@ import AuthWrapper from './components/AuthWrapper';
 const GDPRCertificateGenerator = lazy(() => import('./components/CertificateGenerator'));
 const GDPRVerificationSystem = lazy(() => import('./components/GDPRVerificationSystem'));
 const SecurityStats = lazy(() => import('./components/SecurityStats'));
-const SecurityDashboard = lazy(() => import('./components/SecurityDashboard'));
+const SecurityDashboard = lazy(() => 
+  import('./components/SecurityDashboard').catch(() => {
+    return import('./components/SecurityStats'); // Fallback component
+  })
+);
 const UserProfile = lazy(() => import('./components/UserProfile'));
 const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
 const AdminLogin = lazy(() => import('./components/AdminLogin'));

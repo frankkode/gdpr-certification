@@ -4,6 +4,7 @@ import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [react()],
+  base: './',
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),
@@ -33,6 +34,9 @@ export default defineConfig({
           ui: ['framer-motion', 'lucide-react'],
           crypto: ['crypto-js'],
         },
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]',
       },
     },
     target: 'esnext',
@@ -43,6 +47,9 @@ export default defineConfig({
         drop_debugger: true,
       },
     },
+    assetsDir: 'assets',
+    sourcemap: false,
+    chunkSizeWarningLimit: 1000,
   },
   define: {
     __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
