@@ -64,16 +64,12 @@ Create `tailwind.config.js`:
 ```javascript
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {},
   },
-  plugins: [
-    require('@tailwindcss/forms'),
-  ],
-}
+  plugins: [require("@tailwindcss/forms")],
+};
 ```
 
 Update `src/index.css`:
@@ -85,15 +81,15 @@ Update `src/index.css`:
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 ```
@@ -159,6 +155,7 @@ gdpr-certificate-system/
 ### ✅ What Makes This System GDPR Compliant
 
 1. **Data Minimization (Article 5)**
+
    - Only SHA-512 cryptographic hashes stored
    - No personal names, email addresses, or personal identifiers retained
    - Minimal metadata: course codes, dates, certificate IDs only
@@ -167,6 +164,7 @@ gdpr-certificate-system/
    - Personal data automatically deleted after certificate generation
    - No manual erasure requests needed - compliance by design
    - Zero personal data retention means nothing to erase
+
 # 🔐 GDPR-Compliant Certificate Verification System
 
 <div align="center">
@@ -185,32 +183,38 @@ gdpr-certificate-system/
 ## 📸 Screenshots & Demo
 
 ### 🎯 Main Dashboard
-*[Screenshot: Dashboard showing GDPR compliance status, connection status, and navigation]*
+
+_[Screenshot: Dashboard showing GDPR compliance status, connection status, and navigation]_
 
 ![Dashboard Screenshot](https://i.imgur.com/GwJqarn.png)
 
 ### 📜 Certificate Generation
-*[Screenshot: Certificate generation form with real-time hash visualization]*
+
+_[Screenshot: Certificate generation form with real-time hash visualization]_
 
 ![Certificate Generation](https://i.imgur.com/cLgTBI1.png)
 
 ### 🗑️ GDPR Data Deletion Animation
-*[Screenshot: Automatic data deletion process in action]*
+
+_[Screenshot: Automatic data deletion process in action]_
 
 ![Data Deletion Animation](https://i.imgur.com/qJqy97t.png)
 
 ### 🔍 Certificate Verification
-*[Screenshot: Dual verification system - PDF upload and ID lookup]*
+
+_[Screenshot: Dual verification system - PDF upload and ID lookup]_
 
 ![Verification System](https://i.imgur.com/pFwthLk.png)
 
 ### 📊 Security Analytics
-*[Screenshot: Security dashboard with anonymous statistics]*
+
+_[Screenshot: Security dashboard with anonymous statistics]_
 
 ![Security Dashboard](https://i.imgur.com/05nu2IR.png)
 
 ### 📱 Mobile Responsive Design
-*[Screenshot: Mobile navigation and responsive layout]*
+
+_[Screenshot: Mobile navigation and responsive layout]_
 
 ![Mobile Design](https://i.imgur.com/DiSJ3oQ.png)
 
@@ -220,18 +224,105 @@ gdpr-certificate-system/
 
 This system is **fully compliant** with the General Data Protection Regulation (GDPR):
 
-| GDPR Article | Requirement | Our Implementation | Status |
-|--------------|-------------|-------------------|---------|
-| **Article 5** | Data Minimization | Only cryptographic hashes stored, no personal data | ✅ **Compliant** |
-| **Article 17** | Right to Erasure | Personal data automatically deleted, no manual erasure needed | ✅ **Compliant** |
-| **Article 25** | Privacy by Design | Privacy protection built into core architecture | ✅ **Compliant** |
-| **Article 32** | Security Measures | SHA-512 cryptographic protection with rate limiting | ✅ **Compliant** |
+| GDPR Article   | Requirement       | Our Implementation                                            | Status           |
+| -------------- | ----------------- | ------------------------------------------------------------- | ---------------- |
+| **Article 5**  | Data Minimization | Only cryptographic hashes stored, no personal data            | ✅ **Compliant** |
+| **Article 17** | Right to Erasure  | Personal data automatically deleted, no manual erasure needed | ✅ **Compliant** |
+| **Article 25** | Privacy by Design | Privacy protection built into core architecture               | ✅ **Compliant** |
+| **Article 32** | Security Measures | SHA-512 cryptographic protection with rate limiting           | ✅ **Compliant** |
 
 ### 🎯 Privacy Impact Assessment
 
-*[Screenshot: GDPR compliance verification showing zero personal data storage]*
+_[Screenshot: GDPR compliance verification showing zero personal data storage]_
 
 ![GDPR Compliance Check](https://i.imgur.com/wMQUBRx.png)
+
+---
+
+## 🛡️ Admin Dashboard Access
+
+### Creating an Admin User
+
+To access the admin dashboard for template management, you need to create an admin user:
+
+#### Method 1: Using the Admin Registration Endpoint
+
+```bash
+# Create admin user via API
+curl -X POST http://localhost:5000/auth/register-admin \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "admin@example.com",
+    "password": "Admin123!@#",
+    "firstName": "Admin",
+    "lastName": "User",
+    "gdprConsent": true
+  }'
+```
+
+#### Method 2: Using Frontend Registration (Temporarily Modified)
+
+1. **Temporarily** modify the registration endpoint in `backend/server.js`:
+
+   ```javascript
+   // Temporarily change line 1111 from:
+   role: 'admin', // Set role to admin
+   // Back to:
+   role: 'user', // Set role to user
+   ```
+
+2. Register normally through the frontend
+3. Manually update the user role in the database:
+   ```sql
+   UPDATE users SET role = 'admin' WHERE email = 'your-email@example.com';
+   ```
+
+#### Method 3: Direct Database Access
+
+If you have direct database access:
+
+```sql
+-- Connect to your PostgreSQL database
+INSERT INTO users (email, password_hash, first_name, last_name, role, gdpr_consent, gdpr_consent_date, created_at)
+VALUES (
+  'admin@example.com',
+  '$2a$12$hashedpassword', -- Use bcrypt to hash your password
+  'Admin',
+  'User',
+  'admin',
+  true,
+  NOW(),
+  NOW()
+);
+```
+
+### Accessing the Admin Dashboard
+
+1. **Login** with your admin credentials through the frontend
+2. **Admin Tab** will appear in the navigation (only visible to admin users)
+3. **Click "Admin"** to access the template management dashboard
+
+### Admin Dashboard Features
+
+- **Template Management**: Create, edit, delete certificate templates
+- **Template Analytics**: View usage statistics and performance metrics
+- **Real-time Preview**: See how templates will look before saving
+- **Color & Font Customization**: Full control over template appearance
+- **Category Management**: Organize templates by industry/type
+- **Usage Tracking**: Monitor which templates are most popular
+
+### Initialize Default Templates
+
+1. Access the admin dashboard
+2. Click **"Initialize"** button to create built-in templates
+3. Templates will be created for: Standard, Healthcare, Financial, Education, Professional, Custom
+
+### Security Notes
+
+- The `/auth/register-admin` endpoint should be **disabled in production**
+- Admin access is controlled by the `role` field in the database
+- All admin operations require valid JWT token with admin role
+- Admin actions are logged for audit purposes
 
 ---
 
@@ -239,7 +330,7 @@ This system is **fully compliant** with the General Data Protection Regulation (
 
 ### Prerequisites
 
-- **Node.js** 18+ 
+- **Node.js** 18+
 - **npm** or **yarn**
 - **PostgreSQL** database (Railway recommended)
 - **Git**
@@ -273,13 +364,13 @@ cd backend
 vercel --prod
 
 # Deploy frontend to Vercel (separate project)
-cd ../frontend  
+cd ../frontend
 vercel --prod
 
 # Configure environment variables in Vercel dashboard
 ```
 
-*[Screenshot: Vercel deployment dashboard showing successful deployment]*
+_[Screenshot: Vercel deployment dashboard showing successful deployment]_
 
 ![Vercel Deployment](https://i.imgur.com/NITcaV9.png)
 
@@ -289,14 +380,13 @@ vercel --prod
 
 ### System Architecture Diagram
 
-*[Screenshot/Diagram: System architecture showing frontend, backend, and database layers]*
+_[Screenshot/Diagram: System architecture showing frontend, backend, and database layers]_
 
 ![System Architecture](https://i.imgur.com/ZDB2emB.png)
 
-*[Screenshot/Diagram: System architecture layers]*
+_[Screenshot/Diagram: System architecture layers]_
 
 ![System Architecture](https://i.imgur.com/1iMk7bh.png)
-
 
 ### GDPR Data Flow
 
@@ -310,7 +400,7 @@ graph TD
     F --> G[Anonymous verification result]
 ```
 
-*[Screenshot: Data flow demonstration showing personal data deletion]*
+_[Screenshot: Data flow demonstration showing personal data deletion]_
 
 ![GDPR Data Flow](https://i.imgur.com/qJqy97t.png)
 
@@ -341,7 +431,7 @@ NODE_ENV=development
 
 # Server Configuration
 PORT=5000
-ALLOWED_ORIGINS=http://localhost:3000,https://your-frontend-domain.vercel.app
+ALLOWED_ORIGINS=http://localhost:3001,https://your-frontend-domain.vercel.app
 
 # Optional: Rate Limiting
 RATE_LIMIT_WINDOW_MS=900000
@@ -352,7 +442,7 @@ RATE_LIMIT_MAX_REQUESTS=100
 
 The system automatically creates tables on first run. No manual database setup required!
 
-*[Screenshot: Database schema showing hash-only tables]*
+_[Screenshot: Database schema showing hash-only tables]_
 
 ![Database Schema](https://i.imgur.com/R15sD3P.png)
 
@@ -365,6 +455,7 @@ npm start
 ```
 
 **Expected output:**
+
 ```
 🔒 GDPR-Compliant Certificate System v4.0 (PostgreSQL) running on port 5000
 ✅ Features: Privacy by Design, Zero Personal Data Storage, Auto-Compliance
@@ -401,13 +492,13 @@ module.exports = {
   theme: {
     extend: {
       animation: {
-        'spin-slow': 'spin 3s linear infinite',
-        'pulse-slow': 'pulse 3s ease-in-out infinite',
-      }
+        "spin-slow": "spin 3s linear infinite",
+        "pulse-slow": "pulse 3s ease-in-out infinite",
+      },
     },
   },
-  plugins: [require('@tailwindcss/forms')],
-}
+  plugins: [require("@tailwindcss/forms")],
+};
 ```
 
 #### 4. Update API Configuration
@@ -416,7 +507,7 @@ In `src/App.tsx`, update the API URL:
 
 ```typescript
 // For local development
-const API_URL = 'http://localhost:5000';
+const API_URL = "http://localhost:5000";
 
 // For production (update with your backend URL)
 // const API_URL = 'https://your-backend.vercel.app';
@@ -428,7 +519,7 @@ const API_URL = 'http://localhost:5000';
 npm start
 ```
 
-*[Screenshot: Local development setup showing both frontend and backend running]*
+_[Screenshot: Local development setup showing both frontend and backend running]_
 
 ![Local Development](https://i.imgur.com/JQHsN2n.png)
 
@@ -444,7 +535,7 @@ npm start
 2. **Create New Project** → **PostgreSQL**
 3. **Copy DATABASE_URL** from Variables tab
 
-*[Screenshot: Railway dashboard showing PostgreSQL service and DATABASE_URL]*
+_[Screenshot: Railway dashboard showing PostgreSQL service and DATABASE_URL]_
 
 ![Railway Setup](https://i.imgur.com/yD8FwUW.png)
 
@@ -466,14 +557,14 @@ vercel --prod
 1. Go to **Vercel Dashboard** → **Project** → **Settings** → **Environment Variables**
 2. Add these variables for **Production, Preview, and Development**:
 
-| Variable | Value | Example |
-|----------|-------|---------|
-| `DATABASE_URL` | Railway PostgreSQL URL | `postgresql://postgres:xxx@postgres-production-xxx.railway.app:5432/railway` |
-| `JWT_SECRET` | Secure random string | `your-super-secret-jwt-key-at-least-32-chars` |
-| `NODE_ENV` | `production` | `production` |
-| `ALLOWED_ORIGINS` | Frontend URLs | `https://your-frontend.vercel.app,http://localhost:3000` |
+| Variable          | Value                  | Example                                                                      |
+| ----------------- | ---------------------- | ---------------------------------------------------------------------------- |
+| `DATABASE_URL`    | Railway PostgreSQL URL | `postgresql://postgres:xxx@postgres-production-xxx.railway.app:5432/railway` |
+| `JWT_SECRET`      | Secure random string   | `your-super-secret-jwt-key-at-least-32-chars`                                |
+| `NODE_ENV`        | `production`           | `production`                                                                 |
+| `ALLOWED_ORIGINS` | Frontend URLs          | `https://your-frontend.vercel.app,http://localhost:3001`                     |
 
-*[Screenshot: Vercel environment variables configuration]*
+_[Screenshot: Vercel environment variables configuration]_
 
 ### backend
 
@@ -482,7 +573,6 @@ vercel --prod
 ### Frontend
 
 ![Vercel Environment Variables](https://i.imgur.com/XI2PAK7.png)
-
 
 #### Step 3: Deploy Frontend to Vercel
 
@@ -514,7 +604,7 @@ curl https://your-backend.vercel.app/health
 }
 ```
 
-*[Screenshot: Successful production deployment showing health check]*
+_[Screenshot: Successful production deployment showing health check]_
 
 ![Production Health Check](https://i.imgur.com/B9ne5Xu.png)
 
@@ -538,6 +628,7 @@ GET /health
 ```
 
 **Response:**
+
 ```json
 {
   "status": "OK",
@@ -566,18 +657,20 @@ Content-Type: application/json
 ```
 
 **Response:** PDF file download with headers:
+
 - `X-Certificate-ID`: Certificate unique identifier
 - `X-GDPR-Compliant`: true
 - `X-Personal-Data-Retained`: false
 
 **GDPR Process:**
+
 1. Personal data processed temporarily
 2. SHA-512 hash computed from canonical JSON
 3. **Personal data immediately deleted**
 4. Only hash stored in database
 5. PDF certificate delivered to user
 
-*[Screenshot: API testing showing certificate generation request/response]*
+_[Screenshot: API testing showing certificate generation request/response]_
 
 ![API Certificate Generation](https://i.imgur.com/dW4yml3.png)
 
@@ -591,6 +684,7 @@ Content-Type: multipart/form-data
 ```
 
 **Response:**
+
 ```json
 {
   "valid": true,
@@ -616,6 +710,7 @@ GET /verify/CERT-A1B2-C3D4-E5F6-G7H8I-J9K0
 ```
 
 **Response:**
+
 ```json
 {
   "valid": true,
@@ -638,6 +733,7 @@ GET /stats
 ```
 
 **Response:**
+
 ```json
 {
   "statistics": {
@@ -653,7 +749,7 @@ GET /stats
 }
 ```
 
-*[Screenshot: API testing tool showing all endpoints working]*
+_[Screenshot: API testing tool showing all endpoints working]_
 
 ![API Testing](https://i.imgur.com/RVSF82R.png)
 
@@ -666,6 +762,7 @@ GET /stats
 #### 1. Data Minimization (Article 5)
 
 **Before (Non-Compliant):**
+
 ```sql
 -- ❌ Personal data stored indefinitely
 CREATE TABLE certificates (
@@ -677,6 +774,7 @@ CREATE TABLE certificates (
 ```
 
 **After (GDPR Compliant):**
+
 ```sql
 -- ✅ Only cryptographic hashes stored
 CREATE TABLE certificate_hashes (
@@ -688,7 +786,7 @@ CREATE TABLE certificate_hashes (
 );
 ```
 
-*[Screenshot: Database comparison showing before/after GDPR compliance]*
+_[Screenshot: Database comparison showing before/after GDPR compliance]_
 
 ### Before
 
@@ -701,42 +799,45 @@ CREATE TABLE certificate_hashes (
 #### 2. Right to Erasure (Article 17)
 
 **Traditional System Issues:**
+
 - Manual erasure requests required
 - Complex data mapping across systems
 - Risk of incomplete deletion
 - 30-day compliance timeline pressure
 
 **Our Solution:**
+
 - **Automatic deletion** after certificate generation
 - **No personal data stored** = nothing to erase
 - **Compliance by design** = zero risk
 - **No manual processes** required
 
-*[Screenshot: Data deletion animation showing automatic erasure]*
+_[Screenshot: Data deletion animation showing automatic erasure]_
 
 ![Automatic Deletion](https://i.imgur.com/qJqy97t.png)
 
 #### 3. Privacy by Design (Article 25)
 
 **Architecture Principles:**
+
 - Privacy protection as **default operation**
 - **Technical impossibility** of personal data recovery
 - **End-to-end verification** without personal data access
 - **Cryptographic security** without privacy compromise
 
-*[Screenshot: System architecture highlighting privacy-by-design features]*
+_[Screenshot: System architecture highlighting privacy-by-design features]_
 
 ![Privacy by Design](https://i.imgur.com/Z4kHz95.png)
 
 ### GDPR Risk Assessment
 
-| Risk Category | Traditional System | Our GDPR System | Risk Level |
-|---------------|-------------------|-----------------|------------|
-| **Data Breach** | Personal data exposed | Only hashes exposed | 🟢 **Minimal** |
-| **Erasure Requests** | Manual processing required | No personal data to erase | 🟢 **None** |
-| **Compliance Audit** | Complex data mapping | Simple hash verification | 🟢 **Low** |
-| **International Transfer** | Personal data restrictions | Hashes freely transferable | 🟢 **None** |
-| **Retention Period** | Must track and delete | No personal data retention | 🟢 **None** |
+| Risk Category              | Traditional System         | Our GDPR System            | Risk Level     |
+| -------------------------- | -------------------------- | -------------------------- | -------------- |
+| **Data Breach**            | Personal data exposed      | Only hashes exposed        | 🟢 **Minimal** |
+| **Erasure Requests**       | Manual processing required | No personal data to erase  | 🟢 **None**    |
+| **Compliance Audit**       | Complex data mapping       | Simple hash verification   | 🟢 **Low**     |
+| **International Transfer** | Personal data restrictions | Hashes freely transferable | 🟢 **None**    |
+| **Retention Period**       | Must track and delete      | No personal data retention | 🟢 **None**    |
 
 ---
 
@@ -747,6 +848,7 @@ CREATE TABLE certificate_hashes (
 #### GDPR Compliance Testing
 
 - [ ] **Certificate Generation**
+
   - [ ] Personal data entered in form
   - [ ] Certificate PDF generated successfully
   - [ ] Data deletion animation plays
@@ -754,6 +856,7 @@ CREATE TABLE certificate_hashes (
   - [ ] Certificate remains verifiable after deletion
 
 - [ ] **Verification Testing**
+
   - [ ] PDF upload verification works
   - [ ] Certificate ID verification works
   - [ ] No personal data in verification responses
@@ -766,7 +869,7 @@ CREATE TABLE certificate_hashes (
   - [ ] Verification statistics are anonymous
   - [ ] No personal data in logs
 
-*[Screenshot: Testing checklist being performed]*
+_[Screenshot: Testing checklist being performed]_
 
 ![Testing Checklist](https://i.imgur.com/JQHsN2n.png)
 
@@ -777,7 +880,7 @@ CREATE TABLE certificate_hashes (
 cd backend
 npm test
 
-# Frontend component tests  
+# Frontend component tests
 cd frontend
 npm test
 
@@ -792,14 +895,14 @@ npm run test:gdpr
 
 Expected performance metrics:
 
-| Operation | Target Time | Our Performance |
-|-----------|-------------|-----------------|
-| Certificate Generation | < 3 seconds | ~2.1 seconds |
-| PDF Verification | < 2 seconds | ~1.3 seconds |
-| ID Verification | < 500ms | ~180ms |
-| Hash Computation | < 100ms | ~45ms |
+| Operation              | Target Time | Our Performance |
+| ---------------------- | ----------- | --------------- |
+| Certificate Generation | < 3 seconds | ~2.1 seconds    |
+| PDF Verification       | < 2 seconds | ~1.3 seconds    |
+| ID Verification        | < 500ms     | ~180ms          |
+| Hash Computation       | < 100ms     | ~45ms           |
 
-*[Screenshot: Performance monitoring dashboard]*
+_[Screenshot: Performance monitoring dashboard]_
 
 ![Performance Metrics](https://i.imgur.com/B9ne5Xu.png)
 
@@ -817,24 +920,26 @@ Expected performance metrics:
 
 ### Breakpoint Testing
 
-| Device Type | Screen Size | Layout |
-|-------------|-------------|--------|
-| **Mobile** | 320px - 768px | Stacked navigation, vertical layout |
-| **Tablet** | 768px - 1024px | Compact navigation, grid layouts |
-| **Desktop** | 1024px+ | Full horizontal navigation |
+| Device Type | Screen Size    | Layout                              |
+| ----------- | -------------- | ----------------------------------- |
+| **Mobile**  | 320px - 768px  | Stacked navigation, vertical layout |
+| **Tablet**  | 768px - 1024px | Compact navigation, grid layouts    |
+| **Desktop** | 1024px+        | Full horizontal navigation          |
 
-*[Screenshot: Mobile device testing showing responsive design]*
+_[Screenshot: Mobile device testing showing responsive design]_
 
 ![Mobile Responsive](https://i.imgur.com/DiSJ3oQ.png)
 
 ### Mobile Testing Checklist
 
 - [ ] **Navigation**
+
   - [ ] 2x2 grid layout on mobile
   - [ ] Touch targets ≥ 44px
   - [ ] Smooth transitions
 
 - [ ] **Forms**
+
   - [ ] Appropriate keyboard types
   - [ ] Zoom prevention on inputs
   - [ ] Touch-friendly validation
@@ -853,37 +958,43 @@ Expected performance metrics:
 #### Backend Issues
 
 **🚨 "Database connection failed"**
+
 ```bash
 Error: ENOTFOUND postgres.railway.internal
 ```
 
 **Solution:**
+
 1. Check you're using **external** Railway URL (ends with `.railway.app`)
 2. Verify DATABASE_URL in environment variables
 3. Test connection: `curl https://your-backend.vercel.app/health`
 
-*[Screenshot: Railway database URL configuration]*
+_[Screenshot: Railway database URL configuration]_
 
 ![Railway Database Fix](https://i.imgur.com/yD8FwUW.png)
 
 **🚨 "Build Failed - No Output Directory"**
+
 ```bash
 Error: No Output Directory named "public" found
 ```
 
 **Solution:**
+
 1. Go to Vercel Dashboard → Settings → Build & Output Settings
 2. Set Framework Preset to **"Other"**
 3. Leave Build Command and Output Directory **empty**
 
-*[Screenshot: Vercel build settings configuration]*
+_[Screenshot: Vercel build settings configuration]_
 
 ![Vercel Build Settings](https://i.imgur.com/uIxEi7J.png)
 
 **🚨 "Certificate generation timeout"**
 
 **Solution:**
+
 1. Increase Vercel function timeout in `vercel.json`:
+
 ```json
 {
   "functions": {
@@ -900,6 +1011,7 @@ Error: No Output Directory named "public" found
 **🚨 "Network Error - Cannot reach API"**
 
 **Solution:**
+
 1. Verify backend is deployed and running
 2. Check API_URL in `src/App.tsx`
 3. Verify CORS configuration includes frontend URL
@@ -907,6 +1019,7 @@ Error: No Output Directory named "public" found
 **🚨 "Mobile navigation not responsive"**
 
 **Solution:**
+
 1. Update `App.tsx` with responsive navigation code
 2. Ensure Tailwind CSS is properly configured
 3. Test responsive breakpoints in browser dev tools
@@ -916,6 +1029,7 @@ Error: No Output Directory named "public" found
 **🚨 "Personal data found in database"**
 
 **Solution:**
+
 1. Use the GDPR-compliant database schema
 2. Run database migration to remove personal data columns
 3. Verify with: `SELECT * FROM certificate_hashes LIMIT 5;`
@@ -923,6 +1037,7 @@ Error: No Output Directory named "public" found
 **🚨 "Data deletion not working"**
 
 **Solution:**
+
 1. Check frontend data deletion animation component
 2. Verify no personal data is actually stored in database
 3. Test with browser developer tools
@@ -935,12 +1050,12 @@ Add these temporary endpoints for debugging:
 
 ```javascript
 // Test database connection
-app.get('/debug/db-test', async (req, res) => {
+app.get("/debug/db-test", async (req, res) => {
   // Test connection and table creation
 });
 
 // Test certificate creation without PDF
-app.post('/debug/cert-test', async (req, res) => {
+app.post("/debug/cert-test", async (req, res) => {
   // Test hash generation and storage
 });
 ```
@@ -950,15 +1065,15 @@ app.post('/debug/cert-test', async (req, res) => {
 Enable debug mode in `src/App.tsx`:
 
 ```typescript
-const DEBUG_MODE = process.env.NODE_ENV === 'development';
+const DEBUG_MODE = process.env.NODE_ENV === "development";
 
 if (DEBUG_MODE) {
-  console.log('API URL:', API_URL);
-  console.log('Connection Status:', connectionStatus);
+  console.log("API URL:", API_URL);
+  console.log("Connection Status:", connectionStatus);
 }
 ```
 
-*[Screenshot: Debug mode showing detailed logging]*
+_[Screenshot: Debug mode showing detailed logging]_
 
 ![Debug Mode](https://i.imgur.com/Zn7nsDY.png)
 
@@ -983,28 +1098,28 @@ Regular checks to ensure GDPR compliance:
 
 ```sql
 -- Verify no personal data columns exist
-SELECT column_name 
-FROM information_schema.columns 
-WHERE table_name = 'certificate_hashes' 
+SELECT column_name
+FROM information_schema.columns
+WHERE table_name = 'certificate_hashes'
 AND column_name IN ('student_name', 'course_name', 'certificate_data');
 -- Expected: Empty result
 ```
 
 ### Analytics Dashboard
 
-*[Screenshot: Analytics dashboard showing system metrics]*
+_[Screenshot: Analytics dashboard showing system metrics]_
 
 ![Analytics Dashboard](https://i.imgur.com/r36CG5B.png)
 
 #### Key Metrics to Monitor
 
-| Metric | Target | Alert Threshold |
-|--------|--------|-----------------|
-| **Certificate Generation Rate** | > 95% success | < 90% |
-| **Verification Success Rate** | > 99% | < 95% |
-| **API Response Time** | < 2 seconds | > 5 seconds |
-| **Database Size Growth** | Predictable | Unexpected spikes |
-| **Error Rate** | < 1% | > 5% |
+| Metric                          | Target        | Alert Threshold   |
+| ------------------------------- | ------------- | ----------------- |
+| **Certificate Generation Rate** | > 95% success | < 90%             |
+| **Verification Success Rate**   | > 99%         | < 95%             |
+| **API Response Time**           | < 2 seconds   | > 5 seconds       |
+| **Database Size Growth**        | Predictable   | Unexpected spikes |
+| **Error Rate**                  | < 1%          | > 5%              |
 
 ### Privacy Metrics
 
@@ -1030,6 +1145,7 @@ npm install react-i18next i18next
 ```
 
 Languages to consider:
+
 - English (default)
 - German (GDPR origin)
 - French (RGPD)
@@ -1052,11 +1168,53 @@ Monitor and adjust rate limits:
 // Custom rate limiting per user type
 const premiumUserLimit = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100 // Higher limit for premium users
+  max: 100, // Higher limit for premium users
 });
 ```
 
-#### 4. Certificate Analytics
+#### 4. Bulk Certificate Generation 🆕
+
+Generate multiple certificates from CSV data files:
+
+**Features:**
+- CSV file upload with validation
+- Real-time progress tracking
+- Background processing with job queue
+- Downloadable ZIP archives
+- Error reporting and recovery
+
+**CSV Format Example:**
+```csv
+name,email,course,date,grade,instructor
+John Doe,john.doe@example.com,Web Development,2024-06-24,A+,Sarah Johnson
+Jane Smith,jane.smith@company.com,React Training,2024-06-23,A,Michael Brown
+```
+
+**Usage:**
+1. Navigate to "Bulk Generation" tab
+2. Select certificate template
+3. Upload CSV file (max 1000 records)
+4. Monitor progress in real-time
+5. Download completed certificates
+
+**API Endpoints:**
+```bash
+# Get bulk generation jobs
+GET /bulk/jobs
+
+# Start bulk generation
+POST /bulk/generate (with CSV file)
+
+# Cancel job
+POST /bulk/jobs/:id/cancel
+
+# Download results
+GET /bulk/jobs/:id/download
+```
+
+**Sample CSV File:** Download [sample_certificates.csv](./sample_certificates.csv) for reference.
+
+#### 5. Certificate Analytics
 
 Anonymous analytics while maintaining GDPR compliance:
 
@@ -1065,7 +1223,7 @@ Anonymous analytics while maintaining GDPR compliance:
 - Verification frequency patterns
 - Geographic distribution (country-level only)
 
-*[Screenshot: Anonymous analytics dashboard]*
+_[Screenshot: Anonymous analytics dashboard]_
 
 ![Anonymous Analytics](https://i.imgur.com/uIxEi7J.png)
 
@@ -1092,12 +1250,14 @@ Anonymous analytics while maintaining GDPR compliance:
 ### Reporting Issues
 
 When reporting issues, **do not include**:
+
 - Personal names or information
 - Actual certificate content
 - Database connection strings
 - API keys or secrets
 
 **Do include**:
+
 - Anonymized examples
 - Error messages
 - Steps to reproduce
@@ -1110,7 +1270,7 @@ When reporting issues, **do not include**:
 ### Getting Help
 
 1. **📖 Documentation**: Check this README first
-2. **🐛 GitHub Issues**: Report bugs and feature requests  
+2. **🐛 GitHub Issues**: Report bugs and feature requests
 3. **💬 Discussions**: Community Q&A and ideas
 4. **📧 Email Support**: masabo.frank@iu-study.org
 
@@ -1148,11 +1308,13 @@ This system is designed to be GDPR-compliant through technical measures:
 ### Data Processing Notice
 
 **What we process:**
+
 - Cryptographic hashes (SHA-512) of certificate content
 - Anonymous usage statistics
 - Technical metadata (timestamps, certificate IDs)
 
 **What we DON'T process:**
+
 - Personal names or identifiers
 - Email addresses or contact information
 - Sensitive personal data
@@ -1198,15 +1360,15 @@ This system is provided as-is for GDPR compliance purposes. Users are responsibl
 
 ### GDPR Compliance Certifications
 
-*[Placeholder for any GDPR compliance certifications or security audits]*
+_[Placeholder for any GDPR compliance certifications or security audits]_
 
 ### Security Assessments
 
-*[Placeholder for security audit results or penetration testing reports]*
+_[Placeholder for security audit results or penetration testing reports]_
 
 ### Performance Benchmarks
 
-*[Placeholder for performance testing results or scalability assessments]*
+_[Placeholder for performance testing results or scalability assessments]_
 
 ---
 
@@ -1262,7 +1424,7 @@ NODE_ENV=development|production
 
 # Optional - Server Configuration
 PORT=5000
-ALLOWED_ORIGINS=http://localhost:3000,https://your-frontend.vercel.app
+ALLOWED_ORIGINS=http://localhost:3001,https://your-frontend.vercel.app
 
 # Optional - Rate Limiting
 RATE_LIMIT_WINDOW_MS=900000
@@ -1293,11 +1455,11 @@ REACT_APP_ANALYTICS_ID=your-analytics-id
 -- GDPR-Compliant Certificate Hashes Table
 CREATE TABLE certificate_hashes (
     id SERIAL PRIMARY KEY,
-    
+
     -- Cryptographic Data (NOT Personal Data)
     certificate_hash CHAR(128) UNIQUE NOT NULL,    -- SHA-512 hash
     certificate_id VARCHAR(255) UNIQUE NOT NULL,   -- Generated ID
-    
+
     -- Minimal Non-Personal Metadata
     course_code VARCHAR(20) NOT NULL,              -- Generic identifier
     issue_date DATE NOT NULL,                      -- Certificate date
@@ -1307,15 +1469,15 @@ CREATE TABLE certificate_hashes (
     status VARCHAR(50) DEFAULT 'ACTIVE',           -- Certificate status
     security_level VARCHAR(50) DEFAULT 'GDPR_COMPLIANT',
     request_id VARCHAR(255) NOT NULL,              -- Request tracking
-    
+
     -- Anonymous Usage Statistics
     verification_count INTEGER DEFAULT 0,          -- Times verified
     last_verified TIMESTAMP NULL,                  -- Last verification
-    
+
     -- System Timestamps
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+
     -- Data Integrity Constraints
     CONSTRAINT valid_hash CHECK(LENGTH(certificate_hash) = 128),
     CONSTRAINT valid_certificate_id CHECK(certificate_id LIKE 'CERT-%'),
@@ -1388,7 +1550,7 @@ This GDPR-Compliant Certificate Verification System represents a **paradigm shif
 ✅ **More Secure** - Cryptographic verification is stronger than plain data storage  
 ✅ **Higher Performance** - Hash-only databases are faster and more efficient  
 ✅ **Future-Proof** - Works under any privacy regulation worldwide  
-✅ **Cost-Effective** - Reduced compliance overhead and legal risks  
+✅ **Cost-Effective** - Reduced compliance overhead and legal risks
 
 ### Key Achievements
 
@@ -1436,7 +1598,7 @@ Organizations implementing this system benefit from:
 ### ❌ What Was Removed from Original System
 
 - `student_name` column - **REMOVED** ✅
-- `course_name` column - **REMOVED** ✅  
+- `course_name` column - **REMOVED** ✅
 - `certificate_data` column - **REMOVED** ✅
 - Personal data in verification responses - **REMOVED** ✅
 - Indefinite personal data retention - **REMOVED** ✅
@@ -1444,12 +1606,14 @@ Organizations implementing this system benefit from:
 ## 🔍 How Verification Works (GDPR Compliant)
 
 ### PDF Verification Process:
+
 1. **No Personal Data Access**: System extracts only cryptographic metadata
 2. **Hash Comparison**: Computes SHA-512 hash from certificate structure
 3. **Database Lookup**: Searches hash-only database (no personal data)
 4. **Anonymous Result**: Returns verification status without personal information
 
 ### ID Verification Process:
+
 1. **Anonymous Lookup**: Certificate ID searched in hash-only database
 2. **Metadata Only**: Returns course code, date, status (no personal info)
 3. **Zero Data Exposure**: No personal data accessed or returned
@@ -1503,24 +1667,27 @@ sqlite3 backend/data/gdpr_compliant_certificates.db "SELECT * FROM certificate_h
 If migrating from the original system:
 
 ### 1. Backup Existing Data
+
 ```bash
 # Backup original database
 cp backend/data/certificates.db backend/data/certificates_backup.db
 ```
 
 ### 2. Extract Hashes Only
+
 ```sql
 -- Create GDPR-compliant table with hashes only
 INSERT INTO certificate_hashes (certificate_hash, certificate_id, course_code, issue_date, serial_number, status)
-SELECT hash, certificate_id, 
+SELECT hash, certificate_id,
        SUBSTR(UPPER(REPLACE(course_name, ' ', '')), 1, 20) as course_code,
        DATE(issue_date) as issue_date,
        serial_number, status
-FROM certificates 
+FROM certificates
 WHERE status = 'ACTIVE';
 ```
 
 ### 3. Delete Personal Data
+
 ```sql
 -- Remove all personal data columns
 DROP TABLE certificates;  -- Original table with personal data
@@ -1530,7 +1697,7 @@ DROP TABLE certificates;  -- Original table with personal data
 ## 🚨 Security Considerations
 
 1. **Hash Security**: SHA-512 provides 256-bit collision resistance
-2. **Rate Limiting**: Prevents abuse and DoS attacks  
+2. **Rate Limiting**: Prevents abuse and DoS attacks
 3. **Input Validation**: Prevents injection attacks
 4. **HTTPS Only**: Ensure encrypted transmission in production
 5. **No Logs**: Personal data not logged anywhere
@@ -1551,6 +1718,7 @@ NODE_ENV=production
 ### Security Headers
 
 The system includes security headers via Helmet.js:
+
 - Content Security Policy
 - Cross-Origin Resource Sharing (CORS)
 - Rate limiting

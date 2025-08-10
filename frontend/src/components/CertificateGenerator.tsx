@@ -1,12 +1,17 @@
 // 📜 GDPR-Compliant Certificate Generator Component - FIXED VERSION
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { 
   User, Hash, Shield, Lock, 
   CheckCircle, AlertTriangle, Loader2, Eye, EyeOff,
-  Clock, Key, Database, Trash2, UserX
+  Clock, Key, Database, Trash2, UserX, Palette, RefreshCw,
+  Upload, Image, FileSignature, Wallpaper, X, ExternalLink
 } from 'lucide-react';
 import CryptoJS from 'crypto-js';
+import { useAuth } from '../contexts/AuthContext';
+import CertificateTemplates from './CertificateTemplates';
 
 interface CertificateGeneratorProps {
   onCertificateGenerated: () => void;
@@ -28,17 +33,40 @@ interface CertificateData {
   integrity: string;
 }
 
+interface AssetData {
+  logo?: File | null;
+  signature?: File | null;
+  background?: File | null;
+}
+
 const GDPRCertificateGenerator: React.FC<CertificateGeneratorProps> = ({
   onCertificateGenerated,
   apiUrl
 }) => {
+  const { token, user: authUser, refreshAuth } = useAuth();
+  const { t } = useTranslation();
+  const navigate = useNavigate();
   // Form state
   const [user, setUser] = useState('');
   const [exam, setExam] = useState('');
+  const [selectedTemplate, setSelectedTemplate] = useState('standard');
   const [isGenerating, setIsGenerating] = useState(false);
   const [showHashVisualization, setShowHashVisualization] = useState(true);
+  const [showTemplateSelection, setShowTemplateSelection] = useState(false);
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [generationProgress, setGenerationProgress] = useState(0);
+  
+  // Asset upload state
+  const [assets, setAssets] = useState<AssetData>({
+    logo: null,
+    signature: null,
+    background: null
+  });
+  const [assetPreviews, setAssetPreviews] = useState<{
+    logo?: string;
+    signature?: string;
+    background?: string;
+  }>({});
   
   // GDPR compliance states
   const [showDataDeletion, setShowDataDeletion] = useState(false);
@@ -55,6 +83,16 @@ const GDPRCertificateGenerator: React.FC<CertificateGeneratorProps> = ({
     complexity: 0,
     predictability: 0
   });
+
+  // Subscription status state
+  const [subscriptionStatus, setSubscriptionStatus] = useState<{
+    canGenerate: boolean;
+    currentUsage?: number;
+    limit?: number;
+    remaining?: number;
+    reason?: string;
+  } | null>(null);
+  const [checkingSubscription, setCheckingSubscription] = useState(true);
 
   // ✅ FIXED: Exact canonical JSON creation matching GDPR-compliant backend
   const createCanonicalJSON = useCallback((userData: string, examData: string, providedTimestamp?: number, providedNonce?: string): string => {
@@ -193,6 +231,59 @@ const GDPRCertificateGenerator: React.FC<CertificateGeneratorProps> = ({
     return Math.min(predictabilityScore, 1);
   };
 
+  // Asset handling functions
+  const handleAssetUpload = useCallback((type: keyof AssetData, file: File | null) => {
+    if (file) {
+      // Validate file type
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+      if (!allowedTypes.includes(file.type)) {
+        alert('Please upload only image files (JPEG, PNG, GIF)');
+        return;
+      }
+      
+      // Validate file size (5MB max)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File size must be less than 5MB');
+        return;
+      }
+      
+      // Create preview URL
+      const previewUrl = URL.createObjectURL(file);
+      setAssetPreviews(prev => ({
+        ...prev,
+        [type]: previewUrl
+      }));
+    } else {
+      // Remove preview URL if file is removed
+      setAssetPreviews(prev => {
+        if (prev[type]) {
+          URL.revokeObjectURL(prev[type]!);
+        }
+        const newPreviews = { ...prev };
+        delete newPreviews[type];
+        return newPreviews;
+      });
+    }
+    
+    setAssets(prev => ({
+      ...prev,
+      [type]: file
+    }));
+  }, []);
+
+  const removeAsset = useCallback((type: keyof AssetData) => {
+    handleAssetUpload(type, null);
+  }, [handleAssetUpload]);
+
+  // Navigation Functions
+  const handleUpgradeClick = useCallback(() => {
+    navigate('/payment');
+  }, [navigate]);
+
+  const handleSubscriptionClick = useCallback(() => {
+    navigate('/app?tab=profile');
+  }, [navigate]);
+
   // Real-time updates as user types
   useEffect(() => {
     if (user.trim() && exam.trim()) {
@@ -222,6 +313,88 @@ const GDPRCertificateGenerator: React.FC<CertificateGeneratorProps> = ({
     
     setErrors(newErrors);
   }, [user, exam, validateInput]);
+
+  // Check subscription status on component mount and when user changes
+  useEffect(() => {
+    const checkSubscriptionStatus = async () => {
+      console.log('🔍 CertificateGenerator: Checking subscription status for user:', authUser?.email, 'tier:', authUser?.subscriptionTier);
+      
+      if (!token) {
+        console.log('❌ No token available, skipping subscription check');
+        return;
+      }
+      
+      try {
+        setCheckingSubscription(true);
+        console.log('📡 Calling:', `${apiUrl}/subscription/can-generate`);
+        
+        const response = await fetch(`${apiUrl}/subscription/can-generate`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('✅ Subscription check result:', { canGenerate: data.canGenerate, limit: data.limit, remaining: data.remaining });
+          setSubscriptionStatus(data);
+        } else {
+          const errorText = await response.text();
+          console.error('❌ Subscription API error:', response.status, errorText);
+          setSubscriptionStatus({
+            canGenerate: false,
+            reason: `API Error: ${response.status} - ${errorText}`
+          });
+        }
+      } catch (error) {
+        console.error('❌ Network error checking subscription:', error.message);
+        setSubscriptionStatus({
+          canGenerate: false,
+          reason: `Network error: ${error.message}`
+        });
+      } finally {
+        setCheckingSubscription(false);
+      }
+    };
+
+    checkSubscriptionStatus();
+  }, [apiUrl, token]);
+
+  // Force subscription recheck when user's subscription tier changes
+  useEffect(() => {
+    if (authUser?.subscriptionTier && token) {
+      console.log('🔄 CertificateGenerator: User subscription tier changed, rechecking permissions...');
+      const recheckSubscription = async () => {
+        try {
+          setCheckingSubscription(true);
+          console.log('📡 Force recheck calling:', `${apiUrl}/subscription/can-generate`);
+          
+          const response = await fetch(`${apiUrl}/subscription/can-generate`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            console.log('✅ Force recheck result:', { canGenerate: data.canGenerate, limit: data.limit, remaining: data.remaining });
+            setSubscriptionStatus(data);
+          } else {
+            const errorText = await response.text();
+            console.error('❌ Force recheck error:', response.status, errorText);
+          }
+        } catch (error) {
+          console.error('❌ Force recheck network error:', error.message);
+        } finally {
+          setCheckingSubscription(false);
+        }
+      };
+
+      recheckSubscription();
+    }
+  }, [authUser?.subscriptionTier]); // Only trigger when subscription tier changes
 
   // ✅ GDPR-Compliant Data Deletion Animation
   const simulateDataDeletion = async () => {
@@ -279,17 +452,41 @@ const GDPRCertificateGenerator: React.FC<CertificateGeneratorProps> = ({
         await new Promise(resolve => setTimeout(resolve, 600));
       }
       
+      // Create FormData for file uploads
+      const formData = new FormData();
+      formData.append('user', user.trim());
+      formData.append('exam', exam.trim());
+      formData.append('template', selectedTemplate);
+      
+      // Add asset files if they exist
+      if (assets.logo) {
+        formData.append('logo', assets.logo);
+      }
+      if (assets.signature) {
+        formData.append('signature', assets.signature);
+      }
+      if (assets.background) {
+        formData.append('background', assets.background);
+      }
+
       const response = await fetch(`${apiUrl}/generate`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           'Accept': 'application/pdf',
+          'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ user: user.trim(), exam: exam.trim() }),
+        body: formData,
       });
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        
+        // Handle subscription limit errors
+        if (response.status === 403) {
+          const upgradeMessage = errorData.details || 'You need a paid subscription to generate certificates.';
+          throw new Error(`❌ ${upgradeMessage}\n\n💰 Available Plans:\n• Professional: $29/month (5 certificates)\n• Premium: €99/month (30 certificates)\n• Enterprise: €499/month (100 certificates)\n\nPlease contact an administrator to upgrade your account.`);
+        }
+        
         throw new Error(errorData.error || `HTTP ${response.status}`);
       }
 
@@ -341,8 +538,9 @@ Personal Data Retained: ${personalDataRetained}
            exam.trim() && 
            Object.keys(errors).length === 0 &&
            !isGenerating &&
-           !showDataDeletion;
-  }, [user, exam, errors, isGenerating, showDataDeletion]);
+           !showDataDeletion &&
+           subscriptionStatus?.canGenerate === true;
+  }, [user, exam, errors, isGenerating, showDataDeletion, subscriptionStatus]);
 
   return (
     <div className="space-y-8">
@@ -374,6 +572,150 @@ Personal Data Retained: ${personalDataRetained}
         </motion.div>
       </div>
 
+      {/* Subscription Status Banner */}
+      {checkingSubscription ? (
+        <div className="bg-blue-500/10 border border-blue-400/30 rounded-lg p-4">
+          <div className="flex items-center space-x-3">
+            <Loader2 className="h-5 w-5 text-blue-400 animate-spin" />
+            <span className="text-blue-300">Checking subscription status...</span>
+          </div>
+        </div>
+      ) : subscriptionStatus && !subscriptionStatus.canGenerate ? (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-yellow-500/10 border border-yellow-400/30 rounded-lg p-6"
+        >
+          <div className="flex items-start space-x-4">
+            <AlertTriangle className="h-6 w-6 text-yellow-400 flex-shrink-0 mt-1" />
+            <div className="flex-1">
+              <button
+                onClick={handleSubscriptionClick}
+                className="text-lg font-semibold text-yellow-300 mb-2 hover:text-yellow-200 transition-colors flex items-center space-x-2 cursor-pointer group"
+                title="Click to manage subscription"
+              >
+                <span>Subscription Required</span>
+                <ExternalLink className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </button>
+              <p className="text-yellow-200 mb-2">{subscriptionStatus.reason}</p>
+              <p className="text-yellow-300 text-sm mb-4">
+                💡 Just completed payment? Click the refresh button below to update your subscription status.
+              </p>
+              
+              <div className="grid sm:grid-cols-3 gap-4 mb-4">
+                <div className="bg-yellow-500/5 border border-yellow-400/20 rounded-lg p-3">
+                  <div className="text-sm font-medium text-yellow-300">Professional</div>
+                  <div className="text-lg font-bold text-white">$29<span className="text-sm text-yellow-200">/month</span></div>
+                  <div className="text-xs text-yellow-200">5 certificates + customization + logo + signature</div>
+                </div>
+                <div className="bg-yellow-500/5 border border-yellow-400/20 rounded-lg p-3">
+                  <div className="text-sm font-medium text-yellow-300">Premium</div>
+                  <div className="text-lg font-bold text-white">€99<span className="text-sm text-yellow-200">/month</span></div>
+                  <div className="text-xs text-yellow-200">30 certificates + templates+ logo + signature</div>
+                </div>
+                <div className="bg-yellow-500/5 border border-yellow-400/20 rounded-lg p-3">
+                  <div className="text-sm font-medium text-yellow-300">Enterprise</div>
+                  <div className="text-lg font-bold text-white">€499<span className="text-sm text-yellow-200">/month</span></div>
+                  <div className="text-xs text-yellow-200">100 certificates + API + logo + signature</div>
+                </div>
+              </div>
+              
+              <div className="flex space-x-3">
+                <button
+                  onClick={handleUpgradeClick}
+                  className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 flex items-center justify-center space-x-2"
+                >
+                  <span>🚀 Upgrade Your Plan</span>
+                  <ExternalLink className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={async () => {
+                    setCheckingSubscription(true);
+                    console.log('🔄 Manual refresh: Refreshing auth and subscription status...');
+                    
+                    try {
+                      // First refresh the auth context to get latest user data
+                      await refreshAuth();
+                      console.log('✅ Auth refreshed');
+                      
+                      // Then check subscription status
+                      const response = await fetch(`${apiUrl}/subscription/can-generate`, {
+                        headers: {
+                          'Authorization': `Bearer ${token}`,
+                          'Content-Type': 'application/json'
+                        }
+                      });
+                      
+                      if (response.ok) {
+                        const data = await response.json();
+                        console.log('✅ Subscription status refreshed:', data);
+                        setSubscriptionStatus(data);
+                      } else {
+                        const errorText = await response.text();
+                        console.error('❌ Subscription refresh error:', response.status, errorText);
+                      }
+                    } catch (err) {
+                      console.error('❌ Manual refresh error:', err);
+                    } finally {
+                      setCheckingSubscription(false);
+                    }
+                  }}
+                  disabled={checkingSubscription}
+                  className="bg-yellow-500/20 hover:bg-yellow-500/30 border border-yellow-400/30 text-yellow-300 hover:text-yellow-200 px-4 py-3 rounded-lg transition-all duration-200 flex items-center space-x-2 disabled:opacity-50"
+                  title="Refresh subscription status if you just completed payment"
+                >
+                  {checkingSubscription ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <RefreshCw className="h-4 w-4" />
+                  )}
+                  <span className="hidden sm:inline">{checkingSubscription ? 'Checking...' : 'Refresh'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      ) : subscriptionStatus && subscriptionStatus.canGenerate ? (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-green-500/10 border border-green-400/30 rounded-lg p-4"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <CheckCircle className="h-5 w-5 text-green-400" />
+              <span className="text-green-300 font-medium">Certificate generation available</span>
+            </div>
+            <div className="flex items-center space-x-4">
+              {subscriptionStatus.limit && (
+                <div className="text-green-300 text-sm">
+                  {subscriptionStatus.remaining || 0} of {subscriptionStatus.limit} certificates remaining this month
+                </div>
+              )}
+              <button
+                onClick={() => {
+                  setCheckingSubscription(true);
+                  fetch(`${apiUrl}/subscription/can-generate`, {
+                    headers: {
+                      'Authorization': `Bearer ${token}`,
+                      'Content-Type': 'application/json'
+                    }
+                  })
+                  .then(res => res.json())
+                  .then(data => setSubscriptionStatus(data))
+                  .catch(err => console.error('Refresh error:', err))
+                  .finally(() => setCheckingSubscription(false));
+                }}
+                className="bg-green-500/20 hover:bg-green-500/30 border border-green-400/30 text-green-300 hover:text-green-200 px-3 py-1 rounded text-xs transition-all duration-200 flex items-center space-x-1"
+              >
+                <RefreshCw className="h-3 w-3" />
+                <span>Refresh</span>
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      ) : null}
+
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Input Form */}
         <motion.div
@@ -384,17 +726,17 @@ Personal Data Retained: ${personalDataRetained}
           <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
             <h3 className="text-xl font-semibold text-white mb-6 flex items-center">
               <User className="h-6 w-6 mr-3 text-green-400" />
-              Certificate Information
+              {t('certificate.form.title')}
               <span className="ml-auto text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full">
-                Auto-Delete
+                {t('certificate.form.autoDelete')}
               </span>
             </h3>
             
             {/* Student Name Input */}
             <div className="space-y-2">
               <label className="block text-sm font-medium text-green-200">
-                Student Name * 
-                <span className="text-xs text-gray-400 ml-2">(Will be auto-deleted)</span>
+                {t('certificate.form.studentName')} * 
+                <span className="text-xs text-gray-400 ml-2">({t('certificate.form.willBeDeleted')})</span>
               </label>
               <div className="relative">
                 <input
@@ -406,7 +748,7 @@ Personal Data Retained: ${personalDataRetained}
                       ? 'border-red-400 focus:ring-red-400' 
                       : 'border-white/20 focus:ring-green-400'
                   }`}
-                  placeholder="Enter student's full name"
+                  placeholder={t('certificate.form.studentNamePlaceholder')}
                   maxLength={100}
                   disabled={isGenerating || showDataDeletion}
                 />
@@ -425,16 +767,16 @@ Personal Data Retained: ${personalDataRetained}
                 </motion.p>
               )}
               <div className="text-xs text-gray-400">
-                {user.length}/100 characters • 
-                <span className="text-green-400 ml-1">Protected by GDPR</span>
+                {user.length}/100 {t('certificate.form.characters')} • 
+                <span className="text-green-400 ml-1">{t('certificate.form.gdprProtected')}</span>
               </div>
             </div>
 
             {/* Course Name Input */}
             <div className="space-y-2 mt-6">
               <label className="block text-sm font-medium text-green-200">
-                Course Name *
-                <span className="text-xs text-gray-400 ml-2">(Will be auto-deleted)</span>
+                {t('certificate.form.courseName')} *
+                <span className="text-xs text-gray-400 ml-2">({t('certificate.form.willBeDeleted')})</span>
               </label>
               <div className="relative">
                 <input
@@ -446,7 +788,7 @@ Personal Data Retained: ${personalDataRetained}
                       ? 'border-red-400 focus:ring-red-400' 
                       : 'border-white/20 focus:ring-green-400'
                   }`}
-                  placeholder="Enter course or examination name"
+                  placeholder={t('certificate.form.courseNamePlaceholder')}
                   maxLength={200}
                   disabled={isGenerating || showDataDeletion}
                 />
@@ -465,9 +807,258 @@ Personal Data Retained: ${personalDataRetained}
                 </motion.p>
               )}
               <div className="text-xs text-gray-400">
-                {exam.length}/200 characters • 
-                <span className="text-green-400 ml-1">Protected by GDPR</span>
+                {exam.length}/200 {t('certificate.form.characters')} • 
+                <span className="text-green-400 ml-1">{t('certificate.form.gdprProtected')}</span>
               </div>
+            </div>
+
+            {/* Template Selection */}
+            <div className="mt-6">
+              {subscriptionStatus && subscriptionStatus.limit === 1 ? (
+                // Free user - show locked template selection
+                <div className="p-4 bg-gray-500/20 border border-gray-400/30 rounded-xl opacity-60">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <Palette className="h-5 w-5 text-gray-400" />
+                      <span className="text-gray-300 font-medium">Template Customization</span>
+                      <span className="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-1 rounded-full">Pro Feature</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs text-gray-400 bg-gray-500/20 px-2 py-1 rounded">
+                        standard (basic)
+                      </span>
+                      <Lock className="w-4 h-4 text-gray-400" />
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                // Paid user - show normal template selection
+                <button
+                  onClick={() => setShowTemplateSelection(!showTemplateSelection)}
+                  className="flex items-center justify-between w-full p-4 bg-purple-500/20 border border-purple-400/30 rounded-xl hover:bg-purple-500/30 transition-colors"
+                  disabled={isGenerating || showDataDeletion}
+                >
+                <div className="flex items-center space-x-3">
+                  <Palette className="h-5 w-5 text-purple-400" />
+                  <span className="text-white font-medium">{t('certificate.templateSelection.title')}</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-xs text-purple-300 bg-purple-500/20 px-2 py-1 rounded">
+                    {selectedTemplate}
+                  </span>
+                  <motion.div
+                    animate={{ rotate: showTemplateSelection ? 180 : 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <svg className="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </motion.div>
+                </div>
+                </button>
+              )}
+              
+              <AnimatePresence>
+                {showTemplateSelection && subscriptionStatus && subscriptionStatus.limit !== 1 && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="mt-4 overflow-hidden"
+                  >
+                    <CertificateTemplates
+                      selectedTemplate={selectedTemplate}
+                      onTemplateSelect={(template) => {
+                        setSelectedTemplate(template);
+                        setShowTemplateSelection(false);
+                      }}
+                      className="bg-white/5 rounded-xl p-4 border border-white/10"
+                      apiUrl={apiUrl}
+                      token={token || undefined}
+                      userSubscriptionTier={authUser?.subscriptionTier || 'free'}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Asset Upload Section */}
+            <div className="mt-6">
+              {subscriptionStatus && subscriptionStatus.limit === 1 ? (
+                // Free user - show locked asset upload
+                <div className="p-4 bg-gray-500/20 border border-gray-400/30 rounded-xl opacity-60">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <Upload className="h-5 w-5 text-gray-400" />
+                      <span className="text-gray-300 font-medium">Custom Assets</span>
+                      <span className="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-1 rounded-full">Pro Feature</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs text-gray-400">Logo, Signature, Background</span>
+                      <Lock className="w-4 h-4 text-gray-400" />
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                // Paid user - show asset upload
+                <div className="bg-blue-500/10 border border-blue-400/30 rounded-xl p-4">
+                  <div className="flex items-center space-x-3 mb-4">
+                    <Upload className="h-5 w-5 text-blue-400" />
+                    <span className="text-white font-medium">Custom Assets</span>
+                    <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full">Optional</span>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* Logo Upload */}
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-blue-200">
+                        <Image className="w-4 h-4 inline mr-1" />
+                        Logo
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleAssetUpload('logo', e.target.files?.[0] || null)}
+                          className="hidden"
+                          id="logo-upload"
+                          disabled={isGenerating || showDataDeletion}
+                        />
+                        <label
+                          htmlFor="logo-upload"
+                          className={`flex flex-col items-center justify-center w-full h-24 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
+                            assets.logo ? 'border-blue-400 bg-blue-500/10' : 'border-blue-400/50 hover:border-blue-400 hover:bg-blue-500/5'
+                          }`}
+                        >
+                          {assetPreviews.logo ? (
+                            <div className="relative w-full h-full">
+                              <img
+                                src={assetPreviews.logo}
+                                alt="Logo preview"
+                                className="w-full h-full object-contain rounded-lg"
+                              />
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  removeAsset('logo');
+                                }}
+                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                              >
+                                <X className="w-3 h-3" />
+                              </button>
+                            </div>
+                          ) : (
+                            <>
+                              <Image className="w-6 h-6 text-blue-400 mb-1" />
+                              <span className="text-xs text-blue-300">Upload Logo</span>
+                            </>
+                          )}
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Signature Upload */}
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-blue-200">
+                        <FileSignature className="w-4 h-4 inline mr-1" />
+                        Signature
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleAssetUpload('signature', e.target.files?.[0] || null)}
+                          className="hidden"
+                          id="signature-upload"
+                          disabled={isGenerating || showDataDeletion}
+                        />
+                        <label
+                          htmlFor="signature-upload"
+                          className={`flex flex-col items-center justify-center w-full h-24 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
+                            assets.signature ? 'border-blue-400 bg-blue-500/10' : 'border-blue-400/50 hover:border-blue-400 hover:bg-blue-500/5'
+                          }`}
+                        >
+                          {assetPreviews.signature ? (
+                            <div className="relative w-full h-full">
+                              <img
+                                src={assetPreviews.signature}
+                                alt="Signature preview"
+                                className="w-full h-full object-contain rounded-lg"
+                              />
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  removeAsset('signature');
+                                }}
+                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                              >
+                                <X className="w-3 h-3" />
+                              </button>
+                            </div>
+                          ) : (
+                            <>
+                              <FileSignature className="w-6 h-6 text-blue-400 mb-1" />
+                              <span className="text-xs text-blue-300">Upload Signature</span>
+                            </>
+                          )}
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Background Upload */}
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-blue-200">
+                        <Wallpaper className="w-4 h-4 inline mr-1" />
+                        Background
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleAssetUpload('background', e.target.files?.[0] || null)}
+                          className="hidden"
+                          id="background-upload"
+                          disabled={isGenerating || showDataDeletion}
+                        />
+                        <label
+                          htmlFor="background-upload"
+                          className={`flex flex-col items-center justify-center w-full h-24 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
+                            assets.background ? 'border-blue-400 bg-blue-500/10' : 'border-blue-400/50 hover:border-blue-400 hover:bg-blue-500/5'
+                          }`}
+                        >
+                          {assetPreviews.background ? (
+                            <div className="relative w-full h-full">
+                              <img
+                                src={assetPreviews.background}
+                                alt="Background preview"
+                                className="w-full h-full object-contain rounded-lg"
+                              />
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  removeAsset('background');
+                                }}
+                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                              >
+                                <X className="w-3 h-3" />
+                              </button>
+                            </div>
+                          ) : (
+                            <>
+                              <Wallpaper className="w-6 h-6 text-blue-400 mb-1" />
+                              <span className="text-xs text-blue-300">Upload Background</span>
+                            </>
+                          )}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-3 text-xs text-blue-200">
+                    Supported formats: JPEG, PNG, GIF • Max size: 5MB each
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Security Metrics */}
@@ -508,12 +1099,12 @@ Personal Data Retained: ${personalDataRetained}
             {isGenerating ? (
               <div className="flex items-center justify-center space-x-3">
                 <Loader2 className="h-6 w-6 animate-spin" />
-                <span>Generating GDPR-Compliant Certificate... {generationProgress}%</span>
+                <span>{t('certificate.form.generating')} {generationProgress}%</span>
               </div>
             ) : (
               <div className="flex items-center justify-center space-x-3">
                 <Shield className="h-6 w-6" />
-                <span>Generate GDPR-Compliant Certificate</span>
+                <span>{t('certificate.form.generateButton')}</span>
               </div>
             )}
           </motion.button>

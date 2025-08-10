@@ -1,0 +1,520 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "retry": "Retry",
+    "refresh": "Refresh",
+    "close": "Close",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "header": {
+    "title": "GDPR-Compliant Certificate System",
+    "subtitle": "Privacy by Design • Zero Data Retention • Cryptographically Secured",
+    "status": {
+      "connected": "Connected",
+      "disconnected": "Disconnected",
+      "reconnecting": "Reconnecting"
+    },
+    "badges": {
+      "gdprCompliant": "GDPR Compliant"
+    },
+    "actions": {
+      "refresh": "Refresh",
+      "logout": "Logout"
+    }
+  },
+  "navigation": {
+    "generate": "Generate Certificate",
+    "verify": "Verify Certificate", 
+    "stats": "Statistics",
+    "dashboard": "Security Dashboard",
+    "profile": "Profile"
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome Back",
+      "subtitle": "Sign in to access your certificate system",
+      "email": "Email Address",
+      "emailPlaceholder": "Enter your email",
+      "password": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "signIn": "Sign In",
+      "signingIn": "Signing In...",
+      "noAccount": "Don't have an account?",
+      "createAccount": "Create Account",
+      "forgotPassword": "Forgot your password?",
+      "gdprNotice": "GDPR Compliant • Your data is protected and encrypted"
+    },
+    "register": {
+      "title": "Create Account",
+      "subtitle": "Join our GDPR-compliant certificate system",
+      "firstName": "First Name",
+      "firstNamePlaceholder": "First name",
+      "lastName": "Last Name", 
+      "lastNamePlaceholder": "Last name",
+      "email": "Email Address",
+      "emailPlaceholder": "Enter your email",
+      "password": "Password",
+      "passwordPlaceholder": "Create a strong password",
+      "confirmPassword": "Confirm Password",
+      "confirmPasswordPlaceholder": "Confirm your password",
+      "createAccount": "Create Account",
+      "creatingAccount": "Creating Account...",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign In",
+      "gdprConsent": {
+        "title": "GDPR Consent Required",
+        "text": "I consent to the processing of my personal data in accordance with GDPR regulations. Your data will be encrypted, stored securely, and you have the right to access, modify, or delete your data at any time. Data retention period: 3 years."
+      },
+      "passwordStrength": {
+        "length": "At least 8 characters",
+        "lowercase": "Lowercase letter",
+        "uppercase": "Uppercase letter", 
+        "number": "Number",
+        "special": "Special character"
+      },
+      "validation": {
+        "passwordsMatch": "Passwords do not match",
+        "gdprRequired": "You must consent to GDPR terms to create an account"
+      }
+    },
+    "forgotPassword": {
+      "title": "Forgot Password?",
+      "subtitle": "Enter your email to receive a password reset link",
+      "email": "Email Address",
+      "emailPlaceholder": "Enter your email address",
+      "sendLink": "Send Reset Link",
+      "sending": "Sending...",
+      "backToLogin": "Back to Login",
+      "checkEmail": "Check Your Email",
+      "emailSent": "If an account with {email} exists, we've sent a password reset link to your email address.",
+      "didntReceive": "Didn't receive the email? Check your spam folder or try again in a few minutes.",
+      "securityNotice": "For security reasons, we don't reveal whether an email exists in our system. Reset links expire in 1 hour."
+    },
+    "resetPassword": {
+      "title": "Reset Your Password",
+      "subtitle": "Create a new secure password for your account",
+      "newPassword": "New Password",
+      "newPasswordPlaceholder": "Enter a strong password",
+      "confirmPassword": "Confirm New Password",
+      "confirmPasswordPlaceholder": "Confirm your new password",
+      "resetPassword": "Reset Password",
+      "resettingPassword": "Resetting Password...",
+      "backToLogin": "Back to Login",
+      "invalidToken": "Invalid Reset Link",
+      "tokenExpired": "This password reset link is invalid or has expired. Please request a new one.",
+      "securityNotice": "Your new password will be securely encrypted and stored. All existing sessions will be invalidated for security."
+    },
+    "profile": {
+      "title": "User Profile",
+      "subtitle": "Manage your account settings and security",
+      "welcome": "Welcome, {firstName} {lastName}",
+      "tabs": {
+        "profile": "Profile Information",
+        "security": "Security Settings"
+      },
+      "profileTab": {
+        "title": "Profile Information",
+        "editProfile": "Edit Profile",
+        "saveProfile": "Save",
+        "saving": "Saving...",
+        "cancel": "Cancel",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email Address",
+        "accountInfo": "Account Information",
+        "memberSince": "Member since:",
+        "role": "Role:",
+        "gdprConsent": "GDPR Consent:",
+        "granted": "Granted",
+        "lastLogin": "Last login:"
+      },
+      "securityTab": {
+        "title": "Security Settings",
+        "changePassword": "Change Password",
+        "updatePassword": "Update Password",
+        "updating": "Updating...",
+        "cancel": "Cancel",
+        "currentPassword": "Current Password",
+        "currentPasswordPlaceholder": "Enter your current password",
+        "newPassword": "New Password",
+        "newPasswordPlaceholder": "Enter a new strong password",
+        "confirmPassword": "Confirm New Password",
+        "confirmPasswordPlaceholder": "Confirm your new password",
+        "securityInfo": "Security Information",
+        "accountSecurity": "Account Security:",
+        "protected": "Protected",
+        "passwordStrength": "Password Strength:",
+        "strong": "Strong",
+        "twoFactor": "Two-Factor Authentication:",
+        "notEnabled": "Not Enabled"
+      },
+      "messages": {
+        "profileUpdated": "Profile updated successfully!",
+        "passwordUpdated": "Password updated successfully!",
+        "emailTaken": "Email is already taken by another user",
+        "passwordMismatch": "Passwords do not match",
+        "weakPassword": "Password does not meet strength requirements",
+        "invalidCurrentPassword": "Current password is incorrect"
+      }
+    },
+    "validation": {
+      "emailRequired": "Valid email is required",
+      "passwordRequired": "Password is required",
+      "nameRequired": "Valid name is required",
+      "passwordWeak": "Password must contain uppercase, lowercase, number and special character",
+      "passwordShort": "Password must be at least 8 characters long"
+    },
+    "errors": {
+      "networkError": "Network error. Please try again.",
+      "invalidCredentials": "Invalid email or password",
+      "userExists": "User already exists with this email",
+      "accountLocked": "Account is temporarily locked due to multiple failed login attempts",
+      "userNotFound": "User not found",
+      "tokenExpired": "Token has expired",
+      "invalidToken": "Invalid token"
+    }
+  },
+  "certificate": {
+    "generate": {
+      "title": "Generate GDPR-Compliant Certificate",
+      "subtitle": "Create secure, verifiable certificates with privacy by design",
+      "studentName": "Student Name",
+      "studentNamePlaceholder": "Enter full name",
+      "courseName": "Course Name", 
+      "courseNamePlaceholder": "Enter course or certification name",
+      "generateCertificate": "Generate Certificate",
+      "generating": "Generating...",
+      "downloadCertificate": "Download Certificate",
+      "downloading": "Downloading...",
+      "success": "Certificate Generated Successfully!",
+      "successMessage": "Your GDPR-compliant certificate has been generated and is ready for download.",
+      "gdprInfo": {
+        "title": "GDPR Compliance Information",
+        "noPersonalData": "No personal data stored in database",
+        "hashOnly": "Only cryptographic hash retained",
+        "autoDelete": "Automatic compliance by design",
+        "privacy": "Privacy by design architecture"
+      },
+      "validation": {
+        "nameRequired": "Student name is required",
+        "nameInvalid": "Invalid name format",
+        "courseRequired": "Course name is required",
+        "courseInvalid": "Invalid course name format"
+      },
+      "features": {
+        "secure": "SHA-512 Cryptographic Security",
+        "gdpr": "GDPR Article 5 & 17 Compliant",
+        "qr": "QR Code Verification",
+        "tamper": "Tamper-Proof Design"
+      }
+    },
+    "form": {
+      "title": "Certificate Information",
+      "autoDelete": "Auto-Delete",
+      "studentName": "Student Name",
+      "studentNamePlaceholder": "Enter student's full name",
+      "courseName": "Course Name",
+      "courseNamePlaceholder": "Enter course or examination name",
+      "willBeDeleted": "Will be auto-deleted",
+      "characters": "characters",
+      "gdprProtected": "Protected by GDPR",
+      "generateButton": "Generate GDPR-Compliant Certificate",
+      "generating": "Generating GDPR-Compliant Certificate..."
+    },
+    "templateSelection": {
+      "title": "Choose Certificate Template"
+    },
+    "templates": {
+      "standard": "Standard Certificate",
+      "healthcare": "Healthcare Certificate",
+      "financial": "Financial Services Certificate", 
+      "education": "Educational Certificate",
+      "professional": "Professional Certificate",
+      "custom": "Custom Certificate"
+    },
+    "verify": {
+      "title": "Verify Certificate",
+      "subtitle": "Upload a certificate PDF to verify its authenticity",
+      "uploadArea": {
+        "title": "Drop your certificate here",
+        "subtitle": "or click to browse files",
+        "fileTypes": "PDF files only",
+        "maxSize": "Maximum file size: 10MB"
+      },
+      "verifying": "Verifying Certificate...",
+      "valid": "✅ Valid Certificate",
+      "invalid": "❌ Invalid Certificate",
+      "tampered": "⚠️ Certificate Tampered",
+      "results": {
+        "certificateId": "Certificate ID:",
+        "courseCode": "Course Code:",
+        "issueDate": "Issue Date:",
+        "serialNumber": "Serial Number:",
+        "status": "Status:",
+        "verificationMethod": "Verification Method:",
+        "verificationTime": "Verification Time:",
+        "securityLevel": "Security Level:",
+        "personalDataAccessed": "Personal Data Accessed:"
+      },
+      "verification": {
+        "success": "GDPR-compliant certificate verified successfully!",
+        "failed": "Certificate verification failed",
+        "notFound": "Certificate not found in database or has been revoked",
+        "hashMismatch": "Hash mismatch - certificate may be tampered",
+        "noMetadata": "Certificate metadata not found"
+      }
+    },
+    "templates": {
+      "standard": "Standard Certificate",
+      "healthcare": "Healthcare Certification",
+      "financial": "Financial Services",
+      "education": "Educational Institution",
+      "professional": "Professional Association",
+      "custom": "Custom Template"
+    }
+  },
+  "dashboard": {
+    "title": "Security Dashboard",
+    "subtitle": "Monitor system security and GDPR compliance",
+    "stats": {
+      "certificates": "Certificates Generated",
+      "verifications": "Verifications Performed", 
+      "successRate": "Success Rate",
+      "uptime": "System Uptime",
+      "security": "Security Events",
+      "gdpr": "GDPR Compliance"
+    },
+    "charts": {
+      "activity": "Activity Overview",
+      "security": "Security Metrics",
+      "compliance": "GDPR Compliance"
+    },
+    "alerts": {
+      "title": "Security Alerts",
+      "noAlerts": "No security alerts",
+      "critical": "Critical",
+      "warning": "Warning",
+      "info": "Information"
+    },
+    "gdpr": {
+      "title": "GDPR Compliance Status",
+      "compliant": "Fully Compliant",
+      "personalData": "Personal Data Stored:",
+      "none": "None",
+      "dataMinimization": "Data Minimization:",
+      "implemented": "Implemented",
+      "rightToErasure": "Right to Erasure:",
+      "notApplicable": "Not Applicable",
+      "privacyByDesign": "Privacy by Design:",
+      "coreArchitecture": "Core Architecture"
+    }
+  },
+  "footer": {
+    "title": "GDPR-Compliant Certificate System v4.0",
+    "subtitle": "Privacy by Design • SHA-512 Cryptographic Security • Zero Personal Data Retention",
+    "lastUpdated": "Last updated: {time}",
+    "status": "Status: {status}",
+    "personalData": "Personal Data: {status}",
+    "stored": "Stored ⚠️",
+    "noneStored": "None Stored ✅",
+    "gdprArticles": {
+      "article5": "Data Minimization",
+      "article17": "Right to Erasure", 
+      "article25": "Privacy by Design",
+      "article32": "Security Measures"
+    }
+  },
+  "language": {
+    "selector": "Language",
+    "current": "Current Language",
+    "select": "Select Language",
+    "languages": {
+      "en": "English",
+      "de": "Deutsch",
+      "fr": "Français", 
+      "es": "Español"
+    }
+  },
+  "gdpr": {
+    "terms": {
+      "dataMinimization": "Data Minimization",
+      "rightToErasure": "Right to Erasure",
+      "privacyByDesign": "Privacy by Design",
+      "consent": "Consent",
+      "dataProtection": "Data Protection",
+      "personalData": "Personal Data",
+      "processing": "Processing",
+      "controller": "Controller",
+      "processor": "Processor",
+      "dataSubject": "Data Subject"
+    },
+    "compliance": {
+      "compliant": "GDPR Compliant",
+      "nonCompliant": "Non-Compliant",
+      "partiallyCompliant": "Partially Compliant",
+      "underReview": "Under Review"
+    }
+  },
+  "errors": {
+    "generic": "An error occurred. Please try again.",
+    "network": "Network error. Please check your connection.",
+    "server": "Server error. Please try again later.",
+    "validation": "Please check your input and try again.",
+    "unauthorized": "You are not authorized to perform this action.",
+    "forbidden": "Access denied.",
+    "notFound": "The requested resource was not found.",
+    "timeout": "Request timed out. Please try again."
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark", 
+    "system": "System",
+    "appearance": "Appearance",
+    "current": "Current theme: {theme}",
+    "description": "Choose your preferred color scheme"
+  },
+  "subscription": {
+    "title": "Subscription Details",
+    "currentPlan": "Current Plan",
+    "expires": "Expires",
+    "templatesUsed": "Templates Used",
+    "certificatesUsed": "Certificates Used",
+    "remaining": "Remaining",
+    "planFeatures": "Plan Features",
+    "upgradePlan": "Upgrade Your Plan",
+    "upgradeDescription": "Unlock unlimited certificates, custom templates, and premium features.",
+    "viewPlans": "View Plans",
+    "managePlan": "Manage",
+    "cancelPlan": "Cancel Plan",
+    "refreshData": "Refresh",
+    "loading": "Loading Subscription",
+    "loadingDescription": "Please wait while we fetch your subscription details..."
+  },
+  "payment": {
+    "title": "Upgrade Your Plan",
+    "description": "Choose the perfect plan for your certificate generation needs. All plans include GDPR compliance and advanced security features.",
+    "currentPlan": "Current Plan",
+    "mostPopular": "Most Popular",
+    "perMonth": "/month",
+    "certificatesPerMonth": "{{count}} certificates per month",
+    "unlimitedCertificates": "Unlimited certificates",
+    "contactSales": "Contact Sales",
+    "choosePlan": "Choose {plan}",
+    "securePayment": "Secure Payment Processing",
+    "paymentSecurity": "All payments are processed securely. We don't store your payment information.",
+    "backToCertificates": "Back to Certificate Generator"
+  },
+  "profile": {
+    "tabs": {
+      "profile": "Profile Information",
+      "security": "Security Settings", 
+      "certificates": "My Certificates",
+      "subscription": "Subscription"
+    },
+    "profileInfo": {
+      "title": "Profile Information",
+      "editProfile": "Edit Profile",
+      "saveChanges": "Save Changes",
+      "saving": "Saving...",
+      "cancel": "Cancel",
+      "firstName": "First Name",
+      "lastName": "Last Name", 
+      "email": "Email Address",
+      "accountInfo": "Account Information",
+      "memberSince": "Member since:",
+      "role": "Role:",
+      "gdprConsent": "GDPR Consent:",
+      "granted": "✓ Granted",
+      "lastLogin": "Last login:"
+    },
+    "security": {
+      "title": "Security Settings",
+      "changePassword": "Change Password",
+      "updatePassword": "Update Password",
+      "updating": "Updating...",
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm New Password",
+      "securityInfo": "Security Information",
+      "accountSecurity": "Account Security:",
+      "protected": "Protected",
+      "passwordStrength": "Password Strength:",
+      "strong": "Strong"
+    },
+    "certificates": {
+      "title": "My Certificates",
+      "refresh": "Refresh",
+      "loading": "Loading certificates...",
+      "noCertificates": "No Certificates Yet",
+      "noCertificatesDesc": "Generate your first certificate to see it here!",
+      "searchPlaceholder": "Search certificates by name or course...",
+      "sortBy": "Sort by",
+      "sortByDate": "Sort by Date",
+      "sortByName": "Sort by Name", 
+      "sortByCourse": "Sort by Course",
+      "issued": "Issued:",
+      "template": "Template:",
+      "downloaded": "Downloaded {count} times",
+      "verifications": "{count} verifications",
+      "download": "Download",
+      "active": "ACTIVE",
+      "inactive": "INACTIVE",
+      "statistics": "Certificate Statistics",
+      "totalCertificates": "Total Certificates:",
+      "totalDownloads": "Total Downloads:",
+      "totalVerifications": "Total Verifications:"
+    }
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "userManagement": "User Management",
+    "systemSettings": "System Settings",
+    "analytics": "Analytics",
+    "security": "Security",
+    "reports": "Reports"
+  },
+  "templates": {
+    "title": "Certificate Templates",
+    "myTemplates": "My Templates",
+    "createTemplate": "Create Template",
+    "noTemplates": "No Custom Templates",
+    "noTemplatesDesc": "Create your first custom certificate template to get started.",
+    "templateName": "Template Name",
+    "description": "Description",
+    "category": "Category",
+    "colors": "Colors",
+    "primary": "Primary",
+    "secondary": "Secondary", 
+    "accent": "Accent",
+    "background": "Background",
+    "createNew": "Create Template",
+    "creating": "Creating Template...",
+    "edit": "Edit",
+    "delete": "Delete",
+    "active": "Active",
+    "inactive": "Inactive",
+    "created": "Created:"
+  },
+  "bulk": {
+    "title": "Bulk Certificate Generator",
+    "description": "Generate multiple certificates at once using CSV import",
+    "uploadCSV": "Upload CSV File",
+    "downloadTemplate": "Download CSV Template",
+    "generateAll": "Generate All Certificates",
+    "processing": "Processing...",
+    "completed": "Completed",
+    "failed": "Failed"
+  }
+}

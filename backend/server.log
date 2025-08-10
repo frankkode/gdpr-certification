@@ -1,0 +1,463 @@
+🧪 Testing database connection...
+🔗 Creating PostgreSQL connection pool...
+🔧 Connection string exists: true
+🔧 Connection string format: postgresql://postgre...
+🔒 GDPR-Compliant Certificate System v4.0 (PostgreSQL) running on port 5000
+✅ Features: Privacy by Design, Zero Personal Data Storage, Auto-Compliance
+🗄️ Database: PostgreSQL on Railway
+🔗 Available at: http://localhost:5000
+✅ Connected to PostgreSQL database on Railway
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 692, rows: 1 }
+✅ Database connection test successful!
+⏰ Current time: 2025-06-26T08:57:54.757Z
+🗄️ PostgreSQL version: PostgreSQL 16.8 (Debian 16.8-1.pgdg120+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+🔄 Ensuring database tables exist...
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 70, rows: null }
+✅ GDPR-compliant certificate_hashes table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 68, rows: null }
+✅ GDPR-compliant audit_log table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 94, rows: null }
+✅ GDPR-compliant verification_attempts table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 73, rows: null }
+✅ GDPR-compliant users table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 67, rows: null }
+✅ GDPR-compliant user_sessions table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 80, rows: null }
+✅ Certificate templates table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 79, rows: null }
+✅ Payment transactions table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 65, rows: null }
+✅ User certificates table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 192, rows: null }
+✅ Bulk generation jobs table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 63, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 65, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 108, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 67, rows: null }
+✅ Bulk generation jobs table columns updated
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+❌ Query failed (3 retries left): constraint "valid_progress_check" for relation "bulk_generation_jobs" already exists
+🔧 Query: 
+        ALTER TABLE bulk_generation_jobs 
+        ADD CONSTRAINT valid_progress_check CHECK(progress >= 0 AND progress <= 100);
+      
+🔧 Params: []
+✅ Connected to PostgreSQL database on Railway
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+❌ Query failed (2 retries left): constraint "valid_progress_check" for relation "bulk_generation_jobs" already exists
+🔧 Query: 
+        ALTER TABLE bulk_generation_jobs 
+        ADD CONSTRAINT valid_progress_check CHECK(progress >= 0 AND progress <= 100);
+      
+🔧 Params: []
+🔄 Ensuring database tables exist...
+✅ Connected to PostgreSQL database on Railway
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 875, rows: null }
+✅ GDPR-compliant certificate_hashes table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 87, rows: null }
+✅ GDPR-compliant audit_log table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 66, rows: null }
+✅ GDPR-compliant verification_attempts table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 64, rows: null }
+✅ GDPR-compliant users table verified/created
+🔗 Database connection acquired from pool
+✅ Connected to PostgreSQL database on Railway
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 62, rows: null }
+✅ GDPR-compliant user_sessions table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+❌ Query failed (1 retries left): constraint "valid_progress_check" for relation "bulk_generation_jobs" already exists
+🔧 Query: 
+        ALTER TABLE bulk_generation_jobs 
+        ADD CONSTRAINT valid_progress_check CHECK(progress >= 0 AND progress <= 100);
+      
+🔧 Params: []
+ℹ️ Progress constraint already exists or not needed
+🔓 Database connection released to pool
+✅ Query executed { duration: 74, rows: null }
+✅ Certificate templates table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 70, rows: null }
+✅ Payment transactions table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 71, rows: null }
+✅ User certificates table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 100, rows: null }
+✅ Bulk generation jobs table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 69, rows: null }
+🔗 Database connection acquired from pool
+✅ Connected to PostgreSQL database on Railway
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 412, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 859, rows: null }
+✅ Certificate usage tracking table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 75, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 71, rows: null }
+✅ Subscription plans table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 74, rows: null }
+✅ Bulk generation jobs table columns updated
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+❌ Query failed (3 retries left): constraint "valid_progress_check" for relation "bulk_generation_jobs" already exists
+🔧 Query: 
+        ALTER TABLE bulk_generation_jobs 
+        ADD CONSTRAINT valid_progress_check CHECK(progress >= 0 AND progress <= 100);
+      
+🔧 Params: []
+🔓 Database connection released to pool
+✅ Query executed { duration: 79, rows: null }
+✅ Coupon codes table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 84, rows: null }
+✅ Coupon usage tracking table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 63, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 61, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 60, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 60, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 64, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 62, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 69, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 65, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 89, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 59, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 62, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 58, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 62, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 63, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 60, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 59, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 61, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 69, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 76, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 75, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 59, rows: null }
+🔗 Database connection acquired from pool
+✅ Connected to PostgreSQL database on Railway
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 86, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+❌ Query failed (2 retries left): constraint "valid_progress_check" for relation "bulk_generation_jobs" already exists
+🔧 Query: 
+        ALTER TABLE bulk_generation_jobs 
+        ADD CONSTRAINT valid_progress_check CHECK(progress >= 0 AND progress <= 100);
+      
+🔧 Params: []
+🔓 Database connection released to pool
+✅ Query executed { duration: 70, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 59, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 83, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 114, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 65, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 71, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 62, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 59, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 70, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 69, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 60, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 61, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 60, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 64, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 65, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 60, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 59, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 64, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 62, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 59, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 59, rows: null }
+🔗 Database connection acquired from pool
+✅ Connected to PostgreSQL database on Railway
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 61, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+❌ Query failed (1 retries left): constraint "valid_progress_check" for relation "bulk_generation_jobs" already exists
+🔧 Query: 
+        ALTER TABLE bulk_generation_jobs 
+        ADD CONSTRAINT valid_progress_check CHECK(progress >= 0 AND progress <= 100);
+      
+🔧 Params: []
+ℹ️ Progress constraint already exists or not needed
+🔓 Database connection released to pool
+✅ Query executed { duration: 104, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 71, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 78, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 61, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 76, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 60, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 60, rows: null }
+✅ 51/51 GDPR-compliant indexes processed
+🔗 Database connection acquired from pool
+✅ Connected to PostgreSQL database on Railway
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 84, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 570, rows: null }
+✅ Certificate usage tracking table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 78, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 73, rows: null }
+✅ Subscription plans table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 75, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 70, rows: null }
+✅ Coupon codes table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 73, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 67, rows: null }
+✅ Coupon usage tracking table verified/created
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 60, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 70, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 59, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 76, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 61, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 74, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 60, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 90, rows: null }
+✅ Payment transactions table updated for coupon support
+🗄️ GDPR-Compliant PostgreSQL Database initialized successfully
+📊 Enhanced features: Zero Personal Data, Hash-Only Storage, Auto-Compliance
+✅ GDPR Articles 5 & 17 Compliant by Design
+🗄️ Database initialization completed successfully
+🔓 Database connection released to pool
+✅ Query executed { duration: 63, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 63, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 60, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 59, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 60, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 60, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 60, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 60, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 59, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 60, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 60, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 65, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 60, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 60, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 59, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 60, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 60, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 89, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 60, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 62, rows: null }
+🔗 Database connection acquired from pool
+🔓 Database connection released to pool
+✅ Query executed { duration: 53, rows: null }
+🔗 Database connection acquired from pool

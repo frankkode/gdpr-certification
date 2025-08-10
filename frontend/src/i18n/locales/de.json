@@ -1,0 +1,380 @@
+{
+  "common": {
+    "loading": "Lädt...",
+    "error": "Fehler",
+    "success": "Erfolgreich",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "confirm": "Bestätigen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "previous": "Zurück",
+    "submit": "Absenden",
+    "retry": "Wiederholen",
+    "refresh": "Aktualisieren",
+    "close": "Schließen",
+    "yes": "Ja",
+    "no": "Nein"
+  },
+  "header": {
+    "title": "DSGVO-konformes Zertifikatssystem",
+    "subtitle": "Datenschutz durch Technikgestaltung • Keine Datenspeicherung • Kryptographisch gesichert",
+    "status": {
+      "connected": "Verbunden",
+      "disconnected": "Getrennt",
+      "reconnecting": "Verbinde wieder"
+    },
+    "badges": {
+      "gdprCompliant": "DSGVO-konform"
+    },
+    "actions": {
+      "refresh": "Aktualisieren",
+      "logout": "Abmelden"
+    }
+  },
+  "navigation": {
+    "generate": "Zertifikat erstellen",
+    "verify": "Zertifikat prüfen",
+    "stats": "Statistiken",
+    "dashboard": "Sicherheits-Dashboard",
+    "profile": "Profil"
+  },
+  "auth": {
+    "login": {
+      "title": "Willkommen zurück",
+      "subtitle": "Melden Sie sich an, um auf Ihr Zertifikatssystem zuzugreifen",
+      "email": "E-Mail-Adresse",
+      "emailPlaceholder": "E-Mail eingeben",
+      "password": "Passwort",
+      "passwordPlaceholder": "Passwort eingeben",
+      "signIn": "Anmelden",
+      "signingIn": "Melde an...",
+      "noAccount": "Noch kein Konto?",
+      "createAccount": "Konto erstellen",
+      "forgotPassword": "Passwort vergessen?",
+      "gdprNotice": "DSGVO-konform • Ihre Daten sind geschützt und verschlüsselt"
+    },
+    "register": {
+      "title": "Konto erstellen",
+      "subtitle": "Treten Sie unserem DSGVO-konformen Zertifikatssystem bei",
+      "firstName": "Vorname",
+      "firstNamePlaceholder": "Vorname",
+      "lastName": "Nachname",
+      "lastNamePlaceholder": "Nachname",
+      "email": "E-Mail-Adresse",
+      "emailPlaceholder": "E-Mail eingeben",
+      "password": "Passwort",
+      "passwordPlaceholder": "Starkes Passwort erstellen",
+      "confirmPassword": "Passwort bestätigen",
+      "confirmPasswordPlaceholder": "Passwort bestätigen",
+      "createAccount": "Konto erstellen",
+      "creatingAccount": "Erstelle Konto...",
+      "hasAccount": "Bereits ein Konto?",
+      "signIn": "Anmelden",
+      "gdprConsent": {
+        "title": "DSGVO-Einwilligung erforderlich",
+        "text": "Ich willige in die Verarbeitung meiner personenbezogenen Daten gemäß DSGVO ein. Ihre Daten werden verschlüsselt und sicher gespeichert. Sie haben das Recht auf Auskunft, Berichtigung oder Löschung Ihrer Daten. Aufbewahrungsdauer: 3 Jahre."
+      },
+      "passwordStrength": {
+        "length": "Mindestens 8 Zeichen",
+        "lowercase": "Kleinbuchstabe",
+        "uppercase": "Großbuchstabe",
+        "number": "Zahl",
+        "special": "Sonderzeichen"
+      },
+      "validation": {
+        "passwordsMatch": "Passwörter stimmen nicht überein",
+        "gdprRequired": "Sie müssen der DSGVO-Verarbeitung zustimmen, um ein Konto zu erstellen"
+      }
+    },
+    "forgotPassword": {
+      "title": "Passwort vergessen?",
+      "subtitle": "Geben Sie Ihre E-Mail ein, um einen Link zum Zurücksetzen zu erhalten",
+      "email": "E-Mail-Adresse",
+      "emailPlaceholder": "E-Mail-Adresse eingeben",
+      "sendLink": "Reset-Link senden",
+      "sending": "Sende...",
+      "backToLogin": "Zurück zur Anmeldung",
+      "checkEmail": "Prüfen Sie Ihre E-Mail",
+      "emailSent": "Falls ein Konto mit {email} existiert, haben wir einen Passwort-Reset-Link an Ihre E-Mail gesendet.",
+      "didntReceive": "E-Mail nicht erhalten? Prüfen Sie Ihren Spam-Ordner oder versuchen Sie es in einigen Minuten erneut.",
+      "securityNotice": "Aus Sicherheitsgründen geben wir nicht preis, ob eine E-Mail in unserem System existiert. Reset-Links laufen in 1 Stunde ab."
+    },
+    "resetPassword": {
+      "title": "Passwort zurücksetzen",
+      "subtitle": "Erstellen Sie ein neues sicheres Passwort für Ihr Konto",
+      "newPassword": "Neues Passwort",
+      "newPasswordPlaceholder": "Starkes Passwort eingeben",
+      "confirmPassword": "Neues Passwort bestätigen",
+      "confirmPasswordPlaceholder": "Neues Passwort bestätigen",
+      "resetPassword": "Passwort zurücksetzen",
+      "resettingPassword": "Setze Passwort zurück...",
+      "backToLogin": "Zurück zur Anmeldung",
+      "invalidToken": "Ungültiger Reset-Link",
+      "tokenExpired": "Dieser Passwort-Reset-Link ist ungültig oder abgelaufen. Bitte fordern Sie einen neuen an.",
+      "securityNotice": "Ihr neues Passwort wird sicher verschlüsselt und gespeichert. Alle bestehenden Sitzungen werden aus Sicherheitsgründen ungültig."
+    },
+    "profile": {
+      "title": "Benutzerprofil",
+      "subtitle": "Verwalten Sie Ihre Kontoeinstellungen und Sicherheit",
+      "welcome": "Willkommen, {firstName} {lastName}",
+      "tabs": {
+        "profile": "Profilinformationen",
+        "security": "Sicherheitseinstellungen"
+      },
+      "profileTab": {
+        "title": "Profilinformationen",
+        "editProfile": "Profil bearbeiten",
+        "saveProfile": "Speichern",
+        "saving": "Speichere...",
+        "cancel": "Abbrechen",
+        "firstName": "Vorname",
+        "lastName": "Nachname",
+        "email": "E-Mail-Adresse",
+        "accountInfo": "Kontoinformationen",
+        "memberSince": "Mitglied seit:",
+        "role": "Rolle:",
+        "gdprConsent": "DSGVO-Einwilligung:",
+        "granted": "Erteilt",
+        "lastLogin": "Letzte Anmeldung:"
+      },
+      "securityTab": {
+        "title": "Sicherheitseinstellungen",
+        "changePassword": "Passwort ändern",
+        "updatePassword": "Passwort aktualisieren",
+        "updating": "Aktualisiere...",
+        "cancel": "Abbrechen",
+        "currentPassword": "Aktuelles Passwort",
+        "currentPasswordPlaceholder": "Aktuelles Passwort eingeben",
+        "newPassword": "Neues Passwort",
+        "newPasswordPlaceholder": "Neues starkes Passwort eingeben",
+        "confirmPassword": "Neues Passwort bestätigen",
+        "confirmPasswordPlaceholder": "Neues Passwort bestätigen",
+        "securityInfo": "Sicherheitsinformationen",
+        "accountSecurity": "Kontosicherheit:",
+        "protected": "Geschützt",
+        "passwordStrength": "Passwortstärke:",
+        "strong": "Stark",
+        "twoFactor": "Zwei-Faktor-Authentifizierung:",
+        "notEnabled": "Nicht aktiviert"
+      },
+      "messages": {
+        "profileUpdated": "Profil erfolgreich aktualisiert!",
+        "passwordUpdated": "Passwort erfolgreich aktualisiert!",
+        "emailTaken": "E-Mail wird bereits von einem anderen Benutzer verwendet",
+        "passwordMismatch": "Passwörter stimmen nicht überein",
+        "weakPassword": "Passwort erfüllt nicht die Sicherheitsanforderungen",
+        "invalidCurrentPassword": "Aktuelles Passwort ist falsch"
+      }
+    },
+    "validation": {
+      "emailRequired": "Gültige E-Mail ist erforderlich",
+      "passwordRequired": "Passwort ist erforderlich",
+      "nameRequired": "Gültiger Name ist erforderlich",
+      "passwordWeak": "Passwort muss Groß-, Kleinbuchstaben, Zahl und Sonderzeichen enthalten",
+      "passwordShort": "Passwort muss mindestens 8 Zeichen lang sein"
+    },
+    "errors": {
+      "networkError": "Netzwerkfehler. Bitte versuchen Sie es erneut.",
+      "invalidCredentials": "Ungültige E-Mail oder Passwort",
+      "userExists": "Benutzer mit dieser E-Mail existiert bereits",
+      "accountLocked": "Konto ist vorübergehend gesperrt aufgrund mehrerer fehlgeschlagener Anmeldeversuche",
+      "userNotFound": "Benutzer nicht gefunden",
+      "tokenExpired": "Token ist abgelaufen",
+      "invalidToken": "Ungültiger Token"
+    }
+  },
+  "certificate": {
+    "generate": {
+      "title": "DSGVO-konformes Zertifikat erstellen",
+      "subtitle": "Erstellen Sie sichere, verifizierbare Zertifikate mit Datenschutz durch Technikgestaltung",
+      "studentName": "Name des Teilnehmers",
+      "studentNamePlaceholder": "Vollständigen Namen eingeben",
+      "courseName": "Kursname",
+      "courseNamePlaceholder": "Kurs- oder Zertifikatsname eingeben",
+      "generateCertificate": "Zertifikat erstellen",
+      "generating": "Erstelle...",
+      "downloadCertificate": "Zertifikat herunterladen",
+      "downloading": "Lade herunter...",
+      "success": "Zertifikat erfolgreich erstellt!",
+      "successMessage": "Ihr DSGVO-konformes Zertifikat wurde erstellt und steht zum Download bereit.",
+      "gdprInfo": {
+        "title": "DSGVO-Konformitätsinformationen",
+        "noPersonalData": "Keine personenbezogenen Daten in Datenbank gespeichert",
+        "hashOnly": "Nur kryptographischer Hash gespeichert",
+        "autoDelete": "Automatische Konformität durch Technikgestaltung",
+        "privacy": "Datenschutz durch Technikgestaltung-Architektur"
+      },
+      "validation": {
+        "nameRequired": "Name des Teilnehmers ist erforderlich",
+        "nameInvalid": "Ungültiges Namensformat",
+        "courseRequired": "Kursname ist erforderlich",
+        "courseInvalid": "Ungültiges Kursnamenformat"
+      },
+      "features": {
+        "secure": "SHA-512 Kryptographische Sicherheit",
+        "gdpr": "DSGVO Artikel 5 & 17 konform",
+        "qr": "QR-Code-Verifizierung",
+        "tamper": "Manipulationssicheres Design"
+      }
+    },
+    "form": {
+      "title": "Zertifikatsinformationen",
+      "autoDelete": "Auto-Löschung",
+      "studentName": "Studentenname",
+      "studentNamePlaceholder": "Vollständigen Namen eingeben",
+      "courseName": "Kursname",
+      "courseNamePlaceholder": "Kurs- oder Prüfungsname eingeben",
+      "willBeDeleted": "Wird automatisch gelöscht",
+      "characters": "Zeichen",
+      "gdprProtected": "DSGVO-geschützt",
+      "generateButton": "DSGVO-konformes Zertifikat erstellen",
+      "generating": "DSGVO-konformes Zertifikat wird erstellt..."
+    },
+    "templateSelection": {
+      "title": "Zertifikatsvorlage wählen"
+    },
+    "templates": {
+      "standard": "Standard-Zertifikat",
+      "healthcare": "Gesundheitswesen-Zertifikat",
+      "financial": "Finanzdienstleistungs-Zertifikat",
+      "education": "Bildungs-Zertifikat",
+      "professional": "Berufliches Zertifikat",
+      "custom": "Benutzerdefiniertes Zertifikat"
+    },
+    "verify": {
+      "title": "Zertifikat verifizieren",
+      "subtitle": "Laden Sie eine Zertifikats-PDF hoch, um ihre Echtheit zu verifizieren",
+      "uploadArea": {
+        "title": "Zertifikat hier ablegen",
+        "subtitle": "oder klicken zum Durchsuchen",
+        "fileTypes": "Nur PDF-Dateien",
+        "maxSize": "Maximale Dateigröße: 10MB"
+      },
+      "verifying": "Verifiziere Zertifikat...",
+      "valid": "✅ Gültiges Zertifikat",
+      "invalid": "❌ Ungültiges Zertifikat",
+      "tampered": "⚠️ Zertifikat manipuliert",
+      "results": {
+        "certificateId": "Zertifikats-ID:",
+        "courseCode": "Kurscode:",
+        "issueDate": "Ausstellungsdatum:",
+        "serialNumber": "Seriennummer:",
+        "status": "Status:",
+        "verificationMethod": "Verifizierungsmethode:",
+        "verificationTime": "Verifizierungszeit:",
+        "securityLevel": "Sicherheitsstufe:",
+        "personalDataAccessed": "Personenbezogene Daten zugegriffen:"
+      },
+      "verification": {
+        "success": "DSGVO-konformes Zertifikat erfolgreich verifiziert!",
+        "failed": "Zertifikatsverifizierung fehlgeschlagen",
+        "notFound": "Zertifikat nicht in Datenbank gefunden oder wurde widerrufen",
+        "hashMismatch": "Hash-Mismatch - Zertifikat könnte manipuliert sein",
+        "noMetadata": "Zertifikats-Metadaten nicht gefunden"
+      }
+    },
+    "templates": {
+      "standard": "Standard-Zertifikat",
+      "healthcare": "Gesundheitswesen-Zertifizierung",
+      "financial": "Finanzdienstleistungen",
+      "education": "Bildungseinrichtung",
+      "professional": "Berufsverband",
+      "custom": "Benutzerdefinierte Vorlage"
+    }
+  },
+  "dashboard": {
+    "title": "Sicherheits-Dashboard",
+    "subtitle": "Systemsicherheit und DSGVO-Konformität überwachen",
+    "stats": {
+      "certificates": "Erstellte Zertifikate",
+      "verifications": "Durchgeführte Verifizierungen",
+      "successRate": "Erfolgsrate",
+      "uptime": "System-Betriebszeit",
+      "security": "Sicherheitsereignisse",
+      "gdpr": "DSGVO-Konformität"
+    },
+    "charts": {
+      "activity": "Aktivitätsübersicht",
+      "security": "Sicherheitsmetriken",
+      "compliance": "DSGVO-Konformität"
+    },
+    "alerts": {
+      "title": "Sicherheitswarnungen",
+      "noAlerts": "Keine Sicherheitswarnungen",
+      "critical": "Kritisch",
+      "warning": "Warnung",
+      "info": "Information"
+    },
+    "gdpr": {
+      "title": "DSGVO-Konformitätsstatus",
+      "compliant": "Vollständig konform",
+      "personalData": "Personenbezogene Daten gespeichert:",
+      "none": "Keine",
+      "dataMinimization": "Datenminimierung:",
+      "implemented": "Implementiert",
+      "rightToErasure": "Recht auf Löschung:",
+      "notApplicable": "Nicht anwendbar",
+      "privacyByDesign": "Datenschutz durch Technikgestaltung:",
+      "coreArchitecture": "Kernarchitektur"
+    }
+  },
+  "footer": {
+    "title": "DSGVO-konformes Zertifikatssystem v4.0",
+    "subtitle": "Datenschutz durch Technikgestaltung • SHA-512 Kryptographische Sicherheit • Keine Speicherung personenbezogener Daten",
+    "lastUpdated": "Zuletzt aktualisiert: {time}",
+    "status": "Status: {status}",
+    "personalData": "Personenbezogene Daten: {status}",
+    "stored": "Gespeichert ⚠️",
+    "noneStored": "Keine gespeichert ✅",
+    "gdprArticles": {
+      "article5": "Datenminimierung",
+      "article17": "Recht auf Löschung",
+      "article25": "Datenschutz durch Technikgestaltung",
+      "article32": "Sicherheitsmaßnahmen"
+    }
+  },
+  "language": {
+    "selector": "Sprache",
+    "current": "Aktuelle Sprache",
+    "select": "Sprache auswählen",
+    "languages": {
+      "en": "English",
+      "de": "Deutsch",
+      "fr": "Français",
+      "es": "Español"
+    }
+  },
+  "gdpr": {
+    "terms": {
+      "dataMinimization": "Datenminimierung",
+      "rightToErasure": "Recht auf Löschung",
+      "privacyByDesign": "Datenschutz durch Technikgestaltung",
+      "consent": "Einwilligung",
+      "dataProtection": "Datenschutz",
+      "personalData": "Personenbezogene Daten",
+      "processing": "Verarbeitung",
+      "controller": "Verantwortlicher",
+      "processor": "Auftragsverarbeiter",
+      "dataSubject": "Betroffene Person"
+    },
+    "compliance": {
+      "compliant": "DSGVO-konform",
+      "nonCompliant": "Nicht konform",
+      "partiallyCompliant": "Teilweise konform",
+      "underReview": "In Überprüfung"
+    }
+  },
+  "errors": {
+    "generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+    "network": "Netzwerkfehler. Bitte überprüfen Sie Ihre Verbindung.",
+    "server": "Serverfehler. Bitte versuchen Sie es später erneut.",
+    "validation": "Bitte überprüfen Sie Ihre Eingabe und versuchen Sie es erneut.",
+    "unauthorized": "Sie sind nicht berechtigt, diese Aktion auszuführen.",
+    "forbidden": "Zugriff verweigert.",
+    "notFound": "Die angeforderte Ressource wurde nicht gefunden.",
+    "timeout": "Anfrage-Timeout. Bitte versuchen Sie es erneut."
+  }
+}

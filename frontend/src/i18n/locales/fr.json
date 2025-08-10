@@ -1,0 +1,380 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "confirm": "Confirmer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "submit": "Soumettre",
+    "retry": "Réessayer",
+    "refresh": "Actualiser",
+    "close": "Fermer",
+    "yes": "Oui",
+    "no": "Non"
+  },
+  "header": {
+    "title": "Système de Certificats Conforme RGPD",
+    "subtitle": "Protection des données dès la conception • Zéro rétention de données • Sécurisé cryptographiquement",
+    "status": {
+      "connected": "Connecté",
+      "disconnected": "Déconnecté",
+      "reconnecting": "Reconnexion"
+    },
+    "badges": {
+      "gdprCompliant": "Conforme RGPD"
+    },
+    "actions": {
+      "refresh": "Actualiser",
+      "logout": "Déconnexion"
+    }
+  },
+  "navigation": {
+    "generate": "Générer Certificat",
+    "verify": "Vérifier Certificat",
+    "stats": "Statistiques",
+    "dashboard": "Tableau de Bord Sécurité",
+    "profile": "Profil"
+  },
+  "auth": {
+    "login": {
+      "title": "Bon retour",
+      "subtitle": "Connectez-vous pour accéder à votre système de certificats",
+      "email": "Adresse e-mail",
+      "emailPlaceholder": "Saisissez votre e-mail",
+      "password": "Mot de passe",
+      "passwordPlaceholder": "Saisissez votre mot de passe",
+      "signIn": "Se connecter",
+      "signingIn": "Connexion...",
+      "noAccount": "Pas de compte ?",
+      "createAccount": "Créer un compte",
+      "forgotPassword": "Mot de passe oublié ?",
+      "gdprNotice": "Conforme RGPD • Vos données sont protégées et chiffrées"
+    },
+    "register": {
+      "title": "Créer un compte",
+      "subtitle": "Rejoignez notre système de certificats conforme RGPD",
+      "firstName": "Prénom",
+      "firstNamePlaceholder": "Prénom",
+      "lastName": "Nom de famille",
+      "lastNamePlaceholder": "Nom de famille",
+      "email": "Adresse e-mail",
+      "emailPlaceholder": "Saisissez votre e-mail",
+      "password": "Mot de passe",
+      "passwordPlaceholder": "Créez un mot de passe fort",
+      "confirmPassword": "Confirmer le mot de passe",
+      "confirmPasswordPlaceholder": "Confirmez votre mot de passe",
+      "createAccount": "Créer un compte",
+      "creatingAccount": "Création du compte...",
+      "hasAccount": "Déjà un compte ?",
+      "signIn": "Se connecter",
+      "gdprConsent": {
+        "title": "Consentement RGPD requis",
+        "text": "Je consens au traitement de mes données personnelles conformément au RGPD. Vos données seront chiffrées, stockées en sécurité, et vous avez le droit d'accéder, modifier ou supprimer vos données à tout moment. Durée de conservation : 3 ans."
+      },
+      "passwordStrength": {
+        "length": "Au moins 8 caractères",
+        "lowercase": "Lettre minuscule",
+        "uppercase": "Lettre majuscule",
+        "number": "Chiffre",
+        "special": "Caractère spécial"
+      },
+      "validation": {
+        "passwordsMatch": "Les mots de passe ne correspondent pas",
+        "gdprRequired": "Vous devez consentir aux termes RGPD pour créer un compte"
+      }
+    },
+    "forgotPassword": {
+      "title": "Mot de passe oublié ?",
+      "subtitle": "Saisissez votre e-mail pour recevoir un lien de réinitialisation",
+      "email": "Adresse e-mail",
+      "emailPlaceholder": "Saisissez votre adresse e-mail",
+      "sendLink": "Envoyer le lien",
+      "sending": "Envoi...",
+      "backToLogin": "Retour à la connexion",
+      "checkEmail": "Vérifiez votre e-mail",
+      "emailSent": "Si un compte avec {email} existe, nous avons envoyé un lien de réinitialisation à votre adresse e-mail.",
+      "didntReceive": "E-mail non reçu ? Vérifiez votre dossier spam ou réessayez dans quelques minutes.",
+      "securityNotice": "Pour des raisons de sécurité, nous ne révélons pas si un e-mail existe dans notre système. Les liens expirent dans 1 heure."
+    },
+    "resetPassword": {
+      "title": "Réinitialiser votre mot de passe",
+      "subtitle": "Créez un nouveau mot de passe sécurisé pour votre compte",
+      "newPassword": "Nouveau mot de passe",
+      "newPasswordPlaceholder": "Saisissez un mot de passe fort",
+      "confirmPassword": "Confirmer le nouveau mot de passe",
+      "confirmPasswordPlaceholder": "Confirmez votre nouveau mot de passe",
+      "resetPassword": "Réinitialiser le mot de passe",
+      "resettingPassword": "Réinitialisation...",
+      "backToLogin": "Retour à la connexion",
+      "invalidToken": "Lien de réinitialisation invalide",
+      "tokenExpired": "Ce lien de réinitialisation est invalide ou a expiré. Veuillez en demander un nouveau.",
+      "securityNotice": "Votre nouveau mot de passe sera chiffré et stocké en sécurité. Toutes les sessions existantes seront invalidées pour la sécurité."
+    },
+    "profile": {
+      "title": "Profil Utilisateur",
+      "subtitle": "Gérez vos paramètres de compte et sécurité",
+      "welcome": "Bienvenue, {firstName} {lastName}",
+      "tabs": {
+        "profile": "Informations du profil",
+        "security": "Paramètres de sécurité"
+      },
+      "profileTab": {
+        "title": "Informations du profil",
+        "editProfile": "Modifier le profil",
+        "saveProfile": "Enregistrer",
+        "saving": "Enregistrement...",
+        "cancel": "Annuler",
+        "firstName": "Prénom",
+        "lastName": "Nom de famille",
+        "email": "Adresse e-mail",
+        "accountInfo": "Informations du compte",
+        "memberSince": "Membre depuis :",
+        "role": "Rôle :",
+        "gdprConsent": "Consentement RGPD :",
+        "granted": "Accordé",
+        "lastLogin": "Dernière connexion :"
+      },
+      "securityTab": {
+        "title": "Paramètres de sécurité",
+        "changePassword": "Changer le mot de passe",
+        "updatePassword": "Mettre à jour le mot de passe",
+        "updating": "Mise à jour...",
+        "cancel": "Annuler",
+        "currentPassword": "Mot de passe actuel",
+        "currentPasswordPlaceholder": "Saisissez votre mot de passe actuel",
+        "newPassword": "Nouveau mot de passe",
+        "newPasswordPlaceholder": "Saisissez un nouveau mot de passe fort",
+        "confirmPassword": "Confirmer le nouveau mot de passe",
+        "confirmPasswordPlaceholder": "Confirmez votre nouveau mot de passe",
+        "securityInfo": "Informations de sécurité",
+        "accountSecurity": "Sécurité du compte :",
+        "protected": "Protégé",
+        "passwordStrength": "Force du mot de passe :",
+        "strong": "Fort",
+        "twoFactor": "Authentification à deux facteurs :",
+        "notEnabled": "Non activée"
+      },
+      "messages": {
+        "profileUpdated": "Profil mis à jour avec succès !",
+        "passwordUpdated": "Mot de passe mis à jour avec succès !",
+        "emailTaken": "L'e-mail est déjà utilisé par un autre utilisateur",
+        "passwordMismatch": "Les mots de passe ne correspondent pas",
+        "weakPassword": "Le mot de passe ne répond pas aux exigences de sécurité",
+        "invalidCurrentPassword": "Le mot de passe actuel est incorrect"
+      }
+    },
+    "validation": {
+      "emailRequired": "Un e-mail valide est requis",
+      "passwordRequired": "Le mot de passe est requis",
+      "nameRequired": "Un nom valide est requis",
+      "passwordWeak": "Le mot de passe doit contenir majuscules, minuscules, chiffre et caractère spécial",
+      "passwordShort": "Le mot de passe doit contenir au moins 8 caractères"
+    },
+    "errors": {
+      "networkError": "Erreur réseau. Veuillez réessayer.",
+      "invalidCredentials": "E-mail ou mot de passe invalide",
+      "userExists": "Un utilisateur existe déjà avec cet e-mail",
+      "accountLocked": "Le compte est temporairement verrouillé en raison de multiples tentatives de connexion échouées",
+      "userNotFound": "Utilisateur non trouvé",
+      "tokenExpired": "Le jeton a expiré",
+      "invalidToken": "Jeton invalide"
+    }
+  },
+  "certificate": {
+    "generate": {
+      "title": "Générer un Certificat Conforme RGPD",
+      "subtitle": "Créez des certificats sécurisés et vérifiables avec protection des données dès la conception",
+      "studentName": "Nom de l'étudiant",
+      "studentNamePlaceholder": "Saisissez le nom complet",
+      "courseName": "Nom du cours",
+      "courseNamePlaceholder": "Saisissez le nom du cours ou de la certification",
+      "generateCertificate": "Générer le certificat",
+      "generating": "Génération...",
+      "downloadCertificate": "Télécharger le certificat",
+      "downloading": "Téléchargement...",
+      "success": "Certificat généré avec succès !",
+      "successMessage": "Votre certificat conforme RGPD a été généré et est prêt au téléchargement.",
+      "gdprInfo": {
+        "title": "Informations de conformité RGPD",
+        "noPersonalData": "Aucune donnée personnelle stockée en base",
+        "hashOnly": "Seul le hash cryptographique est conservé",
+        "autoDelete": "Conformité automatique par conception",
+        "privacy": "Architecture de protection des données dès la conception"
+      },
+      "validation": {
+        "nameRequired": "Le nom de l'étudiant est requis",
+        "nameInvalid": "Format de nom invalide",
+        "courseRequired": "Le nom du cours est requis",
+        "courseInvalid": "Format de nom de cours invalide"
+      },
+      "features": {
+        "secure": "Sécurité cryptographique SHA-512",
+        "gdpr": "Conforme RGPD Article 5 & 17",
+        "qr": "Vérification par QR Code",
+        "tamper": "Conception inviolable"
+      }
+    },
+    "form": {
+      "title": "Informations du certificat",
+      "autoDelete": "Suppression auto",
+      "studentName": "Nom de l'étudiant",
+      "studentNamePlaceholder": "Entrez le nom complet",
+      "courseName": "Nom du cours",
+      "courseNamePlaceholder": "Entrez le nom du cours ou de l'examen",
+      "willBeDeleted": "Sera automatiquement supprimé",
+      "characters": "caractères",
+      "gdprProtected": "Protégé par RGPD",
+      "generateButton": "Générer un certificat conforme RGPD",
+      "generating": "Génération du certificat conforme RGPD..."
+    },
+    "templateSelection": {
+      "title": "Choisir un modèle de certificat"
+    },
+    "templates": {
+      "standard": "Certificat standard",
+      "healthcare": "Certificat santé",
+      "financial": "Certificat services financiers",
+      "education": "Certificat éducatif",
+      "professional": "Certificat professionnel",
+      "custom": "Certificat personnalisé"
+    },
+    "verify": {
+      "title": "Vérifier le certificat",
+      "subtitle": "Téléchargez un PDF de certificat pour vérifier son authenticité",
+      "uploadArea": {
+        "title": "Déposez votre certificat ici",
+        "subtitle": "ou cliquez pour parcourir les fichiers",
+        "fileTypes": "Fichiers PDF uniquement",
+        "maxSize": "Taille maximale : 10MB"
+      },
+      "verifying": "Vérification du certificat...",
+      "valid": "✅ Certificat valide",
+      "invalid": "❌ Certificat invalide",
+      "tampered": "⚠️ Certificat altéré",
+      "results": {
+        "certificateId": "ID du certificat :",
+        "courseCode": "Code du cours :",
+        "issueDate": "Date d'émission :",
+        "serialNumber": "Numéro de série :",
+        "status": "Statut :",
+        "verificationMethod": "Méthode de vérification :",
+        "verificationTime": "Heure de vérification :",
+        "securityLevel": "Niveau de sécurité :",
+        "personalDataAccessed": "Données personnelles accédées :"
+      },
+      "verification": {
+        "success": "Certificat conforme RGPD vérifié avec succès !",
+        "failed": "Échec de la vérification du certificat",
+        "notFound": "Certificat non trouvé en base ou révoqué",
+        "hashMismatch": "Hash non correspondant - le certificat peut être altéré",
+        "noMetadata": "Métadonnées du certificat non trouvées"
+      }
+    },
+    "templates": {
+      "standard": "Certificat standard",
+      "healthcare": "Certification santé",
+      "financial": "Services financiers",
+      "education": "Institution éducative",
+      "professional": "Association professionnelle",
+      "custom": "Modèle personnalisé"
+    }
+  },
+  "dashboard": {
+    "title": "Tableau de Bord Sécurité",
+    "subtitle": "Surveillez la sécurité du système et la conformité RGPD",
+    "stats": {
+      "certificates": "Certificats générés",
+      "verifications": "Vérifications effectuées",
+      "successRate": "Taux de succès",
+      "uptime": "Temps de fonctionnement",
+      "security": "Événements de sécurité",
+      "gdpr": "Conformité RGPD"
+    },
+    "charts": {
+      "activity": "Vue d'ensemble de l'activité",
+      "security": "Métriques de sécurité",
+      "compliance": "Conformité RGPD"
+    },
+    "alerts": {
+      "title": "Alertes de sécurité",
+      "noAlerts": "Aucune alerte de sécurité",
+      "critical": "Critique",
+      "warning": "Avertissement",
+      "info": "Information"
+    },
+    "gdpr": {
+      "title": "Statut de conformité RGPD",
+      "compliant": "Entièrement conforme",
+      "personalData": "Données personnelles stockées :",
+      "none": "Aucune",
+      "dataMinimization": "Minimisation des données :",
+      "implemented": "Implémentée",
+      "rightToErasure": "Droit à l'effacement :",
+      "notApplicable": "Non applicable",
+      "privacyByDesign": "Protection des données dès la conception :",
+      "coreArchitecture": "Architecture centrale"
+    }
+  },
+  "footer": {
+    "title": "Système de Certificats Conforme RGPD v4.0",
+    "subtitle": "Protection des données dès la conception • Sécurité cryptographique SHA-512 • Zéro rétention de données personnelles",
+    "lastUpdated": "Dernière mise à jour : {time}",
+    "status": "Statut : {status}",
+    "personalData": "Données personnelles : {status}",
+    "stored": "Stockées ⚠️",
+    "noneStored": "Aucune stockée ✅",
+    "gdprArticles": {
+      "article5": "Minimisation des données",
+      "article17": "Droit à l'effacement",
+      "article25": "Protection des données dès la conception",
+      "article32": "Mesures de sécurité"
+    }
+  },
+  "language": {
+    "selector": "Langue",
+    "current": "Langue actuelle",
+    "select": "Sélectionner la langue",
+    "languages": {
+      "en": "English",
+      "de": "Deutsch",
+      "fr": "Français",
+      "es": "Español"
+    }
+  },
+  "gdpr": {
+    "terms": {
+      "dataMinimization": "Minimisation des données",
+      "rightToErasure": "Droit à l'effacement",
+      "privacyByDesign": "Protection des données dès la conception",
+      "consent": "Consentement",
+      "dataProtection": "Protection des données",
+      "personalData": "Données personnelles",
+      "processing": "Traitement",
+      "controller": "Responsable de traitement",
+      "processor": "Sous-traitant",
+      "dataSubject": "Personne concernée"
+    },
+    "compliance": {
+      "compliant": "Conforme RGPD",
+      "nonCompliant": "Non conforme",
+      "partiallyCompliant": "Partiellement conforme",
+      "underReview": "En cours d'examen"
+    }
+  },
+  "errors": {
+    "generic": "Une erreur s'est produite. Veuillez réessayer.",
+    "network": "Erreur réseau. Veuillez vérifier votre connexion.",
+    "server": "Erreur serveur. Veuillez réessayer plus tard.",
+    "validation": "Veuillez vérifier votre saisie et réessayer.",
+    "unauthorized": "Vous n'êtes pas autorisé à effectuer cette action.",
+    "forbidden": "Accès refusé.",
+    "notFound": "La ressource demandée n'a pas été trouvée.",
+    "timeout": "Délai d'attente dépassé. Veuillez réessayer."
+  }
+}
