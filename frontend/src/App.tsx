@@ -10,6 +10,7 @@ import {
 import AnimatedBackground from './components/AnimatedBackground';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import ThemeToggle from './components/ThemeToggle';
+import ErrorBoundary from './components/ErrorBoundary';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import AuthWrapper from './components/AuthWrapper';
