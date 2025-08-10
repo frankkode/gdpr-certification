@@ -217,7 +217,7 @@ const getTwoFactorStatus = async (userId) => {
         two_factor_secret IS NOT NULL as has_secret,
         CASE 
           WHEN two_factor_backup_codes IS NOT NULL 
-          THEN array_length(CAST(two_factor_backup_codes AS json[]::text[]), 1)
+          THEN json_array_length(two_factor_backup_codes::json)
           ELSE 0 
         END as backup_codes_remaining
       FROM users 

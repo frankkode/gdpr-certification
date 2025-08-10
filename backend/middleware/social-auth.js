@@ -170,7 +170,9 @@ const handleSocialAuth = async (provider, userInfo, mode = 'login') => {
     let user = await getUserByEmail(userInfo.email);
     
     if (mode === 'login' && !user) {
-      throw new Error('No account found with this email. Please sign up first.');
+      // Auto-register user who tries to login but doesn't exist
+      console.log(`User ${userInfo.email} trying to login but doesn't exist, creating account`);
+      // Fall through to user creation logic
     }
     
     if (mode === 'register' && user) {
