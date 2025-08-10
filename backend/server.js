@@ -74,7 +74,14 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ✅ FIXED: Enhanced CORS for Vercel deployment
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"]
+    }
+  }
+}));
 app.use(cors({
   origin: process.env.ALLOWED_ORIGINS?.split(',') || [
     'https://gdpr-certification-cl7s.vercel.app',
