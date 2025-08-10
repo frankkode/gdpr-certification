@@ -120,10 +120,35 @@
   <script>
     // Prevent undefined errors from extensions
     window.addEventListener('error', (e) => {
-      if (e.error && e.error.message && e.error.message.includes('checkoutUrls')) {
+      const message = e.error?.message || e.message || '';
+      
+      // Suppress browser extension errors
+      if (message.includes('checkoutUrls') || 
+          message.includes('runtime.lastError') ||
+          message.includes('No tab with id') ||
+          message.includes('Extension context invalidated')) {
         e.preventDefault();
-        console.log('Suppressed browser extension error:', e.error.message);
+        console.log('Suppressed browser extension error:', message);
         return false;
+      }
+    });
+
+    // Suppress extension console errors
+    const originalError = console.error;
+    console.error = function(...args) {
+      const message = args.join(' ');
+      if (message.includes('runtime.lastError') || 
+          message.includes('No tab with id')) {
+        return; // Don't log extension errors
+      }
+      originalError.apply(console, args);
+    };
+
+    // Catch unhandled React errors
+    window.addEventListener('unhandledrejection', (e) => {
+      if (e.reason?.message?.includes('Minified React error')) {
+        console.error('Unhandled React error:', e.reason);
+        e.preventDefault();
       }
     });
     

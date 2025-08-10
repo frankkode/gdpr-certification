@@ -76,6 +76,7 @@ const SocialLogin: React.FC<SocialLoginProps> = ({
 
         if (type === 'SOCIAL_AUTH_SUCCESS') {
           popup.close();
+          console.log('🎉 Social auth success:', { token: data.token ? 'present' : 'missing', user: data.user });
           onSuccess(data.token, data.user);
           window.removeEventListener('message', handleMessage);
         } else if (type === 'SOCIAL_AUTH_ERROR') {

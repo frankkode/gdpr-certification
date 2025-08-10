@@ -368,7 +368,7 @@ const AuthenticatedApp: React.FC = () => {
               'Content-Type': 'application/json'
             }
           }),
-          fetch(`${API_URL}/templates/public`)
+          fetch(`${API_URL}/templates`)
         ]);
 
         const userTemplates = userTemplatesResponse.ok ? (await userTemplatesResponse.json()).templates || [] : [];
@@ -382,7 +382,7 @@ const AuthenticatedApp: React.FC = () => {
         setTemplates(allTemplates);
       } else {
         // If not authenticated, fetch only public templates
-        const response = await fetch(`${API_URL}/templates/public`);
+        const response = await fetch(`${API_URL}/templates`);
         if (response.ok) {
           const data = await response.json();
           setTemplates(data.templates || []);

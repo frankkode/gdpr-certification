@@ -82,10 +82,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, apiUrl }) 
   }, [apiUrl]);
 
   const login = (newToken: string, newUser: User) => {
+    console.log('🔐 AuthContext login called:', { 
+      token: newToken ? 'present' : 'missing', 
+      user: newUser?.email || 'no email' 
+    });
     setToken(newToken);
     setUser(newUser);
     localStorage.setItem('authToken', newToken);
     localStorage.setItem('user', JSON.stringify(newUser));
+    console.log('✅ AuthContext login completed - isAuthenticated will be:', !!(newToken && newUser));
   };
 
   const logout = async () => {

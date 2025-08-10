@@ -43,12 +43,12 @@ export default defineConfig({
     minify: 'terser',
     terserOptions: {
       compress: {
-        drop_console: true,
+        drop_console: false,
         drop_debugger: true,
       },
     },
     assetsDir: 'assets',
-    sourcemap: false,
+    sourcemap: true,
     chunkSizeWarningLimit: 1000,
   },
   define: {

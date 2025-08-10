@@ -2757,6 +2757,12 @@ app.get('/auth/social/:provider/callback', async (req, res) => {
         firstName: authResult.user.firstName,
         lastName: authResult.user.lastName,
         role: authResult.user.role,
+        subscriptionTier: authResult.user.subscriptionTier,
+        subscriptionExpires: authResult.user.subscriptionExpires,
+        createdAt: authResult.user.createdAt,
+        lastLogin: authResult.user.lastLogin,
+        gdprConsent: authResult.user.gdprConsent,
+        gdprConsentDate: authResult.user.gdprConsentDate,
         isVerified: authResult.user.isVerified
       })},
                   isNewUser: ${authResult.isNewUser},
@@ -6107,20 +6113,20 @@ app.get('/bulk/jobs', authenticateToken, async (req, res) => {
     
     const result = await db.query(`
       SELECT 
-        job_id as id,
-        job_name as fileName,
-        template_id as templateId,
-        template_name as templateName,
-        total_certificates as totalRecords,
-        completed_certificates as processedRecords,
-        completed_certificates as successfulRecords,
-        failed_certificates as errorRecords,
+        job_id as "id",
+        job_name as "fileName",
+        template_id as "templateId",
+        template_name as "templateName",
+        total_certificates as "totalRecords",
+        completed_certificates as "processedRecords",
+        completed_certificates as "successfulRecords",
+        failed_certificates as "errorRecords",
         status,
         progress,
-        created_at as createdAt,
-        completed_at as completedAt,
-        download_url as downloadUrl,
-        error_report as errorReport
+        created_at as "createdAt",
+        completed_at as "completedAt",
+        download_url as "downloadUrl",
+        error_report as "errorReport"
       FROM bulk_generation_jobs 
       WHERE user_id = $1 
       ORDER BY created_at DESC 
@@ -6785,7 +6791,7 @@ async function processBulkGenerationJob(jobId, userId, dataRows, templateId) {
           const stats = fs.statSync(zipPath);
           if (stats.size > 0) {
             console.log(`✅ ZIP file created: ${zipPath} (${stats.size} bytes)`);
-            downloadUrl = `/bulk/downloads/bulk_${jobId}.zip`;
+            downloadUrl = `/bulk/jobs/${jobId}/download`;
           } else {
             console.error('❌ ZIP file created but is empty');
             finalStatus = 'completed_no_download';

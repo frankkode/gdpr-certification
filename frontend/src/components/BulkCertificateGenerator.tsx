@@ -149,10 +149,17 @@ const BulkCertificateGenerator: React.FC<BulkCertificateGeneratorProps> = ({
 
           // Check required columns
           const missingColumns = requiredColumns.filter(col => !headers.includes(col));
+          console.log('🔍 CSV Headers found:', headers);
+          console.log('🔍 Required columns:', requiredColumns);
+          console.log('🔍 Missing columns:', missingColumns);
+          
           if (missingColumns.length > 0) {
             errors.push(`Missing required columns: ${missingColumns.join(', ')}`);
           }
 
+          console.log('🔍 Data rows found:', dataRows.length);
+          console.log('🔍 Sample data rows:', dataRows.slice(0, 2));
+          
           // Check record count
           if (dataRows.length > maxRecords) {
             errors.push(`Too many records. Maximum ${maxRecords} allowed, found ${dataRows.length}`);
@@ -177,11 +184,13 @@ const BulkCertificateGenerator: React.FC<BulkCertificateGeneratorProps> = ({
             }
           }
 
-          resolve({
+          const result = {
             valid: errors.length === 0,
             errors,
             preview: [headers, ...dataRows.slice(0, 5)] // Preview first 5 rows
-          });
+          };
+          console.log('🔍 Final validation result:', result);
+          resolve(result);
 
         } catch (error) {
           resolve({
@@ -208,13 +217,17 @@ const BulkCertificateGenerator: React.FC<BulkCertificateGeneratorProps> = ({
     setLoading(true);
     const validation = await validateCsvFile(file);
     
+    console.log('🔍 CSV validation result:', validation);
+    
     if (validation.valid) {
       setCsvFile(file);
       setCsvPreview(validation.preview);
       setValidationErrors([]);
       setUpgradeInfo(null);
       setShowPreview(true);
+      console.log('✅ CSV file accepted, preview shown');
     } else {
+      console.log('❌ CSV validation failed:', validation.errors);
       setValidationErrors(validation.errors);
       setUpgradeInfo(null);
       setCsvFile(null);
@@ -310,74 +323,22 @@ const BulkCertificateGenerator: React.FC<BulkCertificateGeneratorProps> = ({
 
   const downloadResults = async (jobId: string) => {
     try {
-      console.log('🔍 Starting download debug for job:', jobId);
-      console.log('🔍 API URL:', apiUrl);
-      console.log('🔍 Token (first 20 chars):', token?.substring(0, 20) + '...');
+      console.log('🚀 Download initiated for job:', jobId);
       
-      // First, let's test what the endpoint actually returns
-      const testUrl = `${apiUrl}/bulk/jobs/${jobId}/download`;
-      console.log('🔍 Testing endpoint:', testUrl);
-      
-      try {
-        const testResponse = await fetch(testUrl, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        
-        console.log('🔍 Test response status:', testResponse.status);
-        console.log('🔍 Test response headers:', Object.fromEntries(testResponse.headers.entries()));
-        console.log('🔍 Test response Content-Type:', testResponse.headers.get('content-type'));
-        console.log('🔍 Test response Content-Length:', testResponse.headers.get('content-length'));
-        
-        if (testResponse.ok) {
-          const contentType = testResponse.headers.get('content-type');
-          console.log('🔍 Response content type:', contentType);
-          
-          if (contentType && contentType.includes('application/zip')) {
-            console.log('✅ Server is returning ZIP file - trying download...');
-            
-            // Method 1: Try blob download
-            const blob = await testResponse.blob();
-            console.log('🔍 Blob size:', blob.size, 'bytes');
-            console.log('🔍 Blob type:', blob.type);
-            
-            if (blob.size > 0) {
-              const url = window.URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = url;
-              a.download = `certificates-${jobId}.zip`;
-              a.style.display = 'none';
-              document.body.appendChild(a);
-              
-              console.log('🚀 Triggering download...');
-              a.click();
-              
-              setTimeout(() => {
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
-                console.log('✅ Download cleanup completed');
-              }, 1000);
-            } else {
-              console.error('❌ Empty blob received');
-              alert('Empty file received. The ZIP might not have been created properly.');
-            }
-          } else {
-            console.log('❌ Server not returning ZIP, response type:', contentType);
-            const textResponse = await testResponse.text();
-            console.log('🔍 Server response text:', textResponse);
-            alert('Server error: ' + textResponse);
-          }
-        } else {
-          console.error('❌ Test response failed:', testResponse.status);
-          const errorText = await testResponse.text();
-          console.log('🔍 Error response:', errorText);
-          alert(`Download failed: ${testResponse.status} - ${errorText}`);
-        }
-      } catch (fetchError) {
-        console.error('❌ Fetch error:', fetchError);
-        alert('Network error: ' + fetchError.message);
+      // Find the job in our jobs array to check its downloadUrl
+      const job = jobs.find(j => j.id === jobId);
+      if (!job?.downloadUrl) {
+        alert('Download not available for this job');
+        return;
       }
+      
+      // Use query parameter for authentication to allow direct download
+      const downloadUrl = `${apiUrl}/bulk/jobs/${jobId}/download?auth=${encodeURIComponent(token)}`;
+      console.log('🔗 Initiating download...');
+      
+      // Use window.open to trigger download
+      window.open(downloadUrl, '_blank');
+      console.log('✅ Download window opened');
       
     } catch (error) {
       console.error('❌ General error:', error);
@@ -612,8 +573,14 @@ David Lee,david.lee@freelance.com,UI/UX Design Bootcamp,2024-06-20,A,Lisa Anders
           {/* Template Selection */}
           <div className="bg-white/5 border border-white/10 rounded-lg p-6">
             <h3 className="text-lg font-semibold text-white mb-4">Select Certificate Template</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {templates.map((template) => (
+            {templates.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-yellow-400 mb-2">⚠️ No templates available</p>
+                <p className="text-gray-400 text-sm">Templates are still loading or there was an error fetching them.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {templates.map((template) => (
                 <label
                   key={template.id}
                   className={`block p-4 rounded-lg border cursor-pointer transition ${
@@ -638,8 +605,9 @@ David Lee,david.lee@freelance.com,UI/UX Design Bootcamp,2024-06-20,A,Lisa Anders
                     </div>
                   </div>
                 </label>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* File Upload */}
@@ -768,8 +736,8 @@ David Lee,david.lee@freelance.com,UI/UX Design Bootcamp,2024-06-20,A,Lisa Anders
               </div>
             )}
 
-            {/* Upload Button */}
-            {csvFile && selectedTemplate && (!validationErrors || validationErrors.length === 0) && (
+            {/* Upload Button - Show if CSV is valid and has preview */}
+            {csvFile && selectedTemplate && showPreview && (
               <div className="mt-6 flex justify-center">
                 <button
                   onClick={handleUpload}
@@ -783,6 +751,9 @@ David Lee,david.lee@freelance.com,UI/UX Design Bootcamp,2024-06-20,A,Lisa Anders
                   )}
                   <span>{uploading ? 'Starting Generation...' : 'Start Generation'}</span>
                 </button>
+                <div className="mt-2 text-xs text-gray-400 text-center">
+                  🔍 Debug: File loaded, template selected, preview shown
+                </div>
               </div>
             )}
           </div>
@@ -794,15 +765,19 @@ David Lee,david.lee@freelance.com,UI/UX Design Bootcamp,2024-06-20,A,Lisa Anders
         <div className="space-y-4">
           {jobs
             .filter(job => activeTab === 'jobs' ? 
-              ['pending', 'processing'].includes(job.status) : 
-              ['completed', 'error', 'cancelled'].includes(job.status)
+              ['pending', 'processing', 'completed'].includes(job.status) : 
+              ['error', 'cancelled'].includes(job.status)
             )
             .map((job) => (
               <motion.div
                 key={job.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white/5 border border-white/10 rounded-lg p-6"
+                className={`rounded-lg p-6 border transition-all ${
+                  job.status === 'completed' && job.downloadUrl 
+                    ? 'bg-green-500/10 border-green-400/30 ring-1 ring-green-400/20' 
+                    : 'bg-white/5 border-white/10'
+                }`}
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-3">
@@ -879,10 +854,10 @@ David Lee,david.lee@freelance.com,UI/UX Design Bootcamp,2024-06-20,A,Lisa Anders
                     {job.status === 'completed' && job.downloadUrl && (
                       <button
                         onClick={() => downloadResults(job.id)}
-                        className="flex items-center space-x-1 px-3 py-1 bg-green-500/20 text-green-300 rounded text-sm hover:bg-green-500/30 transition"
+                        className="flex items-center space-x-1 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium text-sm transition animate-pulse"
                       >
                         <Download className="h-4 w-4" />
-                        <span>Download</span>
+                        <span>Download Ready!</span>
                       </button>
                     )}
                     {job.errorReport && (
@@ -907,13 +882,13 @@ David Lee,david.lee@freelance.com,UI/UX Design Bootcamp,2024-06-20,A,Lisa Anders
             ))}
 
           {jobs.filter(job => activeTab === 'jobs' ? 
-            ['pending', 'processing'].includes(job.status) : 
-            ['completed', 'error', 'cancelled'].includes(job.status)
+            ['pending', 'processing', 'completed'].includes(job.status) : 
+            ['error', 'cancelled'].includes(job.status)
           ).length === 0 && (
             <div className="text-center py-12">
               <Users className="h-12 w-12 text-gray-600 mx-auto mb-4" />
               <p className="text-gray-400">
-                {activeTab === 'jobs' ? 'No active jobs' : 'No completed jobs'}
+                {activeTab === 'jobs' ? 'No active or completed jobs' : 'No failed jobs'}
               </p>
             </div>
           )}

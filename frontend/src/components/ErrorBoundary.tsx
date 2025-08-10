@@ -23,6 +23,15 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('Component error caught by ErrorBoundary:', error, errorInfo);
+    
+    // Log React error details for debugging
+    if (error.message.includes('Minified React error')) {
+      console.error('React Error Details:', {
+        message: error.message,
+        stack: error.stack,
+        componentStack: errorInfo.componentStack
+      });
+    }
   }
 
   render() {
