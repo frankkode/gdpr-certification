@@ -2639,6 +2639,13 @@ app.get('/auth/social/:provider', (req, res) => {
   }
 });
 
+// Disable CSP for OAuth callbacks
+app.use('/auth/social/:provider/callback', (req, res, next) => {
+  res.removeHeader('Content-Security-Policy');
+  res.removeHeader('Content-Security-Policy-Report-Only');
+  next();
+});
+
 // Handle OAuth callback
 app.get('/auth/social/:provider/callback', async (req, res) => {
   try {
@@ -2650,9 +2657,6 @@ app.get('/auth/social/:provider/callback', async (req, res) => {
       const errorMessage = req.query.error_description || oauthError;
       return res.send(`
         <html>
-          <head>
-            <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
-          </head>
           <body>
             <script>
               if (window.opener) {
@@ -2672,9 +2676,6 @@ app.get('/auth/social/:provider/callback', async (req, res) => {
     if (!code || !state) {
       return res.send(`
         <html>
-          <head>
-            <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
-          </head>
           <body>
             <script>
               if (window.opener) {
@@ -2698,9 +2699,6 @@ app.get('/auth/social/:provider/callback', async (req, res) => {
     if (!validation.valid) {
       return res.send(`
         <html>
-          <head>
-            <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
-          </head>
           <body>
             <script>
               if (window.opener) {
@@ -2725,9 +2723,6 @@ app.get('/auth/social/:provider/callback', async (req, res) => {
     if (!userInfo.email) {
       return res.send(`
         <html>
-          <head>
-            <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
-          </head>
           <body>
             <script>
               if (window.opener) {
@@ -2749,9 +2744,6 @@ app.get('/auth/social/:provider/callback', async (req, res) => {
     // Send success response to popup
     res.send(`
       <html>
-        <head>
-          <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
-        </head>
         <body>
           <script>
             if (window.opener) {
@@ -2785,9 +2777,6 @@ app.get('/auth/social/:provider/callback', async (req, res) => {
     // Send error response to popup
     res.send(`
       <html>
-        <head>
-          <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
-        </head>
         <body>
           <script>
             if (window.opener) {
