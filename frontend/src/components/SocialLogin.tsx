@@ -80,7 +80,7 @@ const SocialLogin: React.FC<SocialLoginProps> = ({
           window.removeEventListener('message', handleMessage);
         } else if (type === 'SOCIAL_AUTH_ERROR') {
           popup.close();
-          onError(data.error || 'Social authentication failed');
+          onError(data.error || event.data.error || 'Social authentication failed');
           window.removeEventListener('message', handleMessage);
         }
       };

@@ -77,8 +77,12 @@ const PORT = process.env.PORT || 5000;
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-      fontSrc: ["'self'", "https://fonts.gstatic.com"]
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'", "https://api.stripe.com"]
     }
   }
 }));
@@ -2646,12 +2650,17 @@ app.get('/auth/social/:provider/callback', async (req, res) => {
       const errorMessage = req.query.error_description || oauthError;
       return res.send(`
         <html>
+          <head>
+            <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+          </head>
           <body>
             <script>
-              window.opener.postMessage({
-                type: 'SOCIAL_AUTH_ERROR',
-                error: '${errorMessage}'
-              }, '*');
+              if (window.opener) {
+                window.opener.postMessage({
+                  type: 'SOCIAL_AUTH_ERROR',
+                  data: { error: '${errorMessage}' }
+                }, '*');
+              }
               window.close();
             </script>
           </body>
@@ -2663,12 +2672,17 @@ app.get('/auth/social/:provider/callback', async (req, res) => {
     if (!code || !state) {
       return res.send(`
         <html>
+          <head>
+            <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+          </head>
           <body>
             <script>
-              window.opener.postMessage({
-                type: 'SOCIAL_AUTH_ERROR',
-                error: 'Missing authorization code or state parameter'
-              }, '*');
+              if (window.opener) {
+                window.opener.postMessage({
+                  type: 'SOCIAL_AUTH_ERROR',
+                  data: { error: 'Missing authorization code or state parameter' }
+                }, '*');
+              }
               window.close();
             </script>
           </body>
@@ -2684,12 +2698,17 @@ app.get('/auth/social/:provider/callback', async (req, res) => {
     if (!validation.valid) {
       return res.send(`
         <html>
+          <head>
+            <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+          </head>
           <body>
             <script>
-              window.opener.postMessage({
-                type: 'SOCIAL_AUTH_ERROR',
-                error: '${validation.error}'
-              }, '*');
+              if (window.opener) {
+                window.opener.postMessage({
+                  type: 'SOCIAL_AUTH_ERROR',
+                  data: { error: '${validation.error}' }
+                }, '*');
+              }
               window.close();
             </script>
           </body>
@@ -2706,12 +2725,17 @@ app.get('/auth/social/:provider/callback', async (req, res) => {
     if (!userInfo.email) {
       return res.send(`
         <html>
+          <head>
+            <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+          </head>
           <body>
             <script>
-              window.opener.postMessage({
-                type: 'SOCIAL_AUTH_ERROR',
-                error: 'Email address is required but not provided by ${provider}'
-              }, '*');
+              if (window.opener) {
+                window.opener.postMessage({
+                  type: 'SOCIAL_AUTH_ERROR',
+                  data: { error: 'Email address is required but not provided by ${provider}' }
+                }, '*');
+              }
               window.close();
             </script>
           </body>
@@ -2725,25 +2749,30 @@ app.get('/auth/social/:provider/callback', async (req, res) => {
     // Send success response to popup
     res.send(`
       <html>
+        <head>
+          <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+        </head>
         <body>
           <script>
-            window.opener.postMessage({
-              type: 'SOCIAL_AUTH_SUCCESS',
-              data: {
-                token: '${authResult.token}',
-                user: ${JSON.stringify({
-      id: authResult.user.id,
-      email: authResult.user.email,
-      firstName: authResult.user.firstName,
-      lastName: authResult.user.lastName,
-      role: authResult.user.role,
-      isVerified: authResult.user.isVerified
-    })},
-                isNewUser: ${authResult.isNewUser},
-                provider: '${provider}',
-                mode: '${mode}'
-              }
-            }, '*');
+            if (window.opener) {
+              window.opener.postMessage({
+                type: 'SOCIAL_AUTH_SUCCESS',
+                data: {
+                  token: '${authResult.token}',
+                  user: ${JSON.stringify({
+        id: authResult.user.id,
+        email: authResult.user.email,
+        firstName: authResult.user.firstName,
+        lastName: authResult.user.lastName,
+        role: authResult.user.role,
+        isVerified: authResult.user.isVerified
+      })},
+                  isNewUser: ${authResult.isNewUser},
+                  provider: '${provider}',
+                  mode: '${mode}'
+                }
+              }, '*');
+            }
             window.close();
           </script>
         </body>
@@ -2756,12 +2785,17 @@ app.get('/auth/social/:provider/callback', async (req, res) => {
     // Send error response to popup
     res.send(`
       <html>
+        <head>
+          <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+        </head>
         <body>
           <script>
-            window.opener.postMessage({
-              type: 'SOCIAL_AUTH_ERROR',
-              error: '${error.message || 'Authentication failed'}'
-            }, '*');
+            if (window.opener) {
+              window.opener.postMessage({
+                type: 'SOCIAL_AUTH_ERROR',
+                data: { error: '${error.message || 'Authentication failed'}' }
+              }, '*');
+            }
             window.close();
           </script>
         </body>
